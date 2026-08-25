@@ -7,21 +7,14 @@ import {
   Building2,
   MapPin,
   DollarSign,
-  Briefcase,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowRight,
-  Bookmark,
   Sparkles,
-  ExternalLink,
-  ChevronRight,
-  Filter,
+  Bookmark,
+  ArrowRight,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { MatchItem } from "@/lib/types";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
-import { Card } from "../components/ui/Card";
 import { SearchBar } from "../components/ui/SearchBar";
 
 export default function OpportunitiesPage() {
@@ -60,7 +53,7 @@ export default function OpportunitiesPage() {
   });
 
   return (
-    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
+    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "22px", width: "100%" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
         <div>
@@ -86,8 +79,8 @@ export default function OpportunitiesPage() {
       </div>
 
       {/* Search & Fit Filters */}
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
-        <div style={{ flex: 1, minWidth: "260px" }}>
+      <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", alignItems: "center", width: "100%" }}>
+        <div style={{ flex: 1, minWidth: "280px" }}>
           <SearchBar
             placeholder="Search by role title, company, or tech stack..."
             value={searchQuery}
@@ -95,7 +88,7 @@ export default function OpportunitiesPage() {
           />
         </div>
 
-        <div style={{ display: "flex", gap: "6px" }}>
+        <div style={{ display: "flex", gap: "8px" }}>
           <Button
             variant={selectedFit === "ALL" ? "primary" : "secondary"}
             size="sm"
@@ -120,27 +113,35 @@ export default function OpportunitiesPage() {
         </div>
       </div>
 
-      {/* Opportunities List */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+      {/* Opportunities Full-Width List */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "14px", width: "100%" }}>
         {filteredMatches.map((m) => {
           const isSaved = !!savedJobs[m.id];
           return (
-            <Card key={m.id} style={{ padding: "18px 20px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "12px" }}>
-                <div style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
+            <div
+              key={m.id}
+              className="ui-card ui-card-hover"
+              style={{
+                padding: "20px 24px",
+                width: "100%",
+                boxSizing: "border-box",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px", marginBottom: "14px" }}>
+                <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
                   <div
                     style={{
-                      width: "42px",
-                      height: "42px",
-                      borderRadius: "6px",
+                      width: "46px",
+                      height: "46px",
+                      borderRadius: "8px",
                       background: "var(--bg-elevated)",
                       border: "1px solid var(--border-subtle)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       fontWeight: 800,
-                      color: "var(--text-main)",
-                      fontSize: "14px",
+                      color: "#ffffff",
+                      fontSize: "15px",
                       flexShrink: 0,
                     }}
                   >
@@ -148,23 +149,23 @@ export default function OpportunitiesPage() {
                   </div>
 
                   <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                      <h2 style={{ fontSize: "16px", fontWeight: 700 }}>{m.job.title}</h2>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                      <h2 style={{ fontSize: "17.5px", fontWeight: 700, color: "#ffffff" }}>{m.job.title}</h2>
                       <Badge variant={m.overall_score >= 90 ? "success" : "cyan"} size="sm">
                         {m.overall_score.toFixed(0)}% Match
                       </Badge>
                     </div>
 
-                    <div style={{ display: "flex", gap: "12px", fontSize: "12px", color: "var(--text-dim)", marginTop: "4px", flexWrap: "wrap" }}>
-                      <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        <Building2 size={12} /> {m.job.company.name}
+                    <div style={{ display: "flex", gap: "14px", fontSize: "13.5px", color: "var(--text-sub)", marginTop: "6px", flexWrap: "wrap" }}>
+                      <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                        <Building2 size={14} color="var(--text-muted)" /> {m.job.company.name}
                       </span>
-                      <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        <MapPin size={12} /> {m.job.location}
+                      <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                        <MapPin size={14} color="var(--text-muted)" /> {m.job.location}
                       </span>
                       {m.job.salary_min && (
-                        <span style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--accent-emerald)" }}>
-                          <DollarSign size={12} /> ${m.job.salary_min.toLocaleString()} - ${m.job.salary_max?.toLocaleString()}
+                        <span style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--accent-emerald)", fontWeight: 700 }}>
+                          <DollarSign size={14} /> ${m.job.salary_min.toLocaleString()} - ${m.job.salary_max?.toLocaleString()}
                         </span>
                       )}
                     </div>
@@ -172,37 +173,37 @@ export default function OpportunitiesPage() {
                 </div>
 
                 {/* Match Score Matrix */}
-                <div style={{ display: "flex", gap: "8px", background: "var(--bg-elevated)", padding: "6px 10px", borderRadius: "4px", border: "1px solid var(--border-subtle)" }}>
-                  <div style={{ textAlign: "center", padding: "0 6px" }}>
-                    <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Tech Fit</div>
-                    <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--accent-cyan)" }}>{m.technical_fit.toFixed(0)}%</div>
+                <div style={{ display: "flex", gap: "10px", background: "var(--bg-elevated)", padding: "8px 14px", borderRadius: "6px", border: "1px solid var(--border-subtle)" }}>
+                  <div style={{ textAlign: "center", padding: "0 8px" }}>
+                    <div style={{ fontSize: "11.5px", color: "var(--text-dim)", textTransform: "uppercase", fontWeight: 700 }}>Tech Fit</div>
+                    <div style={{ fontSize: "15px", fontWeight: 800, color: "var(--accent-cyan)" }}>{m.technical_fit.toFixed(0)}%</div>
                   </div>
                   <div style={{ width: "1px", background: "var(--border-subtle)" }} />
-                  <div style={{ textAlign: "center", padding: "0 6px" }}>
-                    <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Exp Fit</div>
-                    <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--accent-emerald)" }}>{m.experience_fit.toFixed(0)}%</div>
+                  <div style={{ textAlign: "center", padding: "0 8px" }}>
+                    <div style={{ fontSize: "11.5px", color: "var(--text-dim)", textTransform: "uppercase", fontWeight: 700 }}>Exp Fit</div>
+                    <div style={{ fontSize: "15px", fontWeight: 800, color: "var(--accent-emerald)" }}>{m.experience_fit.toFixed(0)}%</div>
                   </div>
                 </div>
               </div>
 
               {/* Rationale & Why Matched */}
-              <div style={{ padding: "10px 12px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "4px", border: "1px solid var(--border-subtle)", marginBottom: "12px" }}>
-                <div style={{ fontSize: "12px", color: "var(--text-muted)", lineHeight: 1.4 }}>
-                  <strong style={{ color: "var(--text-main)" }}>Why this matches you:</strong> {m.explanation || m.why_matched}
+              <div style={{ padding: "12px 16px", background: "rgba(255, 255, 255, 0.03)", borderRadius: "6px", border: "1px solid var(--border-subtle)", marginBottom: "14px" }}>
+                <div style={{ fontSize: "13.5px", color: "var(--text-sub)", lineHeight: 1.5 }}>
+                  <strong style={{ color: "#ffffff" }}>Why this matches you:</strong> {m.explanation || m.why_matched}
                 </div>
               </div>
 
               {/* Verified Matched Skills vs Gaps */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-                <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
-                  <span style={{ fontSize: "11px", color: "var(--text-dim)", fontWeight: 600 }}>Strengths:</span>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+                  <span style={{ fontSize: "12px", color: "var(--text-dim)", fontWeight: 700 }}>Strengths:</span>
                   {m.matched_skills_json?.slice(0, 3).map((sk) => (
                     <Badge key={sk} variant="success" size="sm">✓ {sk}</Badge>
                   ))}
 
                   {m.missing_skills_json?.length > 0 && (
                     <>
-                      <span style={{ fontSize: "11px", color: "var(--text-dim)", fontWeight: 600, marginLeft: "6px" }}>Gap:</span>
+                      <span style={{ fontSize: "12px", color: "var(--text-dim)", fontWeight: 700, marginLeft: "6px" }}>Gap:</span>
                       {m.missing_skills_json.slice(0, 1).map((sk) => (
                         <Badge key={sk} variant="warning" size="sm">! {sk}</Badge>
                       ))}
@@ -210,34 +211,36 @@ export default function OpportunitiesPage() {
                   )}
                 </div>
 
-                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                   <button
                     onClick={(e) => toggleSave(m.id, e)}
                     style={{
-                      background: "transparent",
+                      background: "var(--bg-elevated)",
                       border: "1px solid var(--border-subtle)",
-                      borderRadius: "4px",
-                      padding: "6px 8px",
-                      color: isSaved ? "var(--accent-amber)" : "var(--text-dim)",
+                      borderRadius: "var(--radius-sm)",
+                      padding: "7px 12px",
+                      color: isSaved ? "var(--accent-amber)" : "var(--text-sub)",
+                      fontSize: "13px",
+                      fontWeight: 600,
                       cursor: "pointer",
                       display: "flex",
                       alignItems: "center",
-                      gap: "4px",
-                      fontSize: "12px",
+                      gap: "6px",
+                      transition: "all 0.15s ease",
                     }}
                   >
-                    <Bookmark size={13} fill={isSaved ? "var(--accent-amber)" : "none"} />
+                    <Bookmark size={14} fill={isSaved ? "var(--accent-amber)" : "none"} />
                     <span>{isSaved ? "Saved" : "Save"}</span>
                   </button>
 
-                  <Link href={`/opportunities/${m.job.id}`} style={{ textDecoration: "none" }}>
-                    <Button variant="primary" size="sm" icon={<ArrowRight size={13} />} iconPosition="right">
+                  <Link href={`/opportunities/${m.job.id}`} prefetch={true} style={{ textDecoration: "none" }}>
+                    <Button variant="primary" size="md" icon={<ArrowRight size={14} />} iconPosition="right">
                       View Opportunity
                     </Button>
                   </Link>
                 </div>
               </div>
-            </Card>
+            </div>
           );
         })}
       </div>
