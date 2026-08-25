@@ -1,0 +1,26 @@
+{
+  "name": "jobpilot-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "JobPilot - AI-Powered Career Operating System",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm --workspace=apps/web run dev",
+    "build:web": "npm --workspace=apps/web run build",
+    "lint:web": "npm --workspace=apps/web run lint",
+    "test:web": "npm --workspace=apps/web run test"
+  },
+  "keywords": [
+    "jobpilot",
+    "career",
+    "ai",
+    "fastapi",
+    "nextjs",
+    "pgvector"
+  ],
+  "author": "JobPilot Core Team",
+  "license": "Apache-2.0"
+}
