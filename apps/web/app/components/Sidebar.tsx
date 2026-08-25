@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Compass,
+  LayoutDashboard,
   UserCheck,
   Target,
   Sparkles,
@@ -25,55 +25,57 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    name: "Operating Loop",
+    name: "Dashboard",
     href: "/",
-    icon: Compass,
+    icon: LayoutDashboard,
   },
   {
-    name: "Identity & Provenance",
+    name: "Identity & Skills",
     href: "/know",
     icon: UserCheck,
     tag: "Verified",
     stageNumber: "1",
   },
   {
-    name: "Opportunity Radar",
+    name: "Job Matching",
     href: "/match",
     icon: Target,
-    tag: "94% fit",
+    tag: "94% Fit",
     stageNumber: "2",
   },
   {
-    name: "Gap Diagnostics",
+    name: "Skill Gaps",
     href: "/gap",
     icon: Sparkles,
-    tag: "1 critical",
+    tag: "1 Critical",
     stageNumber: "3",
   },
   {
-    name: "Learning Pathways",
+    name: "Learning Paths",
     href: "/improve",
     icon: BookOpen,
+    tag: "Active",
     stageNumber: "4",
   },
   {
-    name: "Skill Verification",
+    name: "Skill Assessments",
     href: "/prove",
     icon: Award,
     tag: "+1.8",
     stageNumber: "5",
   },
   {
-    name: "Application Pipeline",
+    name: "Applications & Policy",
     href: "/apply",
     icon: Send,
-    tag: "2 active",
+    tag: "2 Active",
     stageNumber: "6",
   },
   {
-    name: "Conversion Funnel",
+    name: "Funnel & Analytics",
     href: "/outcome",
     icon: TrendingUp,
+    tag: "1 Offer",
     stageNumber: "7",
   },
 ];
@@ -83,8 +85,17 @@ export function Sidebar() {
 
   return (
     <aside className="sidebar">
-      {/* Brand Header */}
-      <div style={{ padding: "18px 18px", borderBottom: "1px solid var(--border-subtle)" }}>
+      {/* Brand Header — Exact 60px height matching topbar */}
+      <div
+        style={{
+          height: "60px",
+          padding: "0 18px",
+          borderBottom: "1px solid var(--border-subtle)",
+          display: "flex",
+          alignItems: "center",
+          boxSizing: "border-box",
+        }}
+      >
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
           <div
             style={{
@@ -107,11 +118,11 @@ export function Sidebar() {
             />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: "15px", letterSpacing: "-0.02em", display: "flex", alignItems: "center", gap: "1px" }}>
+            <div style={{ fontWeight: 700, fontSize: "15px", letterSpacing: "-0.02em", display: "flex", alignItems: "center", gap: "1px", lineHeight: 1.2 }}>
               <span style={{ color: "var(--text-main)" }}>Job</span>
               <span style={{ color: "var(--accent-primary)" }}>Pilot</span>
             </div>
-            <div style={{ fontSize: "10.5px", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
+            <div style={{ fontSize: "10px", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
               Career OS
             </div>
           </div>
@@ -122,12 +133,12 @@ export function Sidebar() {
       <div style={{ padding: "12px 10px", flex: 1, overflowY: "auto" }}>
         <div
           style={{
-            fontSize: "11px",
+            fontSize: "10.5px",
             fontWeight: 600,
             textTransform: "uppercase",
             letterSpacing: "0.06em",
             color: "var(--text-dim)",
-            padding: "6px 10px 10px",
+            padding: "4px 10px 8px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
