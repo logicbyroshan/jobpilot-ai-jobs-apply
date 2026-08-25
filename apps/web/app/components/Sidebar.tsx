@@ -88,24 +88,32 @@ export function Sidebar() {
     <aside className="sidebar">
       {/* Brand Header */}
       <div style={{ padding: "24px 20px 20px", borderBottom: "1px solid var(--border-subtle)" }}>
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
           <div
             style={{
-              width: "36px",
-              height: "36px",
+              width: "40px",
+              height: "40px",
               borderRadius: "10px",
-              background: "linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)",
+              background: "rgba(255, 255, 255, 0.04)",
+              border: "1px solid var(--border-subtle)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 0 16px rgba(99, 102, 241, 0.4)",
+              padding: "5px",
+              boxShadow: "0 0 16px rgba(229, 30, 37, 0.2)",
+              flexShrink: 0,
             }}
           >
-            <Compass size={22} color="#ffffff" />
+            <img
+              src="/logo-dark.png"
+              alt="JobPilot Logo"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
           </div>
           <div>
-            <div style={{ fontWeight: 800, fontSize: "17px", letterSpacing: "-0.03em" }}>
-              Job<span style={{ color: "#818cf8" }}>Pilot</span>
+            <div style={{ fontWeight: 800, fontSize: "17px", letterSpacing: "-0.03em", display: "flex", alignItems: "center", gap: "1px" }}>
+              <span style={{ color: "var(--text-main)" }}>Job</span>
+              <span style={{ color: "#ef4444" }}>Pilot</span>
             </div>
             <div style={{ fontSize: "11px", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
               Career OS v1.0

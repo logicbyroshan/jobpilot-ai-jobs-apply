@@ -111,17 +111,21 @@ export default function LoginPage() {
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              width: "48px",
-              height: "48px",
-              borderRadius: "12px",
-              background: "linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))",
-              color: "white",
-              fontSize: "24px",
+              width: "72px",
+              height: "72px",
+              borderRadius: "18px",
+              background: "rgba(255, 255, 255, 0.05)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              padding: "10px",
               marginBottom: "16px",
-              boxShadow: "0 4px 12px rgba(99, 102, 241, 0.3)",
+              boxShadow: "0 8px 28px rgba(229, 30, 37, 0.25)",
             }}
           >
-            🧭
+            <img
+              src="/logo-dark.png"
+              alt="JobPilot Logo"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
           </div>
           <h1 style={{ fontSize: "22px", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
             Welcome to JobPilot

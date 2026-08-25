@@ -101,17 +101,21 @@ export default function RegisterPage() {
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              width: "48px",
-              height: "48px",
-              borderRadius: "12px",
-              background: "linear-gradient(135deg, var(--accent-secondary), var(--accent-primary))",
-              color: "white",
-              fontSize: "24px",
+              width: "72px",
+              height: "72px",
+              borderRadius: "18px",
+              background: "rgba(255, 255, 255, 0.05)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              padding: "10px",
               marginBottom: "16px",
-              boxShadow: "0 4px 12px rgba(168, 85, 247, 0.3)",
+              boxShadow: "0 8px 28px rgba(229, 30, 37, 0.25)",
             }}
           >
-            🚀
+            <img
+              src="/logo-dark.png"
+              alt="JobPilot Logo"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
           </div>
           <h1 style={{ fontSize: "22px", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
             Create your JobPilot Account

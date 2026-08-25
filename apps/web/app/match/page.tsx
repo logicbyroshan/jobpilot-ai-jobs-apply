@@ -304,7 +304,7 @@ export default function MatchOpportunitiesPage() {
                 Key Responsibilities
               </div>
               <ul style={{ paddingLeft: "18px", fontSize: "13px", color: "var(--text-muted)", display: "flex", flexDirection: "column", gap: "4px" }}>
-                {selectedMatch.job.responsibilities_json.map((r, i) => (
+                {(selectedMatch.job.responsibilities_json || []).map((r, i) => (
                   <li key={i}>{r}</li>
                 ))}
               </ul>

@@ -224,7 +224,7 @@ export default function DashboardOverviewPage() {
               Closed-Loop Career Engine
             </div>
             <h2 style={{ fontSize: "20px", fontWeight: 700 }}>
-              The 8-Stage Autonomous Career Loop
+              The Closed-Loop Autonomous Career Engine
             </h2>
           </div>
           <div style={{ fontSize: "12.5px", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "6px" }}>

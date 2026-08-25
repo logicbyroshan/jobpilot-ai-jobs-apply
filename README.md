@@ -1,6 +1,8 @@
 <div align="center">
 
-# 🧭 JobPilot
+<img src="apps/web/public/logo-dark.png" alt="JobPilot Logo" width="200" />
+
+# JobPilot
 
 ### The AI-Powered Career Operating System
 
