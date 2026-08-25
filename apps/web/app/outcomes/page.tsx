@@ -43,24 +43,24 @@ export default function OutcomesPage() {
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
             <Badge variant="cyan">Stage 7</Badge>
-            <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Strategic Feedback & Funnel Analytics</span>
+            <span style={{ fontSize: "13px", color: "var(--text-sub)" }}>Strategic Feedback & Funnel Analytics</span>
           </div>
-          <h1 style={{ fontSize: "22px", fontWeight: 700 }}>
+          <h1 style={{ fontSize: "24px", fontWeight: 800, letterSpacing: "-0.025em" }}>
             What&apos;s Happening With Your Career?
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "13px", marginTop: "2px" }}>
+          <p style={{ color: "var(--text-sub)", fontSize: "14px", marginTop: "4px", lineHeight: 1.55 }}>
             End-to-end conversion diagnostics feeding real interview outcomes back into your skill gap priorities.
           </p>
         </div>
 
-        <Link href="/gaps" style={{ textDecoration: "none" }}>
-          <Button variant="primary" size="sm" icon={<Sparkles size={13} />}>
+        <Link href="/gaps" prefetch={true} style={{ textDecoration: "none" }}>
+          <Button variant="primary" size="sm" icon={<Sparkles size={14} />}>
             Address Diagnostic Bottleneck (Stage 3)
           </Button>
         </Link>

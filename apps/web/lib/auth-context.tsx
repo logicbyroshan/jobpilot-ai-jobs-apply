@@ -25,8 +25,8 @@ interface AuthContextType {
     full_name?: string;
     avatar_url?: string;
   }) => Promise<AuthResponse>;
-  loginWithGitHub: () => Promise<AuthResponse>;
-  loginWithLinkedIn: () => Promise<AuthResponse>;
+  loginWithGitHub: (code?: string) => Promise<AuthResponse>;
+  loginWithLinkedIn: (code?: string) => Promise<AuthResponse>;
   logout: () => void;
 }
 

@@ -215,24 +215,25 @@ export function Sidebar() {
               <Link
                 key={item.name}
                 href={item.href}
+                prefetch={true}
                 style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  padding: "7px 10px",
+                  padding: "8px 12px",
                   borderRadius: "var(--radius-sm)",
-                  fontSize: "13px",
+                  fontSize: "13.5px",
                   fontWeight: isActive ? 600 : 500,
-                  color: isActive ? "#ffffff" : "var(--text-muted)",
+                  color: isActive ? "#ffffff" : "var(--text-sub)",
                   background: isActive ? "var(--bg-elevated)" : "transparent",
                   borderLeft: isActive ? "2px solid var(--accent-primary)" : "2px solid transparent",
-                  transition: "background-color 0.1s ease",
+                  transition: "all 0.15s ease",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <Icon
-                    size={15}
-                    color={isActive ? "var(--accent-primary)" : "var(--text-dim)"}
+                    size={16}
+                    color={isActive ? "var(--accent-primary)" : "var(--text-muted)"}
                     style={{ flexShrink: 0 }}
                   />
                   <span>{item.name}</span>
@@ -240,11 +241,11 @@ export function Sidebar() {
                 {item.tag && (
                   <span
                     style={{
-                      fontSize: "9.5px",
-                      padding: "1px 5px",
+                      fontSize: "11px",
+                      padding: "2px 6px",
                       borderRadius: "3px",
-                      background: isActive ? "rgba(225, 29, 72, 0.18)" : "rgba(255, 255, 255, 0.04)",
-                      color: isActive ? "#fda4af" : "var(--text-dim)",
+                      background: isActive ? "rgba(225, 29, 72, 0.18)" : "rgba(255, 255, 255, 0.05)",
+                      color: isActive ? "#fda4af" : "var(--text-muted)",
                       fontWeight: 600,
                     }}
                   >
@@ -261,18 +262,18 @@ export function Sidebar() {
 
         <div
           style={{
-            fontSize: "10px",
+            fontSize: "11px",
             fontWeight: 700,
             textTransform: "uppercase",
             letterSpacing: "0.06em",
             color: "var(--text-dim)",
-            padding: "4px 10px 6px",
+            padding: "4px 12px 6px",
           }}
         >
           Platform & Data
         </div>
 
-        <nav style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+        <nav style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
           {secondaryItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href);
             const Icon = item.icon;
@@ -281,24 +282,25 @@ export function Sidebar() {
               <Link
                 key={item.name}
                 href={item.href}
+                prefetch={true}
                 style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  padding: "7px 10px",
+                  padding: "8px 12px",
                   borderRadius: "var(--radius-sm)",
-                  fontSize: "13px",
+                  fontSize: "13.5px",
                   fontWeight: isActive ? 600 : 500,
-                  color: isActive ? "#ffffff" : "var(--text-muted)",
+                  color: isActive ? "#ffffff" : "var(--text-sub)",
                   background: isActive ? "var(--bg-elevated)" : "transparent",
                   borderLeft: isActive ? "2px solid var(--accent-primary)" : "2px solid transparent",
-                  transition: "background-color 0.1s ease",
+                  transition: "all 0.15s ease",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <Icon
-                    size={15}
-                    color={isActive ? "var(--accent-primary)" : "var(--text-dim)"}
+                    size={16}
+                    color={isActive ? "var(--accent-primary)" : "var(--text-muted)"}
                     style={{ flexShrink: 0 }}
                   />
                   <span>{item.name}</span>
@@ -306,11 +308,11 @@ export function Sidebar() {
                 {item.tag && (
                   <span
                     style={{
-                      fontSize: "9.5px",
-                      padding: "1px 5px",
+                      fontSize: "11px",
+                      padding: "2px 6px",
                       borderRadius: "3px",
-                      background: "rgba(255, 255, 255, 0.04)",
-                      color: "var(--text-dim)",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      color: "var(--text-muted)",
                       fontWeight: 600,
                     }}
                   >

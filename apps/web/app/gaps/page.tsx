@@ -38,24 +38,24 @@ export default function GapsPage() {
   const mediumGaps = gaps.filter((g) => g.priority !== "CRITICAL" && g.priority !== "HIGH");
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
             <Badge variant="brand">Stage 3</Badge>
-            <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Deficit Impact Diagnostics</span>
+            <span style={{ fontSize: "13px", color: "var(--text-sub)" }}>Deficit Impact Diagnostics</span>
           </div>
-          <h1 style={{ fontSize: "22px", fontWeight: 700 }}>
+          <h1 style={{ fontSize: "24px", fontWeight: 800, letterSpacing: "-0.025em" }}>
             Your Biggest Gaps
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "13px", marginTop: "2px" }}>
+          <p style={{ color: "var(--text-sub)", fontSize: "14px", marginTop: "4px", lineHeight: 1.55 }}>
             Prioritized by career impact and blocked opportunities, not merely by the number of missing keywords.
           </p>
         </div>
 
-        <Link href="/improve" style={{ textDecoration: "none" }}>
-          <Button variant="primary" size="sm" icon={<BookOpen size={13} />}>
+        <Link href="/improve" prefetch={true} style={{ textDecoration: "none" }}>
+          <Button variant="primary" size="sm" icon={<BookOpen size={14} />}>
             Active Learning Blueprint (Stage 4)
           </Button>
         </Link>

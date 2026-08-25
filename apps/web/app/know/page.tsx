@@ -54,30 +54,30 @@ export default function KnowMePage() {
   }, []);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
             <Badge variant="brand">Stage 1</Badge>
-            <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Professional Identity & Evidence Graph</span>
+            <span style={{ fontSize: "13px", color: "var(--text-sub)" }}>Professional Identity & Evidence Graph</span>
           </div>
-          <h1 style={{ fontSize: "22px", fontWeight: 700 }}>
+          <h1 style={{ fontSize: "24px", fontWeight: 800, letterSpacing: "-0.025em" }}>
             Know Me — What JobPilot Knows About You
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "13px", marginTop: "2px" }}>
+          <p style={{ color: "var(--text-sub)", fontSize: "14px", marginTop: "4px", lineHeight: 1.55 }}>
             Continuous ingestion of GitHub commits, verified repositories, work experience, and proof credentials.
           </p>
         </div>
 
         <div style={{ display: "flex", gap: "8px" }}>
-          <Link href="/sources" style={{ textDecoration: "none" }}>
+          <Link href="/sources" prefetch={true} style={{ textDecoration: "none" }}>
             <Button variant="secondary" size="sm">
               Manage Sources (4 Connected)
             </Button>
           </Link>
-          <Link href="/prove" style={{ textDecoration: "none" }}>
-            <Button variant="primary" size="sm" icon={<Award size={13} />}>
+          <Link href="/prove" prefetch={true} style={{ textDecoration: "none" }}>
+            <Button variant="primary" size="sm" icon={<Award size={14} />}>
               Verify Next Skill
             </Button>
           </Link>

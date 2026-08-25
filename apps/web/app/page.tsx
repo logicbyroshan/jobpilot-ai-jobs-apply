@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  Compass,
   UserCheck,
   Target,
   Sparkles,
@@ -19,6 +18,7 @@ import {
   ExternalLink,
   ShieldCheck,
   AlertCircle,
+  ChevronRight,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import {
@@ -86,17 +86,17 @@ export default function OverviewPage() {
   };
 
   const stages = [
-    { num: "1", name: "Know Me", href: "/know", tag: "8 Verified", icon: UserCheck, active: false },
-    { num: "2", name: "Opportunities", href: "/opportunities", tag: "94% Top Fit", icon: Target, active: false },
-    { num: "3", name: "Gaps", href: "/gaps", tag: "1 Blocker", icon: Sparkles, active: false },
-    { num: "4", name: "Improve", href: "/improve", tag: "Today's Focus", icon: BookOpen, active: false },
-    { num: "5", name: "Prove", href: "/prove", tag: "Ready", icon: Award, active: true },
-    { num: "6", name: "Applications", href: "/applications", tag: "2 Active", icon: Send, active: false },
-    { num: "7", name: "Outcomes", href: "/outcomes", tag: "1 Offer", icon: TrendingUp, active: false },
+    { num: "01", name: "Know Me", href: "/know", tag: "8 Verified", icon: UserCheck, active: false },
+    { num: "02", name: "Opportunities", href: "/opportunities", tag: "94% Top Fit", icon: Target, active: false },
+    { num: "03", name: "Gaps", href: "/gaps", tag: "1 Blocker", icon: Sparkles, active: false },
+    { num: "04", name: "Improve", href: "/improve", tag: "Today's Focus", icon: BookOpen, active: false },
+    { num: "05", name: "Prove", href: "/prove", tag: "Ready", icon: Award, active: true },
+    { num: "06", name: "Applications", href: "/applications", tag: "2 Active", icon: Send, active: false },
+    { num: "07", name: "Outcomes", href: "/outcomes", tag: "1 Offer", icon: TrendingUp, active: false },
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
       {/* 1. Header with Career Goal and Readiness */}
       <div
         style={{
@@ -104,24 +104,34 @@ export default function OverviewPage() {
           justifyContent: "space-between",
           alignItems: "flex-start",
           flexWrap: "wrap",
-          gap: "12px",
-          paddingBottom: "4px",
+          gap: "14px",
+          paddingBottom: "2px",
         }}
       >
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
             <Badge variant="brand">Autonomous Career OS</Badge>
             <Badge variant="success" dot>Loop Live</Badge>
           </div>
-          <h1 style={{ fontSize: "22px", fontWeight: 700 }}>
+          <h1 style={{ fontSize: "24px", fontWeight: 800, letterSpacing: "-0.025em" }}>
             Good afternoon, {profile?.full_name || "Alex Chen"}
           </h1>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "2px", fontSize: "13px", color: "var(--text-muted)", flexWrap: "wrap" }}>
-            <span>Targeting: <strong style={{ color: "var(--text-main)" }}>{goal?.target_role || "Staff Distributed Systems Architect"}</strong></span>
-            <span>•</span>
-            <span>Career Readiness: <strong style={{ color: "var(--accent-emerald)" }}>82%</strong></span>
-            <span>•</span>
-            <span>Profile Confidence: <strong style={{ color: "var(--accent-cyan)" }}>94.2%</strong></span>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              marginTop: "6px",
+              fontSize: "14px",
+              color: "var(--text-sub)",
+              flexWrap: "wrap",
+            }}
+          >
+            <span>Targeting: <strong style={{ color: "#ffffff" }}>{goal?.target_role || "Staff Distributed Systems Architect"}</strong></span>
+            <span style={{ color: "var(--border-subtle)" }}>|</span>
+            <span>Career Readiness: <strong style={{ color: "var(--accent-emerald)", fontWeight: 700 }}>82%</strong></span>
+            <span style={{ color: "var(--border-subtle)" }}>|</span>
+            <span>Profile Confidence: <strong style={{ color: "var(--accent-cyan)", fontWeight: 700 }}>94.2%</strong></span>
           </div>
         </div>
 
@@ -133,7 +143,7 @@ export default function OverviewPage() {
             disabled={recalculating}
             icon={
               <RefreshCw
-                size={13}
+                size={14}
                 style={{ animation: recalculating ? "spin 0.8s linear infinite" : "none" }}
               />
             }
@@ -143,139 +153,153 @@ export default function OverviewPage() {
         </div>
       </div>
 
-      {/* 2. PRIMARY "NEXT BEST ACTION" CARD */}
-      <Card
+      {/* 2. PRIMARY "NEXT BEST ACTION" HERO CARD */}
+      <div
+        className="ui-card"
         style={{
-          background: "var(--bg-card)",
-          border: "1px solid rgba(255, 255, 255, 0.12)",
-          padding: "18px 20px",
+          background: "linear-gradient(135deg, #0e1526 0%, #090e1b 100%)",
+          border: "1px solid rgba(255, 255, 255, 0.14)",
+          padding: "20px 24px",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
-          <div style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+          <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
             <div
               style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "5px",
-                background: "var(--bg-elevated)",
-                border: "1px solid var(--border-subtle)",
+                width: "44px",
+                height: "44px",
+                borderRadius: "8px",
+                background: "rgba(168, 85, 247, 0.12)",
+                border: "1px solid rgba(168, 85, 247, 0.3)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
               }}
             >
-              <Award size={18} color="var(--accent-purple)" />
+              <Award size={22} color="var(--accent-purple)" />
             </div>
 
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "3px" }}>
-                <span style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)", letterSpacing: "0.06em" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                <span style={{ fontSize: "11.5px", fontWeight: 700, textTransform: "uppercase", color: "#d8b4fe", letterSpacing: "0.06em" }}>
                   Recommended Next Action
                 </span>
-                <Badge variant="purple" size="sm">⏱ 20 Mins</Badge>
+                <Badge variant="purple" size="sm">⏱ 20 Mins Diagnostic</Badge>
               </div>
 
-              <h2 style={{ fontSize: "16px", fontWeight: 700, marginBottom: "4px" }}>
+              <h2 style={{ fontSize: "17.5px", fontWeight: 700, marginBottom: "8px" }}>
                 Prove Skill: Distributed Consensus & Raft Quorums
               </h2>
 
-              <p style={{ fontSize: "13px", color: "var(--text-muted)", maxWidth: "680px", lineHeight: 1.45 }}>
-                <strong>Why this matters:</strong> Your knowledge improved in Stage 4, but JobPilot needs verified evidence.
-                Passing this assessment verifies your level at <strong>9.8/10</strong> and unlocks <strong>12 higher-signal opportunities</strong>.
-              </p>
+              {/* High-Impact Stat Chips */}
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                <Badge variant="success" size="sm">
+                  🏆 +1.8 Level Boost (9.8/10 Target)
+                </Badge>
+                <Badge variant="cyan" size="sm">
+                  🎯 Unlocks 12 Tier-1 Positions
+                </Badge>
+                <span style={{ fontSize: "13px", color: "var(--text-sub)" }}>
+                  Verified code proof for distributed systems seniority.
+                </span>
+              </div>
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Link href="/prove" style={{ textDecoration: "none" }}>
-              <Button variant="primary" size="md" icon={<ArrowRight size={14} />} iconPosition="right">
-                Start Assessment
-              </Button>
-            </Link>
-          </div>
+          <Link href="/prove" prefetch={true} style={{ textDecoration: "none" }}>
+            <Button variant="primary" size="lg" icon={<ArrowRight size={15} />} iconPosition="right">
+              Start Assessment
+            </Button>
+          </Link>
         </div>
-      </Card>
+      </div>
 
-      {/* 3. CAREER JOURNEY LOOP STEPPER */}
-      <Card style={{ padding: "14px 18px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-          <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "var(--text-dim)", letterSpacing: "0.05em" }}>
-            Your Career Operating Journey
+      {/* 3. CAREER JOURNEY LOOP PIPELINE */}
+      <div className="ui-card" style={{ padding: "16px 20px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+          <div style={{ fontSize: "12px", fontWeight: 700, textTransform: "uppercase", color: "var(--text-dim)", letterSpacing: "0.06em" }}>
+            Career Operating Pipeline
           </div>
-          <span style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
-            Current Stage: <strong style={{ color: "var(--text-main)" }}>Stage 5 (PROVE)</strong>
+          <span style={{ fontSize: "12.5px", color: "var(--text-sub)" }}>
+            Current Stage: <strong style={{ color: "#ffffff" }}>Stage 5 (PROVE)</strong>
           </span>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "6px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "8px" }}>
           {stages.map((stg) => {
             const Icon = stg.icon;
             return (
               <Link
                 key={stg.num}
                 href={stg.href}
+                prefetch={true}
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  padding: "8px",
-                  borderRadius: "4px",
+                  padding: "10px 12px",
+                  borderRadius: "6px",
                   background: stg.active ? "var(--bg-elevated)" : "rgba(255, 255, 255, 0.02)",
-                  border: stg.active ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid var(--border-subtle)",
+                  border: stg.active ? "1px solid rgba(255, 255, 255, 0.22)" : "1px solid var(--border-subtle)",
                   textDecoration: "none",
-                  transition: "all 0.1s ease",
+                  transition: "all 0.15s ease",
+                  boxShadow: stg.active ? "0 2px 8px rgba(0, 0, 0, 0.4)" : "none",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                  <span style={{ fontSize: "10.5px", fontWeight: 700, color: stg.active ? "var(--text-main)" : "var(--text-dim)" }}>
-                    {stg.num}. {stg.name}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                  <span style={{ fontSize: "11px", fontWeight: 700, color: stg.active ? "var(--text-main)" : "var(--text-dim)" }}>
+                    {stg.num}
                   </span>
-                  <Icon size={12} color={stg.active ? "var(--text-main)" : "var(--text-dim)"} />
+                  <Icon size={14} color={stg.active ? "#ffffff" : "var(--text-dim)"} />
                 </div>
-                <div style={{ fontSize: "11px", fontWeight: 600, color: stg.active ? "var(--accent-emerald)" : "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <div style={{ fontSize: "13.5px", fontWeight: 700, color: stg.active ? "#ffffff" : "var(--text-sub)", marginBottom: "2px" }}>
+                  {stg.name}
+                </div>
+                <div style={{ fontSize: "12px", fontWeight: 600, color: stg.active ? "var(--accent-emerald)" : "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {stg.tag}
                 </div>
               </Link>
             );
           })}
         </div>
-      </Card>
+      </div>
 
-      {/* 4. OPPORTUNITIES + GAPS + STRATEGIC AI INSIGHT */}
+      {/* 4. THREE-COLUMN OVERVIEW GRID */}
       <div className="grid-3">
-        {/* Recommended Opportunities */}
-        <Card>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <Target size={15} color="var(--accent-cyan)" />
-              <h3 style={{ fontSize: "14px", fontWeight: 700 }}>Top Recommended Matches</h3>
+        {/* Top Recommended Matches */}
+        <div className="ui-card ui-card-hover">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Target size={17} color="var(--accent-cyan)" />
+              <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Top Recommended Matches</h3>
             </div>
-            <Link href="/opportunities" style={{ fontSize: "11.5px", color: "var(--text-muted)", textDecoration: "none", fontWeight: 600 }}>
+            <Link href="/opportunities" prefetch={true} style={{ fontSize: "12.5px", color: "var(--text-sub)", textDecoration: "none", fontWeight: 600 }}>
               View All ({matches.length}) →
             </Link>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {matches.slice(0, 2).map((m) => (
               <Link
                 key={m.id}
-                href="/opportunities"
+                href={`/opportunities/${m.job.id}`}
+                prefetch={true}
                 style={{
-                  padding: "10px 12px",
-                  borderRadius: "4px",
+                  padding: "12px 14px",
+                  borderRadius: "6px",
                   background: "var(--bg-elevated)",
                   border: "1px solid var(--border-subtle)",
                   textDecoration: "none",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "2px",
+                  gap: "4px",
+                  transition: "all 0.15s ease",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "8px" }}>
                   <div>
-                    <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-main)" }}>{m.job.title}</div>
-                    <div style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
+                    <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-main)" }}>{m.job.title}</div>
+                    <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>
                       {m.job.company.name} • {m.job.location}
                     </div>
                   </div>
@@ -283,110 +307,141 @@ export default function OverviewPage() {
                     {m.overall_score.toFixed(0)}% Match
                   </Badge>
                 </div>
-                <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
-                  <strong>Why:</strong> {m.why_matched || "Strong Go and consensus alignment"}
+
+                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "4px" }}>
+                  <span style={{ fontSize: "11.5px", color: "#38bdf8", background: "rgba(56, 189, 248, 0.08)", padding: "1px 6px", borderRadius: "3px" }}>
+                    ${((m.job.salary_min || 200000) / 1000).toFixed(0)}k - ${((m.job.salary_max || 300000) / 1000).toFixed(0)}k
+                  </span>
+                  <span style={{ fontSize: "11.5px", color: "var(--text-sub)", background: "rgba(255, 255, 255, 0.04)", padding: "1px 6px", borderRadius: "3px" }}>
+                    {m.job.seniority || "Senior"}
+                  </span>
                 </div>
               </Link>
             ))}
           </div>
-        </Card>
+        </div>
 
-        {/* Current Gaps Blockers */}
-        <Card>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <Sparkles size={15} color="var(--accent-amber)" />
-              <h3 style={{ fontSize: "14px", fontWeight: 700 }}>Active Skill Deficits</h3>
+        {/* Active Skill Deficits */}
+        <div className="ui-card ui-card-hover">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Sparkles size={17} color="var(--accent-amber)" />
+              <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Active Skill Deficits</h3>
             </div>
-            <Link href="/gaps" style={{ fontSize: "11.5px", color: "var(--text-muted)", textDecoration: "none", fontWeight: 600 }}>
+            <Link href="/gaps" prefetch={true} style={{ fontSize: "12.5px", color: "var(--text-sub)", textDecoration: "none", fontWeight: 600 }}>
               Close Gaps ({gaps.length}) →
             </Link>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {gaps.slice(0, 2).map((g) => (
               <Link
                 key={g.id}
                 href="/gaps"
+                prefetch={true}
                 style={{
-                  padding: "10px 12px",
-                  borderRadius: "4px",
+                  padding: "12px 14px",
+                  borderRadius: "6px",
                   background: "var(--bg-elevated)",
                   border: "1px solid var(--border-subtle)",
                   textDecoration: "none",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "2px",
+                  gap: "4px",
+                  transition: "all 0.15s ease",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-main)" }}>{g.title}</div>
+                  <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-main)" }}>{g.title}</div>
                   <Badge variant={g.priority === "CRITICAL" ? "brand" : "warning"} size="sm">{g.priority}</Badge>
                 </div>
-                <div style={{ fontSize: "11.5px", color: "var(--text-dim)", marginTop: "2px" }}>
-                  Level {g.current_level} → Target {g.target_level} (Impact: <strong>{g.expected_impact || "Blocks 74% of senior roles"}</strong>)
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2px" }}>
+                  <span style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>
+                    Lv {g.current_level} → Target {g.target_level}
+                  </span>
+                  <span style={{ fontSize: "12px", color: "var(--accent-emerald)", fontWeight: 600 }}>
+                    {g.expected_impact || "+8.5% Fit Gain"}
+                  </span>
                 </div>
               </Link>
             ))}
           </div>
-        </Card>
+        </div>
 
         {/* Strategic Career AI Insight */}
-        <Card style={{ background: "rgba(6, 182, 212, 0.03)", border: "1px solid rgba(6, 182, 212, 0.2)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
-            <Sparkles size={15} color="var(--accent-cyan)" />
-            <h3 style={{ fontSize: "14px", fontWeight: 700 }}>Strategic Career Insight</h3>
+        <div
+          className="ui-card"
+          style={{
+            background: "radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.08) 0%, rgba(13, 19, 34, 1) 75%)",
+            border: "1px solid rgba(6, 182, 212, 0.25)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
+              <Zap size={17} color="var(--accent-cyan)" />
+              <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Strategic AI Insight</h3>
+            </div>
+
+            <p style={{ fontSize: "13.5px", color: "var(--text-sub)", lineHeight: 1.55, marginBottom: "14px" }}>
+              &ldquo;Your profile is strong enough for senior backend roles. Your primary current bottleneck is verifying
+              multi-tenant Kubernetes operators and Triton serving infrastructure.&rdquo;
+            </p>
           </div>
 
-          <p style={{ fontSize: "12.5px", color: "var(--text-muted)", lineHeight: 1.45, marginBottom: "12px" }}>
-            &ldquo;Your profile is strong enough for senior backend roles. Your primary current bottleneck is verifying
-            multi-tenant Kubernetes operators and Triton serving infrastructure.&rdquo;
-          </p>
-
-          <Link href="/improve" style={{ textDecoration: "none" }}>
-            <Button variant="secondary" size="sm" style={{ width: "100%" }}>
+          <Link href="/improve" prefetch={true} style={{ textDecoration: "none" }}>
+            <Button variant="secondary" size="md" style={{ width: "100%" }}>
               Review Learning Blueprint
             </Button>
           </Link>
-        </Card>
+        </div>
       </div>
 
       {/* 5. RECENT ACTIVITY TIMELINE */}
-      <Card>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-          <h3 style={{ fontSize: "14px", fontWeight: 700 }}>Recent Career Operating Activities</h3>
-          <span style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>Synchronized across 4 sources</span>
+      <div className="ui-card">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+          <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Recent Career Operating Activities</h3>
+          <span style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Synchronized across 4 sources</span>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           {activities.map((act) => (
             <div
               key={act.id}
               style={{
-                padding: "8px 12px",
-                borderRadius: "4px",
+                padding: "10px 14px",
+                borderRadius: "6px",
                 background: "var(--bg-elevated)",
                 border: "1px solid var(--border-subtle)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 flexWrap: "wrap",
-                gap: "8px",
+                gap: "10px",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <Badge variant="neutral" size="sm">{act.stage}</Badge>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <Badge
+                  variant={
+                    act.stage === "PROVE" ? "purple" : act.stage === "MATCH" ? "cyan" : "brand"
+                  }
+                  size="sm"
+                >
+                  {act.stage}
+                </Badge>
                 <div>
-                  <span style={{ fontSize: "12.5px", fontWeight: 600, color: "var(--text-main)" }}>{act.title}</span>
-                  <span style={{ fontSize: "12px", color: "var(--text-muted)", marginLeft: "8px" }}>{act.description}</span>
+                  <span style={{ fontSize: "13.5px", fontWeight: 700, color: "var(--text-main)" }}>{act.title}</span>
+                  <span style={{ fontSize: "13px", color: "var(--text-sub)", marginLeft: "10px" }}>{act.description}</span>
                 </div>
               </div>
 
-              <span style={{ fontSize: "11px", color: "var(--text-dim)" }}>{act.timestamp}</span>
+              <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>{act.timestamp}</span>
             </div>
           ))}
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

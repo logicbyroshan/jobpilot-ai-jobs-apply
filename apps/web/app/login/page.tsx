@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -9,7 +9,7 @@ import { Input } from "../components/ui/Input";
 import { Button } from "../components/ui/Button";
 import { Mail, Lock, Zap, Github, Linkedin } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login, loginWithGitHub, loginWithLinkedIn } = useAuth();
@@ -67,7 +67,6 @@ export default function LoginPage() {
     setErrorMessage(null);
 
     try {
-      // Check if live GitHub OAuth is configured
       const authData = await api.getGitHubAuthorizeUrl();
       if (authData?.client_id_configured && authData.authorization_url) {
         window.location.href = authData.authorization_url;
@@ -274,5 +273,13 @@ export default function LoginPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div style={{ color: "var(--text-muted)", fontSize: "14px" }}>Loading authentication...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

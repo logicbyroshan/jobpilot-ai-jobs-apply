@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -9,7 +9,7 @@ import { Input } from "../components/ui/Input";
 import { Button } from "../components/ui/Button";
 import { User, Mail, Lock, Briefcase, Github, Linkedin } from "lucide-react";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { register, loginWithGitHub, loginWithLinkedIn } = useAuth();
@@ -270,5 +270,13 @@ export default function RegisterPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div style={{ color: "var(--text-muted)", fontSize: "14px" }}>Loading registration...</div>}>
+      <RegisterForm />
+    </Suspense>
   );
 }

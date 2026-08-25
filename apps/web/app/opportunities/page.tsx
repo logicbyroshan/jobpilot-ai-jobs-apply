@@ -60,25 +60,25 @@ export default function OpportunitiesPage() {
   });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
             <Badge variant="brand">Stage 2</Badge>
-            <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Calibrated Opportunity Radar</span>
+            <span style={{ fontSize: "13px", color: "var(--text-sub)" }}>Calibrated Opportunity Radar</span>
           </div>
-          <h1 style={{ fontSize: "22px", fontWeight: 700 }}>
+          <h1 style={{ fontSize: "24px", fontWeight: 800, letterSpacing: "-0.025em" }}>
             Opportunities For You
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "13px", marginTop: "2px" }}>
+          <p style={{ color: "var(--text-sub)", fontSize: "14px", marginTop: "4px", lineHeight: 1.55 }}>
             Ranked by how accurately roles align with your verified skills, career direction, and evidence graph.
           </p>
         </div>
 
         <div style={{ display: "flex", gap: "8px" }}>
-          <Link href="/gaps" style={{ textDecoration: "none" }}>
-            <Button variant="secondary" size="sm" icon={<Sparkles size={13} color="var(--accent-amber)" />}>
+          <Link href="/gaps" prefetch={true} style={{ textDecoration: "none" }}>
+            <Button variant="secondary" size="sm" icon={<Sparkles size={14} color="var(--accent-amber)" />}>
               View Blocking Gaps
             </Button>
           </Link>
