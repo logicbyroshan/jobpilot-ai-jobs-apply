@@ -7,6 +7,7 @@ from app.core.database import get_db
 from app.domains.auth.schemas import (
     AuthTokenResponse,
     GoogleAuthRequest,
+    OAuthSignInRequest,
     UserAuthResponse,
     UserLoginRequest,
     UserRegisterRequest,
@@ -77,6 +78,44 @@ async def google_auth(
     db: AsyncSession = Depends(get_db),
 ) -> AuthTokenResponse:
     return await AuthService.google_auth(db, req)
+
+
+@router.post(
+    "/oauth",
+    response_model=AuthTokenResponse,
+    summary="Authenticate or sign up with GitHub/LinkedIn OAuth",
+)
+async def oauth_auth(
+    req: OAuthSignInRequest,
+    db: AsyncSession = Depends(get_db),
+) -> AuthTokenResponse:
+    return await AuthService.oauth_login(db, req)
+
+
+@router.post(
+    "/github",
+    response_model=AuthTokenResponse,
+    summary="Authenticate with GitHub OAuth",
+)
+async def github_auth(
+    req: OAuthSignInRequest,
+    db: AsyncSession = Depends(get_db),
+) -> AuthTokenResponse:
+    req.provider = "github"
+    return await AuthService.oauth_login(db, req)
+
+
+@router.post(
+    "/linkedin",
+    response_model=AuthTokenResponse,
+    summary="Authenticate with LinkedIn OAuth",
+)
+async def linkedin_auth(
+    req: OAuthSignInRequest,
+    db: AsyncSession = Depends(get_db),
+) -> AuthTokenResponse:
+    req.provider = "linkedin"
+    return await AuthService.oauth_login(db, req)
 
 
 @router.get(

@@ -1158,6 +1158,34 @@ export const api = {
     return { authorization_url: "https://github.com/login/oauth/authorize", client_id_configured: false };
   },
 
+  async exchangeGitHubOAuth(code: string): Promise<any> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/auth/github`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider: "github", code }),
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Exchange GitHub code fallback", e);
+    }
+    return null;
+  },
+
+  async exchangeLinkedInOAuth(code: string): Promise<any> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/auth/linkedin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider: "linkedin", code }),
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Exchange LinkedIn code fallback", e);
+    }
+    return null;
+  },
+
   async getEvidence(): Promise<EvidenceItem[]> {
     try {
       const res = await fetchWithTimeout(`${API_BASE_URL}/evidence`, {

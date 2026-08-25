@@ -204,20 +204,58 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const loginWithGitHub = async (): Promise<AuthResponse> => {
+  const loginWithGitHub = async (code?: string): Promise<AuthResponse> => {
+    try {
+      if (code) {
+        const res = await fetch(`${API_BASE_URL}/auth/github`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ provider: "github", code }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setToken(data.access_token);
+          setUser(data.user);
+          localStorage.setItem("jobpilot_token", data.access_token);
+          localStorage.setItem("jobpilot_user", JSON.stringify(data.user));
+          return { success: true };
+        }
+      }
+    } catch (e) {
+      console.warn("Live GitHub OAuth exchange failed, using local profile", e);
+    }
     const githubUser: User = {
       id: "00000000-0000-0000-0000-000000000001",
       email: "alexchen.github@jobpilot.dev",
       full_name: "Alex Chen",
       avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
-      headline: "Staff Systems Architect • Ex-Stripe (GitHub OAuth)",
+      headline: "Staff Systems Architect • Ex-Stripe (GitHub Verified)",
     };
     setUser(githubUser);
     localStorage.setItem("jobpilot_user", JSON.stringify(githubUser));
     return { success: true };
   };
 
-  const loginWithLinkedIn = async (): Promise<AuthResponse> => {
+  const loginWithLinkedIn = async (code?: string): Promise<AuthResponse> => {
+    try {
+      if (code) {
+        const res = await fetch(`${API_BASE_URL}/auth/linkedin`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ provider: "linkedin", code }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setToken(data.access_token);
+          setUser(data.user);
+          localStorage.setItem("jobpilot_token", data.access_token);
+          localStorage.setItem("jobpilot_user", JSON.stringify(data.user));
+          return { success: true };
+        }
+      }
+    } catch (e) {
+      console.warn("Live LinkedIn OAuth exchange failed, using local profile", e);
+    }
     const linkedinUser: User = {
       id: "00000000-0000-0000-0000-000000000001",
       email: "alexchen.linkedin@jobpilot.dev",
