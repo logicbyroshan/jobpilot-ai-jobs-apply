@@ -46,10 +46,9 @@ next-env.d.ts
 
 # Environments & Secrets
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
+*.env
 *.pem
 *.key
 

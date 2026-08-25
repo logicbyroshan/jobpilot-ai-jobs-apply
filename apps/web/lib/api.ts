@@ -1146,6 +1146,18 @@ export const api = {
     return MOCK_GAPS.find((g) => g.id === id) || MOCK_GAPS[0];
   },
 
+  async getGitHubAuthorizeUrl(): Promise<{ authorization_url: string; client_id_configured: boolean }> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/sources/github/authorize`, {
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("GitHub authorize URL fallback", e);
+    }
+    return { authorization_url: "https://github.com/login/oauth/authorize", client_id_configured: false };
+  },
+
   async getEvidence(): Promise<EvidenceItem[]> {
     try {
       const res = await fetchWithTimeout(`${API_BASE_URL}/evidence`, {
