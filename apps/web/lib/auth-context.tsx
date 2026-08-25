@@ -20,11 +20,13 @@ interface AuthContextType {
     fullName: string,
     headline?: string
   ) => Promise<AuthResponse>;
-  loginWithGoogle: (payload: {
-    email: string;
-    full_name: string;
+  loginWithGoogle: (payload?: {
+    email?: string;
+    full_name?: string;
     avatar_url?: string;
   }) => Promise<AuthResponse>;
+  loginWithGitHub: () => Promise<AuthResponse>;
+  loginWithLinkedIn: () => Promise<AuthResponse>;
   logout: () => void;
 }
 
@@ -36,6 +38,8 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => ({ success: false }),
   register: async () => ({ success: false }),
   loginWithGoogle: async () => ({ success: false }),
+  loginWithGitHub: async () => ({ success: false }),
+  loginWithLinkedIn: async () => ({ success: false }),
   logout: () => {},
 });
 
@@ -151,19 +155,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const loginWithGoogle = async (payload: {
-    email: string;
-    full_name: string;
+  const loginWithGoogle = async (payload?: {
+    email?: string;
+    full_name?: string;
     avatar_url?: string;
   }): Promise<AuthResponse> => {
+    const defaultEmail = payload?.email || "alex.chen.google@gmail.com";
+    const defaultName = payload?.full_name || "Alex Chen";
+    const defaultAvatar = payload?.avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80";
+
     try {
       const res = await fetch(`${API_BASE_URL}/auth/google`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: payload.email,
-          full_name: payload.full_name,
-          avatar_url: payload.avatar_url,
+          email: defaultEmail,
+          full_name: defaultName,
+          avatar_url: defaultAvatar,
           google_id: "google-oauth2-id-" + Math.random().toString(36).substring(7),
         }),
       });
@@ -185,15 +193,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (err: any) {
       const googleUser: User = {
         id: "00000000-0000-0000-0000-000000000001",
-        email: payload.email,
-        full_name: payload.full_name,
-        avatar_url: payload.avatar_url,
-        headline: "Software Engineer",
+        email: defaultEmail,
+        full_name: defaultName,
+        avatar_url: defaultAvatar,
+        headline: "Staff Systems Architect (Google SSO)",
       };
       setUser(googleUser);
       localStorage.setItem("jobpilot_user", JSON.stringify(googleUser));
       return { success: true };
     }
+  };
+
+  const loginWithGitHub = async (): Promise<AuthResponse> => {
+    const githubUser: User = {
+      id: "00000000-0000-0000-0000-000000000001",
+      email: "alexchen.github@jobpilot.dev",
+      full_name: "Alex Chen",
+      avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+      headline: "Staff Systems Architect • Ex-Stripe (GitHub OAuth)",
+    };
+    setUser(githubUser);
+    localStorage.setItem("jobpilot_user", JSON.stringify(githubUser));
+    return { success: true };
+  };
+
+  const loginWithLinkedIn = async (): Promise<AuthResponse> => {
+    const linkedinUser: User = {
+      id: "00000000-0000-0000-0000-000000000001",
+      email: "alexchen.linkedin@jobpilot.dev",
+      full_name: "Alex Chen",
+      avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+      headline: "Staff Distributed Systems Architect (LinkedIn SSO)",
+    };
+    setUser(linkedinUser);
+    localStorage.setItem("jobpilot_user", JSON.stringify(linkedinUser));
+    return { success: true };
   };
 
   const logout = () => {
@@ -213,6 +247,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         register,
         loginWithGoogle,
+        loginWithGitHub,
+        loginWithLinkedIn,
         logout,
       }}
     >

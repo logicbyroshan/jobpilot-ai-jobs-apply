@@ -46,7 +46,9 @@ class Settings(BaseSettings):
     DEFAULT_EMBEDDING_MODEL: str = "text-embedding-3-small"
     DEFAULT_COMPLETION_MODEL: str = "gpt-4o-mini"
 
-    # Source Connectors OAuth
+    # Source Connectors & OAuth
+    GOOGLE_CLIENT_ID: Optional[str] = None
+    GOOGLE_CLIENT_SECRET: Optional[str] = None
     GITHUB_CLIENT_ID: Optional[str] = None
     GITHUB_CLIENT_SECRET: Optional[str] = None
     LINKEDIN_CLIENT_ID: Optional[str] = None
