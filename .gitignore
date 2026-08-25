@@ -30,6 +30,9 @@ htmlcov/
 .ruff_cache/
 *.sqlite3
 *.db
+*.db-journal
+*.db-shm
+*.db-wal
 
 # Node / Frontend
 node_modules/

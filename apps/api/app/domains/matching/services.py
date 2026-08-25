@@ -128,6 +128,12 @@ class MatchService:
         )
         jobs = list(jobs_res.scalars().all())
 
+        # Batch fetch all existing matches for this user to prevent N+1 queries
+        existing_matches_res = await session.execute(
+            select(Match).where(Match.user_id == user_id)
+        )
+        existing_matches_map = {m.job_id: m for m in existing_matches_res.scalars().all()}
+
         engine = DeterministicMatchEngine()
         strong_count = 0
         stretch_count = 0
@@ -141,11 +147,7 @@ class MatchService:
             elif category == "STRETCH":
                 stretch_count += 1
 
-            # Check existing
-            match_res = await session.execute(
-                select(Match).where(Match.user_id == user_id, Match.job_id == job.id)
-            )
-            existing = match_res.scalar_one_or_none()
+            existing = existing_matches_map.get(job.id)
             if not existing:
                 match = Match(
                     user_id=user_id,

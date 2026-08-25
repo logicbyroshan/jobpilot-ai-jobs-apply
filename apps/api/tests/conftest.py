@@ -10,12 +10,14 @@ from app.core.database import Base, get_db
 from app.core.seed import seed_database
 from app.main import app
 
-TEST_DB_FILE = "./test_jobpilot.db"
-TEST_DATABASE_URL = f"sqlite+aiosqlite:///{TEST_DB_FILE}"
+from sqlalchemy.pool import StaticPool
+
+TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
 test_engine = create_async_engine(
     TEST_DATABASE_URL,
     connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
     echo=False,
 )
 test_async_session_factory = async_sessionmaker(

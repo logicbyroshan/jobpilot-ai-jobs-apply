@@ -69,6 +69,9 @@ class ProfessionalIdentityResponse(ProfessionalIdentityBase):
     model_config = ConfigDict(from_attributes=True)
     id: str
     user_id: str
+    full_name: Optional[str] = None
+    email: Optional[str] = None
+    avatar_url: Optional[str] = None
     experiences: List[ExperienceResponse] = []
     projects: List[ProjectResponse] = []
     created_at: datetime

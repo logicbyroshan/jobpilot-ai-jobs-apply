@@ -5,12 +5,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core.errors import ResourceNotFoundException
+from app.core.logging import logger
 from app.domains.assessments.models import (
     Assessment,
     AssessmentAttempt,
     AssessmentQuestion,
 )
-from app.domains.assessments.schemas import AssessmentSubmissionRequest
+from app.domains.assessments.schemas import (
+    AssessmentAttemptResponse,
+    AssessmentEvaluationItem,
+    AssessmentSubmissionRequest,
+)
 from app.domains.evidence.models import Evidence
 from app.domains.skills.models import SkillEvidence
 
@@ -55,16 +60,39 @@ class AssessmentService:
         user_id: str,
         assessment_id: str,
         submission: AssessmentSubmissionRequest,
-    ) -> AssessmentAttempt:
+    ) -> AssessmentAttemptResponse:
         assessment = await AssessmentService.get_assessment_by_id(session, assessment_id)
 
-        # Deterministic grading against question answer keys
+        # Strict deterministic grading against question answer keys
         correct_count = 0
         total_questions = len(assessment.questions)
+        evaluations: List[AssessmentEvaluationItem] = []
+
         for q in assessment.questions:
             user_ans = submission.answers.get(q.id, "").strip()
-            if user_ans.lower() == q.correct_answer.strip().lower() or user_ans == "0" or "correct" in user_ans.lower():
+            is_correct = False
+            if user_ans and q.correct_answer:
+                u_clean = user_ans.strip().upper()
+                c_clean = q.correct_answer.strip().upper()
+                if u_clean == c_clean:
+                    is_correct = True
+                elif len(u_clean) == 1 and c_clean.startswith(u_clean):
+                    is_correct = True
+                elif len(c_clean) == 1 and u_clean.startswith(c_clean):
+                    is_correct = True
+
+            if is_correct:
                 correct_count += 1
+
+            evaluations.append(
+                AssessmentEvaluationItem(
+                    question_id=q.id,
+                    user_answer=user_ans,
+                    correct_answer=q.correct_answer,
+                    is_correct=is_correct,
+                    explanation=q.explanation,
+                )
+            )
 
         score = round((correct_count / total_questions) * 100.0, 1) if total_questions else 100.0
         passed = score >= assessment.passing_score
@@ -83,7 +111,7 @@ class AssessmentService:
         session.add(attempt)
         await session.flush()
 
-        # If passed, register verified evidence and upgrade skill evidence!
+        # If passed, register verified evidence, upgrade skill evidence, and trigger closed-loop feedback!
         if passed and assessment.skill_id:
             now = datetime.now(timezone.utc)
             evidence = Evidence(
@@ -125,4 +153,13 @@ class AssessmentService:
 
             await session.flush()
 
-        return attempt
+            # Trigger Stage 5 -> Stage 2 Closed-Loop Re-calculation
+            try:
+                from app.domains.matching.services import MatchService
+                await MatchService.recalculate_matches(session, user_id)
+            except Exception as e:
+                logger.warning(f"Closed-loop match recalculation notice: {e}")
+
+        resp = AssessmentAttemptResponse.model_validate(attempt)
+        resp.evaluations = evaluations
+        return resp

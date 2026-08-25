@@ -78,13 +78,16 @@ class ApplicationService:
         match = match_res.scalar_one_or_none()
         match_score = match.overall_score if match else 88.0
 
+        # Retrieve user policy for governance
+        policy = await ApplicationService.get_policy(session, user_id)
+
         app = Application(
             user_id=user_id,
             job_id=job.id,
             status="DRAFT",
             tailored_role_title=data.tailored_role_title or job.title,
             match_score_at_application=match_score,
-            notes=data.notes,
+            notes=data.notes or f"Governed under {policy.mode} policy (Min match threshold: {policy.min_match_score}%)",
         )
         session.add(app)
         await session.flush()

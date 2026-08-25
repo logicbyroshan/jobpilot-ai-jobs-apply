@@ -35,6 +35,14 @@ class AssessmentSubmissionRequest(BaseModel):
     answers: Dict[str, str]  # question_id -> user answer string
 
 
+class AssessmentEvaluationItem(BaseModel):
+    question_id: str
+    user_answer: str
+    correct_answer: str
+    is_correct: bool
+    explanation: Optional[str] = None
+
+
 class AssessmentAttemptResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: str
@@ -45,5 +53,7 @@ class AssessmentAttemptResponse(BaseModel):
     passed: bool
     skill_proficiency_boost: float
     feedback_summary: Optional[str] = None
+    evaluations: List[AssessmentEvaluationItem] = []
     submitted_at: datetime
     created_at: datetime
+
