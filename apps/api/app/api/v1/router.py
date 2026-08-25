@@ -1,9 +1,10 @@
 from fastapi import APIRouter
 
 from app.api.v1.health import router as health_router
-from app.domains.auth.router import router as auth_router
+from app.api.v1.overview import router as overview_router
 from app.domains.applications.router import router as applications_router
 from app.domains.assessments.router import router as assessments_router
+from app.domains.auth.router import router as auth_router
 from app.domains.career_goals.router import router as career_goals_router
 from app.domains.evidence.router import router as evidence_router
 from app.domains.gaps.router import router as gaps_router
@@ -19,6 +20,7 @@ api_v1_router = APIRouter(prefix="/api/v1")
 
 # Mount all domain routers
 api_v1_router.include_router(health_router)
+api_v1_router.include_router(overview_router)
 api_v1_router.include_router(auth_router, prefix="/auth", tags=["Auth"])
 api_v1_router.include_router(identity_router)
 api_v1_router.include_router(sources_router)

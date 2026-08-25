@@ -1,4 +1,5 @@
 from typing import Any, Dict
+
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
@@ -28,7 +29,7 @@ async def readiness_probe(db: AsyncSession = Depends(get_db)) -> JSONResponse:
     try:
         await db.execute(text("SELECT 1"))
         checks["database"] = {"status": "healthy"}
-    except Exception as exc:
+    except Exception:
         checks["database"] = {"status": "unhealthy", "error": "Database connection failed"}
         is_ready = False
 

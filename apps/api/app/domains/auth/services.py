@@ -1,25 +1,24 @@
 import uuid
-from typing import Optional
+
+from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
-from fastapi import HTTPException, status
 
+from app.domains.applications.models import ApplicationPolicy
 from app.domains.auth.schemas import (
-    UserRegisterRequest,
-    UserLoginRequest,
-    GoogleAuthRequest,
     AuthTokenResponse,
+    GoogleAuthRequest,
     UserAuthResponse,
+    UserLoginRequest,
+    UserRegisterRequest,
 )
 from app.domains.auth.security import (
+    create_access_token,
     hash_password,
     verify_password,
-    create_access_token,
 )
-from app.domains.identity.models import User, ProfessionalIdentity
 from app.domains.career_goals.models import CareerGoal
-from app.domains.applications.models import ApplicationPolicy
+from app.domains.identity.models import ProfessionalIdentity, User
 
 
 class AuthService:

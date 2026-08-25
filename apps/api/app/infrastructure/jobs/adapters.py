@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Optional
+
 from app.infrastructure.jobs.base import DiscoveredJobPayload, JobSourceConnector
 
 

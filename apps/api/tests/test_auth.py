@@ -1,7 +1,12 @@
 import pytest
-from httpx import AsyncClient, ASGITransport
-from app.main import app
-from app.domains.auth.security import hash_password, verify_password, create_access_token, decode_access_token
+from httpx import AsyncClient
+
+from app.domains.auth.security import (
+    create_access_token,
+    decode_access_token,
+    hash_password,
+    verify_password,
+)
 
 
 def test_password_hashing():

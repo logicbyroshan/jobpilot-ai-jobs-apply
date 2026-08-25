@@ -1,9 +1,13 @@
 from datetime import datetime, timezone
-from typing import List, Optional
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, JSON
+from typing import TYPE_CHECKING, List, Optional
+
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base, TimestampMixin, UUIDPrimaryKeyMixin
+
+if TYPE_CHECKING:
+    from app.domains.skills.models import Skill
 
 
 class Assessment(Base, UUIDPrimaryKeyMixin, TimestampMixin):
@@ -25,7 +29,7 @@ class Assessment(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     questions: Mapped[List["AssessmentQuestion"]] = relationship(
         "AssessmentQuestion", back_populates="assessment", cascade="all, delete-orphan", order_by="AssessmentQuestion.order_index", lazy="selectin"
     )
-    skill: Mapped[Optional["app.domains.skills.models.Skill"]] = relationship("app.domains.skills.models.Skill", lazy="selectin")
+    skill: Mapped[Optional["Skill"]] = relationship("app.domains.skills.models.Skill", lazy="selectin")
 
 
 class AssessmentQuestion(Base, UUIDPrimaryKeyMixin, TimestampMixin):

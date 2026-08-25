@@ -1,9 +1,13 @@
 from datetime import datetime, timezone
-from typing import List, Optional
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, JSON
+from typing import TYPE_CHECKING, List, Optional
+
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base, TimestampMixin, UUIDPrimaryKeyMixin
+
+if TYPE_CHECKING:
+    from app.domains.skills.models import Skill
 
 
 class JobSource(Base, UUIDPrimaryKeyMixin, TimestampMixin):
@@ -83,4 +87,4 @@ class JobRequirement(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     normalized_interpretation: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 
     job: Mapped["Job"] = relationship("Job", back_populates="requirements")
-    skill: Mapped[Optional["app.domains.skills.models.Skill"]] = relationship("app.domains.skills.models.Skill", lazy="selectin")
+    skill: Mapped[Optional["Skill"]] = relationship("app.domains.skills.models.Skill", lazy="selectin")

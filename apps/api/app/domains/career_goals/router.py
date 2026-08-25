@@ -1,4 +1,5 @@
 from typing import List
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,10 +12,11 @@ from app.domains.career_goals.schemas import (
 )
 from app.domains.career_goals.services import CareerGoalService
 
-router = APIRouter(prefix="/career-goals", tags=["Career Goals"])
+router = APIRouter(tags=["Career Goals"])
 
 
-@router.get("", response_model=List[CareerGoalResponse])
+@router.get("/career-goals", response_model=List[CareerGoalResponse])
+@router.get("/goals", response_model=List[CareerGoalResponse])
 async def list_career_goals(
     db: AsyncSession = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_user),
@@ -23,7 +25,8 @@ async def list_career_goals(
     return await CareerGoalService.list_user_goals(db, current_user.id)
 
 
-@router.post("", response_model=CareerGoalResponse)
+@router.post("/career-goals", response_model=CareerGoalResponse)
+@router.post("/goals", response_model=CareerGoalResponse)
 async def create_career_goal(
     data: CareerGoalCreate,
     db: AsyncSession = Depends(get_db),
@@ -33,7 +36,8 @@ async def create_career_goal(
     return await CareerGoalService.create_goal(db, current_user.id, data)
 
 
-@router.patch("/{goal_id}", response_model=CareerGoalResponse)
+@router.patch("/career-goals/{goal_id}", response_model=CareerGoalResponse)
+@router.patch("/goals/{goal_id}", response_model=CareerGoalResponse)
 async def update_career_goal(
     goal_id: str,
     data: CareerGoalUpdate,

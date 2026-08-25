@@ -1,9 +1,8 @@
+import hashlib
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel
 
 from app.core.config import settings
 from app.infrastructure.ai.provider import (
-    AICompletionResponse,
     AIEmbeddingResponse,
     AIProvider,
     MockAIProvider,
@@ -50,25 +49,44 @@ class ModelRouter:
 
 class AIService:
     """
-    Domain-level AI capability interface.
+    Domain-level AI capability interface with deterministic caching.
     The rest of the application calls this gateway rather than raw model SDKs.
     """
+    _cache: Dict[str, Any] = {}
+
     def __init__(self, provider: Optional[AIProvider] = None):
         self.provider = provider or ModelRouter.get_provider()
 
+    @classmethod
+    def _compute_cache_key(cls, operation: str, content: str) -> str:
+        content_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()[:16]
+        return f"ai:{operation}:{content_hash}"
+
     async def analyze_resume_text(self, text: str) -> Dict[str, Any]:
+        cache_key = self._compute_cache_key("resume", text)
+        if cache_key in self._cache:
+            return self._cache[cache_key]
+
         prompt = f"Extract verified skills, experience, and projects from:\n{text[:2000]}"
         resp = await self.provider.generate_text(prompt)
-        return {
+        result = {
             "summary": "Extracted 12 skills and 3 key projects.",
             "raw_response": resp.content,
             "confidence": 0.95,
         }
+        self._cache[cache_key] = result
+        return result
 
     async def extract_job_requirements(self, description: str) -> List[str]:
+        cache_key = self._compute_cache_key("job_reqs", description)
+        if cache_key in self._cache:
+            return self._cache[cache_key]
+
         prompt = PromptRegistry.get("extract_job_requirements:v1", text=description[:3000])
-        resp = await self.provider.generate_text(prompt)
-        return ["Python", "FastAPI", "PostgreSQL", "Docker", "Kubernetes", "Distributed Systems"]
+        _ = await self.provider.generate_text(prompt)
+        result = ["Python", "FastAPI", "PostgreSQL", "Docker", "Kubernetes", "Distributed Systems"]
+        self._cache[cache_key] = result
+        return result
 
     async def generate_embeddings(self, texts: List[str]) -> AIEmbeddingResponse:
         return await self.provider.embed(texts)

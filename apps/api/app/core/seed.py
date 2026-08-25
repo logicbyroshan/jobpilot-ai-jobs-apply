@@ -1,22 +1,21 @@
 import asyncio
 from datetime import datetime, timezone
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import async_session_factory, init_db
 from app.core.logging import logger, setup_logging
 from app.core.security import DEMO_USER_ID, SecretVault
-from app.domains.auth.security import hash_password
 from app.domains.applications.models import (
     Application,
-    ApplicationArtifact,
     ApplicationPolicy,
 )
 from app.domains.assessments.models import (
     Assessment,
-    AssessmentAttempt,
     AssessmentQuestion,
 )
+from app.domains.auth.security import hash_password
 from app.domains.career_goals.models import CareerGoal
 from app.domains.evidence.models import Evidence
 from app.domains.gaps.models import Gap

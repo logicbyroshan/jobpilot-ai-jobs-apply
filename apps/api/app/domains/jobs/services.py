@@ -1,4 +1,5 @@
 from typing import List, Optional
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -19,7 +20,7 @@ class JobService:
     ) -> List[Job]:
         query = (
             select(Job)
-            .where(Job.is_active == True)
+            .where(Job.is_active)
             .options(
                 selectinload(Job.company),
                 selectinload(Job.requirements).selectinload(JobRequirement.skill),
@@ -29,7 +30,7 @@ class JobService:
         )
 
         if remote_only is not None and remote_only:
-            query = query.where(Job.is_remote == True)
+            query = query.where(Job.is_remote)
 
         result = await session.execute(query)
         jobs = list(result.scalars().all())

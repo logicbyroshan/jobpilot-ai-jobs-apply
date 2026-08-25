@@ -27,7 +27,7 @@ async def test_complete_career_operating_loop(client: AsyncClient):
     assert reg_resp.status_code == 201
     auth_data = reg_resp.json()
     token = auth_data["access_token"]
-    user_id = auth_data["user"]["id"]
+    assert auth_data["user"]["id"] is not None
     headers = {"Authorization": f"Bearer {token}"}
 
     # 2. KNOW: Retrieve Profile

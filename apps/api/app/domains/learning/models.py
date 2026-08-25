@@ -1,8 +1,12 @@
-from typing import List, Optional
-from sqlalchemy import Boolean, Float, ForeignKey, Integer, String, Text, JSON
+from typing import TYPE_CHECKING, List, Optional
+
+from sqlalchemy import JSON, Boolean, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base, TimestampMixin, UUIDPrimaryKeyMixin
+
+if TYPE_CHECKING:
+    from app.domains.gaps.models import Gap
 
 
 class Resource(Base, UUIDPrimaryKeyMixin, TimestampMixin):
@@ -43,7 +47,7 @@ class LearningPlan(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     items: Mapped[List["LearningPlanItem"]] = relationship(
         "LearningPlanItem", back_populates="learning_plan", cascade="all, delete-orphan", order_by="LearningPlanItem.order_index"
     )
-    gap: Mapped[Optional["app.domains.gaps.models.Gap"]] = relationship("app.domains.gaps.models.Gap")
+    gap: Mapped[Optional["Gap"]] = relationship("app.domains.gaps.models.Gap")
 
 
 class LearningPlanItem(Base, UUIDPrimaryKeyMixin, TimestampMixin):

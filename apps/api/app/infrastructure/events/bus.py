@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, List, Type
+from typing import Any, Callable, Dict, List
+
 from pydantic import BaseModel, Field
 
 from app.core.logging import logger

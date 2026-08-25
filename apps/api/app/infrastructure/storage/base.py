@@ -1,6 +1,6 @@
-import os
 from pathlib import Path
-from typing import Optional, Protocol
+from typing import Protocol
+
 from app.core.config import settings
 
 

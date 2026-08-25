@@ -1,9 +1,13 @@
 from datetime import datetime, timezone
-from typing import Optional
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, JSON
+from typing import TYPE_CHECKING, Optional
+
+from sqlalchemy import JSON, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base, TimestampMixin, UUIDPrimaryKeyMixin
+
+if TYPE_CHECKING:
+    from app.domains.applications.models import Application
 
 
 class ApplicationEvent(Base, UUIDPrimaryKeyMixin, TimestampMixin):
@@ -24,7 +28,7 @@ class ApplicationEvent(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
 
-    application: Mapped["app.domains.applications.models.Application"] = relationship(
+    application: Mapped["Application"] = relationship(
         "app.domains.applications.models.Application", back_populates="events"
     )
 

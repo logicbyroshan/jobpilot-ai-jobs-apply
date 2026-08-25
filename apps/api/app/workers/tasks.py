@@ -1,5 +1,6 @@
 import time
-from typing import Any, Dict, List
+from typing import Any, Dict
+
 from app.core.logging import logger
 from app.workers.celery_app import celery_app
 

@@ -1,14 +1,15 @@
 from typing import Optional
+
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.domains.auth.schemas import (
-    UserRegisterRequest,
-    UserLoginRequest,
-    GoogleAuthRequest,
     AuthTokenResponse,
+    GoogleAuthRequest,
     UserAuthResponse,
+    UserLoginRequest,
+    UserRegisterRequest,
 )
 from app.domains.auth.security import decode_access_token
 from app.domains.auth.services import AuthService

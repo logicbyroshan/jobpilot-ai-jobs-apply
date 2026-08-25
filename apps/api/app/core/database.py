@@ -1,7 +1,8 @@
 import uuid
 from datetime import datetime, timezone
 from typing import AsyncGenerator
-from sqlalchemy import DateTime, String, func
+
+from sqlalchemy import DateTime, String
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,

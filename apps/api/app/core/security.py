@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import os
 from typing import Optional
+
 from fastapi import Header
 from pydantic import BaseModel
 
@@ -119,3 +120,12 @@ async def get_current_user(
         return DEMO_USER
 
     raise UnauthorizedException("Authentication credentials required")
+
+
+async def get_current_user_id(
+    authorization: Optional[str] = Header(None),
+    x_user_id: Optional[str] = Header(None),
+) -> str:
+    """Dependency returning string user_id of the authenticated user."""
+    user = await get_current_user(authorization=authorization, x_user_id=x_user_id)
+    return user.id

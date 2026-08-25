@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from typing import List, Optional, Protocol, Tuple
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -123,7 +124,7 @@ class MatchService:
         # Get active jobs
         jobs_res = await session.execute(
             select(Job)
-            .where(Job.is_active == True)
+            .where(Job.is_active)
             .options(selectinload(Job.requirements).selectinload(JobRequirement.skill))
         )
         jobs = list(jobs_res.scalars().all())

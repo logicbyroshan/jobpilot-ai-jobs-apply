@@ -1,8 +1,13 @@
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
+
 from sqlalchemy import Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base, TimestampMixin, UUIDPrimaryKeyMixin
+
+if TYPE_CHECKING:
+    from app.domains.jobs.models import Job
+    from app.domains.skills.models import Skill
 
 
 class Gap(Base, UUIDPrimaryKeyMixin, TimestampMixin):
@@ -32,5 +37,5 @@ class Gap(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     status: Mapped[str] = mapped_column(String(30), default="ACTIVE", nullable=False)  # ACTIVE, IN_PROGRESS, RESOLVED, DISMISSED
 
     # Relationships
-    skill: Mapped[Optional["app.domains.skills.models.Skill"]] = relationship("app.domains.skills.models.Skill")
-    job: Mapped[Optional["app.domains.jobs.models.Job"]] = relationship("app.domains.jobs.models.Job")
+    skill: Mapped[Optional["Skill"]] = relationship("app.domains.skills.models.Skill")
+    job: Mapped[Optional["Job"]] = relationship("app.domains.jobs.models.Job")

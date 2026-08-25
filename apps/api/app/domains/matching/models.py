@@ -1,9 +1,13 @@
 from datetime import datetime, timezone
-from typing import List, Optional
-from sqlalchemy import DateTime, Float, ForeignKey, String, Text, JSON, UniqueConstraint
+from typing import TYPE_CHECKING, List, Optional
+
+from sqlalchemy import JSON, DateTime, Float, ForeignKey, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base, TimestampMixin, UUIDPrimaryKeyMixin
+
+if TYPE_CHECKING:
+    from app.domains.jobs.models import Job
 
 
 class Match(Base, UUIDPrimaryKeyMixin, TimestampMixin):
@@ -38,4 +42,4 @@ class Match(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     )
 
     # Relationships
-    job: Mapped["app.domains.jobs.models.Job"] = relationship("app.domains.jobs.models.Job")
+    job: Mapped["Job"] = relationship("app.domains.jobs.models.Job")

@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
 from typing import Optional
-from sqlalchemy import DateTime, Float, ForeignKey, String, Text, JSON
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from sqlalchemy import JSON, DateTime, Float, ForeignKey, String, Text
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base, TimestampMixin, UUIDPrimaryKeyMixin
 

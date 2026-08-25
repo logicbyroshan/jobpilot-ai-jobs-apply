@@ -1,4 +1,5 @@
 from typing import Any, Dict
+
 from app.infrastructure.sources.base import SourceConnector, SourceSyncResult, SyncedEvidenceItem
 
 

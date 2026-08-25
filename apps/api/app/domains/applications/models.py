@@ -1,9 +1,14 @@
 from datetime import datetime
-from typing import List, Optional
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, JSON
+from typing import TYPE_CHECKING, List, Optional
+
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base, TimestampMixin, UUIDPrimaryKeyMixin
+
+if TYPE_CHECKING:
+    from app.domains.jobs.models import Job
+    from app.domains.outcomes.models import ApplicationEvent
 
 
 class Application(Base, UUIDPrimaryKeyMixin, TimestampMixin):
@@ -24,11 +29,11 @@ class Application(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     # Relationships
-    job: Mapped["app.domains.jobs.models.Job"] = relationship("app.domains.jobs.models.Job")
+    job: Mapped["Job"] = relationship("app.domains.jobs.models.Job")
     artifacts: Mapped[List["ApplicationArtifact"]] = relationship(
         "ApplicationArtifact", back_populates="application", cascade="all, delete-orphan"
     )
-    events: Mapped[List["app.domains.outcomes.models.ApplicationEvent"]] = relationship(
+    events: Mapped[List["ApplicationEvent"]] = relationship(
         "app.domains.outcomes.models.ApplicationEvent", back_populates="application", cascade="all, delete-orphan"
     )
 

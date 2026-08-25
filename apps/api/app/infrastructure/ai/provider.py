@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Optional, Protocol
+
 from pydantic import BaseModel
 
 
@@ -47,7 +48,7 @@ class MockAIProvider:
         self, prompt: str, system_prompt: Optional[str] = None, **kwargs: Any
     ) -> AICompletionResponse:
         return AICompletionResponse(
-            content=f"[Mock AI Response]: Analyzed request according to JobPilot career heuristics.",
+            content="[Mock AI Response]: Analyzed request according to JobPilot career heuristics.",
             model=self.model_name,
             prompt_tokens=42,
             completion_tokens=18,

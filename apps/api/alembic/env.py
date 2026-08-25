@@ -1,26 +1,15 @@
 import asyncio
 from logging.config import fileConfig
+
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from alembic import context
 
+from alembic import context
 from app.core.config import settings
 from app.core.database import Base
 
 # Import all domain models so Base.metadata knows about them
-from app.domains.identity import models as identity_models
-from app.domains.sources import models as sources_models
-from app.domains.evidence import models as evidence_models
-from app.domains.skills import models as skills_models
-from app.domains.career_goals import models as career_goals_models
-from app.domains.jobs import models as jobs_models
-from app.domains.matching import models as matching_models
-from app.domains.gaps import models as gaps_models
-from app.domains.learning import models as learning_models
-from app.domains.assessments import models as assessments_models
-from app.domains.applications import models as applications_models
-from app.domains.outcomes import models as outcomes_models
 
 config = context.config
 

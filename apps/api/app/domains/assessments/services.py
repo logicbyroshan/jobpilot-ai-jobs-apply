@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from typing import List, Optional
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -9,7 +10,6 @@ from app.core.logging import logger
 from app.domains.assessments.models import (
     Assessment,
     AssessmentAttempt,
-    AssessmentQuestion,
 )
 from app.domains.assessments.schemas import (
     AssessmentAttemptResponse,
