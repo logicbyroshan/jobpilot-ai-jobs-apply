@@ -7,9 +7,14 @@ import { Topbar } from "./Topbar";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAuthRoute = pathname === "/login" || pathname === "/register";
+  const isStandaloneRoute =
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/landing" ||
+    pathname === "/onboarding" ||
+    pathname?.includes("/prove/") && pathname?.endsWith("/take");
 
-  if (isAuthRoute) {
+  if (isStandaloneRoute) {
     return <div className="auth-fullscreen-layout">{children}</div>;
   }
 

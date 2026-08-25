@@ -28,6 +28,23 @@ export interface Project {
   technologies_json: string[];
 }
 
+export interface Education {
+  id: string;
+  institution_name: string;
+  degree: string;
+  field_of_study: string;
+  start_year: number;
+  end_year?: number;
+}
+
+export interface Certification {
+  id: string;
+  name: string;
+  issuer: string;
+  issue_date: string;
+  credential_url?: string;
+}
+
 export interface UserProfile {
   id: string;
   full_name: string;
@@ -38,13 +55,27 @@ export interface UserProfile {
   location?: string;
   years_of_experience: number;
   profile_confidence: number;
+  target_role?: string;
   summary_json?: {
     verified_skills?: number;
     top_domains?: string[];
+    readiness_percentage?: number;
     [key: string]: any;
   };
   experiences: WorkExperience[];
   projects?: Project[];
+  education?: Education[];
+  certifications?: Certification[];
+}
+
+export interface CareerGoal {
+  id?: string;
+  target_role: string;
+  target_seniority?: string;
+  target_locations?: string[];
+  target_salary_min?: number;
+  workplace_preference?: "REMOTE" | "HYBRID" | "ONSITE" | string;
+  created_at?: string;
 }
 
 export interface EvidenceItem {
@@ -62,6 +93,7 @@ export interface SkillEvidenceItem {
   category: string;
   strength: "STRONG" | "MODERATE" | "DEVELOPING" | string;
   proficiency_estimate: number;
+  confidence_rating?: "HIGH" | "MEDIUM" | "LOW" | string;
   verified_at?: string;
   evidence_items: EvidenceItem[];
 }
@@ -95,18 +127,20 @@ export interface Job {
   company: Company;
   required_skills_json?: string[];
   responsibilities_json?: string[];
+  description_markdown?: string;
 }
 
 export interface MatchItem {
   id: string;
+  job: Job;
   overall_score: number;
   technical_fit: number;
   experience_fit: number;
   preference_fit: number;
+  evidence_confidence?: number;
   recommendation_category: string;
-  why_matched: string;
-  explanation?: string;
-  job: Job;
+  explanation: string;
+  why_matched?: string;
   matched_skills_json: string[];
   missing_skills_json: string[];
 }
@@ -122,6 +156,9 @@ export interface GapItem {
   estimated_effort_hours?: number;
   estimated_hours_to_close?: number;
   expected_impact?: string;
+  blocked_opportunities_count?: number;
+  missing_competencies?: string[];
+  strengths_noted?: string[];
 }
 
 export interface LearningItem {
@@ -149,6 +186,7 @@ export interface LearningPlanType {
   target_skill: string;
   target_gap_title?: string;
   estimated_total_hours?: number;
+  target_weeks?: number;
   status: string;
   current_level: number;
   target_level: number;
@@ -165,6 +203,7 @@ export interface ResourceItem {
   provider?: string;
   topic_tag?: string;
   summary_text?: string;
+  recommendation_reason?: string;
   duration_minutes?: number;
   estimated_minutes?: number;
   difficulty?: string;
@@ -192,6 +231,7 @@ export interface AssessmentType {
   time_limit_minutes: number;
   passing_score: number;
   questions: AssessmentQuestion[];
+  unlocked_matches_count?: number;
 }
 
 export interface AssessmentEvaluationItem {
@@ -207,8 +247,10 @@ export interface AssessmentAttemptResult {
   passed: boolean;
   skill_boost_applied: boolean;
   new_proficiency_level?: number;
+  previous_proficiency_level?: number;
   feedback?: string;
   evaluations?: AssessmentEvaluationItem[];
+  unlocked_opportunities_count?: number;
 }
 
 export interface ApplicationArtifact {
@@ -222,13 +264,15 @@ export interface ApplicationArtifact {
 
 export interface ApplicationItem {
   id: string;
-  status: string;
+  status: "RECOMMENDED" | "DRAFT" | "APPLIED" | "INTERVIEW" | "OFFER" | "ARCHIVED" | string;
   created_at: string;
   tailored_role_title?: string;
   match_score_at_application: number;
   notes?: string;
   job: Job;
   artifacts: ApplicationArtifact[];
+  next_action?: string;
+  timeline_events?: { date: string; title: string; note: string }[];
 }
 
 export interface ApplicationPolicyType {
@@ -242,6 +286,9 @@ export interface ApplicationPolicyType {
   require_review_for_senior_roles?: boolean;
   prohibited_keywords?: string[];
   restricted_companies?: string[];
+  target_locations?: string[];
+  salary_floor?: number;
+  is_enabled?: boolean;
 }
 
 export interface FunnelStage {
@@ -250,18 +297,41 @@ export interface FunnelStage {
   conversion_rate_percentage: number;
 }
 
-export interface LifecycleEvent {
-  id: string;
-  event_type: string;
-  notes: string;
-  occurred_at: string;
+export interface BottleneckDiagnostic {
+  primary_bottleneck_stage: string;
+  bottleneck_reason: string;
+  actionable_recommendation: string;
+  impact_score: number;
 }
 
 export interface FunnelAnalytics {
+  total_applications: number;
+  applied: number;
+  interviews: number;
+  offers: number;
   stages: FunnelStage[];
-  primary_bottleneck: string;
-  strategic_recommendation: string;
-  recent_events: LifecycleEvent[];
-  offers?: number;
-  [key: string]: any;
+  primary_bottleneck?: string;
+  strategic_recommendation?: string;
+  bottleneck_summary?: BottleneckDiagnostic;
+  recent_events?: any[];
+}
+
+export interface NotificationItem {
+  id: string;
+  title: string;
+  message: string;
+  timestamp: string;
+  read: boolean;
+  action_url: string;
+  type: "match" | "assessment" | "source" | "application" | "system";
+}
+
+export interface ActivityItem {
+  id: string;
+  title: string;
+  description: string;
+  timestamp: string;
+  icon_type: string;
+  stage: string;
+  action_url?: string;
 }

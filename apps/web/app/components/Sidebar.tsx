@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
+  Compass,
   UserCheck,
   Target,
   Sparkles,
@@ -12,7 +12,14 @@ import {
   Award,
   Send,
   TrendingUp,
+  FolderGit2,
+  Sliders,
+  Shield,
+  Layers,
 } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { api } from "@/lib/api";
+import { UserProfile, CareerGoal } from "@/lib/types";
 import { Badge } from "./ui/Badge";
 
 interface NavItem {
@@ -20,72 +27,115 @@ interface NavItem {
   href: string;
   icon: React.ElementType;
   tag?: string;
-  stageNumber?: string;
+  badgeVariant?: "brand" | "neutral" | "success" | "warning" | "cyan" | "purple";
 }
 
-const navItems: NavItem[] = [
+const lifecycleItems: NavItem[] = [
   {
-    name: "Dashboard",
+    name: "Overview",
     href: "/",
-    icon: LayoutDashboard,
+    icon: Compass,
   },
   {
-    name: "Identity & Skills",
+    name: "Know Me",
     href: "/know",
     icon: UserCheck,
     tag: "Verified",
-    stageNumber: "1",
+    badgeVariant: "brand",
   },
   {
-    name: "Job Matching",
-    href: "/match",
+    name: "Opportunities",
+    href: "/opportunities",
     icon: Target,
-    tag: "94% Fit",
-    stageNumber: "2",
+    tag: "94% Top Fit",
+    badgeVariant: "cyan",
   },
   {
-    name: "Skill Gaps",
-    href: "/gap",
+    name: "Gaps",
+    href: "/gaps",
     icon: Sparkles,
-    tag: "1 Critical",
-    stageNumber: "3",
+    tag: "1 Blocker",
+    badgeVariant: "warning",
   },
   {
-    name: "Learning Paths",
+    name: "Improve",
     href: "/improve",
     icon: BookOpen,
-    tag: "Active",
-    stageNumber: "4",
+    tag: "Today's Task",
+    badgeVariant: "neutral",
   },
   {
-    name: "Skill Assessments",
+    name: "Prove",
     href: "/prove",
     icon: Award,
-    tag: "+1.8",
-    stageNumber: "5",
+    tag: "+1.8 Boost",
+    badgeVariant: "purple",
   },
   {
-    name: "Applications & Policy",
-    href: "/apply",
+    name: "Applications",
+    href: "/applications",
     icon: Send,
     tag: "2 Active",
-    stageNumber: "6",
+    badgeVariant: "brand",
   },
   {
-    name: "Funnel & Analytics",
-    href: "/outcome",
+    name: "Outcomes",
+    href: "/outcomes",
     icon: TrendingUp,
     tag: "1 Offer",
-    stageNumber: "7",
+    badgeVariant: "success",
+  },
+];
+
+const secondaryItems: NavItem[] = [
+  {
+    name: "Sources",
+    href: "/sources",
+    icon: FolderGit2,
+    tag: "4 Connected",
+    badgeVariant: "neutral",
+  },
+  {
+    name: "Automation Settings",
+    href: "/settings/automation",
+    icon: Sliders,
   },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [goal, setGoal] = useState<CareerGoal | null>(null);
+
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const [profData, goalData] = await Promise.all([
+          api.getProfile(),
+          api.getCareerGoal(),
+        ]);
+        setProfile(profData);
+        setGoal(goalData);
+      } catch (err) {
+        console.error("Failed to load user info in sidebar", err);
+      }
+    }
+    fetchUserData();
+  }, []);
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   return (
     <aside className="sidebar">
-      {/* Brand Header — Exact 60px height matching topbar */}
+      {/* Brand Header — 60px height matching topbar */}
       <div
         style={{
           height: "60px",
@@ -99,9 +149,9 @@ export function Sidebar() {
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
           <div
             style={{
-              width: "32px",
-              height: "32px",
-              borderRadius: "8px",
+              width: "30px",
+              height: "30px",
+              borderRadius: "6px",
               background: "rgba(255, 255, 255, 0.04)",
               border: "1px solid var(--border-subtle)",
               display: "flex",
@@ -129,12 +179,12 @@ export function Sidebar() {
         </Link>
       </div>
 
-      {/* Navigation */}
-      <div style={{ padding: "12px 10px", flex: 1, overflowY: "auto" }}>
+      {/* Navigation Links */}
+      <div style={{ padding: "12px 8px", flex: 1, overflowY: "auto" }}>
         <div
           style={{
-            fontSize: "10.5px",
-            fontWeight: 600,
+            fontSize: "10px",
+            fontWeight: 700,
             textTransform: "uppercase",
             letterSpacing: "0.06em",
             color: "var(--text-dim)",
@@ -144,39 +194,44 @@ export function Sidebar() {
             justifyContent: "space-between",
           }}
         >
-          <span>Lifecycle Stages</span>
-          <span style={{ fontSize: "10px", color: "var(--accent-emerald)", display: "flex", alignItems: "center", gap: "4px" }}>
-            <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: "var(--accent-emerald)" }} />
-            Live
+          <span>Career Journey</span>
+          <span style={{ fontSize: "9.5px", color: "var(--accent-emerald)", display: "flex", alignItems: "center", gap: "4px" }}>
+            <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: "var(--accent-emerald)" }} />
+            Active Loop
           </span>
         </div>
 
         <nav style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
+          {lifecycleItems.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href === "/opportunities" && (pathname === "/match" || pathname.startsWith("/opportunities"))) ||
+              (item.href === "/gaps" && (pathname === "/gap" || pathname.startsWith("/gaps"))) ||
+              (item.href === "/applications" && (pathname === "/apply" || pathname.startsWith("/applications"))) ||
+              (item.href === "/outcomes" && (pathname === "/outcome" || pathname.startsWith("/outcomes")));
             const Icon = item.icon;
 
             return (
               <Link
-                key={item.href}
+                key={item.name}
                 href={item.href}
                 style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  padding: "8px 10px",
+                  padding: "7px 10px",
                   borderRadius: "var(--radius-sm)",
                   fontSize: "13px",
                   fontWeight: isActive ? 600 : 500,
                   color: isActive ? "#ffffff" : "var(--text-muted)",
                   background: isActive ? "var(--bg-elevated)" : "transparent",
                   borderLeft: isActive ? "2px solid var(--accent-primary)" : "2px solid transparent",
-                  transition: "all 0.1s ease",
+                  transition: "background-color 0.1s ease",
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
                   <Icon
-                    size={16}
+                    size={15}
                     color={isActive ? "var(--accent-primary)" : "var(--text-dim)"}
                     style={{ flexShrink: 0 }}
                   />
@@ -185,11 +240,77 @@ export function Sidebar() {
                 {item.tag && (
                   <span
                     style={{
-                      fontSize: "10px",
-                      padding: "1px 6px",
-                      borderRadius: "4px",
-                      background: isActive ? "rgba(225, 29, 72, 0.18)" : "rgba(255, 255, 255, 0.05)",
+                      fontSize: "9.5px",
+                      padding: "1px 5px",
+                      borderRadius: "3px",
+                      background: isActive ? "rgba(225, 29, 72, 0.18)" : "rgba(255, 255, 255, 0.04)",
                       color: isActive ? "#fda4af" : "var(--text-dim)",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {item.tag}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Divider */}
+        <div style={{ margin: "14px 10px", height: "1px", background: "var(--border-subtle)" }} />
+
+        <div
+          style={{
+            fontSize: "10px",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            color: "var(--text-dim)",
+            padding: "4px 10px 6px",
+          }}
+        >
+          Platform & Data
+        </div>
+
+        <nav style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+          {secondaryItems.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(item.href);
+            const Icon = item.icon;
+
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "7px 10px",
+                  borderRadius: "var(--radius-sm)",
+                  fontSize: "13px",
+                  fontWeight: isActive ? 600 : 500,
+                  color: isActive ? "#ffffff" : "var(--text-muted)",
+                  background: isActive ? "var(--bg-elevated)" : "transparent",
+                  borderLeft: isActive ? "2px solid var(--accent-primary)" : "2px solid transparent",
+                  transition: "background-color 0.1s ease",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
+                  <Icon
+                    size={15}
+                    color={isActive ? "var(--accent-primary)" : "var(--text-dim)"}
+                    style={{ flexShrink: 0 }}
+                  />
+                  <span>{item.name}</span>
+                </div>
+                {item.tag && (
+                  <span
+                    style={{
+                      fontSize: "9.5px",
+                      padding: "1px 5px",
+                      borderRadius: "3px",
+                      background: "rgba(255, 255, 255, 0.04)",
+                      color: "var(--text-dim)",
                       fontWeight: 600,
                     }}
                   >
@@ -202,25 +323,50 @@ export function Sidebar() {
         </nav>
       </div>
 
-      {/* Mode Footer Badge */}
+      {/* Target Role & Profile Footer Card */}
       <div
         style={{
           padding: "12px 14px",
-          margin: "10px",
-          borderRadius: "var(--radius-sm)",
-          background: "rgba(255, 255, 255, 0.02)",
-          border: "1px solid var(--border-subtle)",
+          borderTop: "1px solid var(--border-subtle)",
+          background: "rgba(255, 255, 255, 0.01)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
-          <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-dim)", textTransform: "uppercase" }}>
-            Autonomy Mode
-          </span>
-          <Badge variant="success" size="sm">Assisted</Badge>
-        </div>
-        <div style={{ fontSize: "11.5px", color: "var(--text-dim)", lineHeight: 1.35 }}>
-          Auto-matching &gt;90%. User confirmation on submit.
-        </div>
+        <Link href="/know" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
+          {profile?.avatar_url ? (
+            <img
+              src={profile.avatar_url}
+              alt={profile.full_name}
+              style={{ width: "32px", height: "32px", borderRadius: "6px", objectFit: "cover", flexShrink: 0 }}
+            />
+          ) : (
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "6px",
+                background: "var(--accent-primary)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "12px",
+                fontWeight: 700,
+                color: "#ffffff",
+                flexShrink: 0,
+              }}
+            >
+              {getInitials(profile?.full_name || user?.full_name || "Alex Chen")}
+            </div>
+          )}
+
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-main)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {profile?.full_name || user?.full_name || "Alex Chen"}
+            </div>
+            <div style={{ fontSize: "11px", color: "var(--accent-cyan)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontWeight: 500 }}>
+              {goal?.target_role || profile?.headline?.split("•")[0]?.trim() || "Senior Backend Engineer"}
+            </div>
+          </div>
+        </Link>
       </div>
     </aside>
   );

@@ -4,12 +4,15 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   BookOpen,
-  ExternalLink,
+  CheckCircle2,
+  Clock,
+  Sparkles,
   Award,
-  BookMarked,
-  Video,
-  FileCode,
-  GraduationCap,
+  ExternalLink,
+  Zap,
+  Play,
+  ArrowRight,
+  Flame,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { LearningPlanType, ResourceItem } from "@/lib/types";
@@ -18,204 +21,270 @@ import { Badge } from "../components/ui/Badge";
 import { Card } from "../components/ui/Card";
 import { Checkbox } from "../components/ui/Checkbox";
 
-export default function ImproveLearningPage() {
+export default function ImprovePage() {
   const [plans, setPlans] = useState<LearningPlanType[]>([]);
   const [resources, setResources] = useState<ResourceItem[]>([]);
-  const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [sprintCompleted, setSprintCompleted] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    async function loadData() {
+    async function loadImproveData() {
       try {
-        const [pl, res] = await Promise.all([
+        const [plansData, resData] = await Promise.all([
           api.getLearningPlans(),
           api.getResources(),
         ]);
-        setPlans(pl);
-        setResources(res);
+        setPlans(plansData);
+        setResources(resData);
       } catch (err) {
-        console.error("Failed to load IMPROVE data:", err);
+        console.error("Failed to load Improve data:", err);
       }
     }
-    loadData();
+    loadImproveData();
   }, []);
 
   const handleToggleItem = async (planId: string, itemId: string) => {
-    setTogglingId(itemId);
     try {
       const updatedPlan = await api.togglePlanItem(planId, itemId);
       setPlans((prev) => prev.map((p) => (p.id === planId ? updatedPlan : p)));
     } catch (err) {
-      console.error("Toggle error:", err);
-    } finally {
-      setTogglingId(null);
+      console.error("Error toggling learning plan item:", err);
     }
   };
 
-  const getItemIcon = (type: string) => {
-    switch (type) {
-      case "READ":
-        return <BookMarked size={14} color="var(--accent-cyan)" />;
-      case "WATCH":
-        return <Video size={14} color="var(--accent-amber)" />;
-      case "BUILD":
-      case "PRACTICE":
-        return <FileCode size={14} color="var(--accent-emerald)" />;
-      case "PROVE":
-        return <Award size={14} color="var(--accent-primary)" />;
-      default:
-        return <GraduationCap size={14} color="var(--text-muted)" />;
-    }
+  const toggleSprintStep = (stepKey: string) => {
+    setSprintCompleted((prev) => ({ ...prev, [stepKey]: !prev[stepKey] }));
   };
+
+  const currentPlan = plans[0];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-            <Badge variant="success">Stage 4</Badge>
-            <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Curated Learning Pathways</span>
+            <Badge variant="brand">Stage 4</Badge>
+            <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Personalized Action Blueprints</span>
           </div>
-          <h1 style={{ fontSize: "24px", fontWeight: 700 }}>
-            IMPROVE — High-Signal Skill Acquisition
+          <h1 style={{ fontSize: "22px", fontWeight: 700 }}>
+            Improve — Practical Pathway Execution
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "13.5px", marginTop: "2px" }}>
-            Personalized, gap-targeted plans linking engineering resources and hands-on milestones.
+          <p style={{ color: "var(--text-muted)", fontSize: "13px", marginTop: "2px" }}>
+            JobPilot turns your diagnostic gaps into daily focus tasks, practical labs, and verified evidence projects.
           </p>
         </div>
 
         <Link href="/prove" style={{ textDecoration: "none" }}>
-          <Button variant="primary" size="md" icon={<Award size={14} />}>
-            Proceed to Proving (Stage 5)
+          <Button variant="primary" size="sm" icon={<Award size={13} />}>
+            Verify Skills in Stage 5
           </Button>
         </Link>
       </div>
 
-      {/* Active Learning Plans */}
-      {plans.map((plan) => (
-        <Card key={plan.id}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "14px" }}>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "2px" }}>
-                <h2 style={{ fontSize: "17px", fontWeight: 700 }}>{plan.title}</h2>
-                <Badge variant={plan.status === "COMPLETED" ? "success" : "brand"} size="sm">
-                  {plan.status}
-                </Badge>
-              </div>
-              <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>
-                Targeting: <strong style={{ color: "var(--text-main)" }}>{plan.target_gap_title}</strong>
-              </div>
+      {/* 1. CURRENT MISSION HERO CARD */}
+      <Card
+        style={{
+          background: "linear-gradient(135deg, rgba(225, 29, 72, 0.06) 0%, rgba(14, 20, 34, 0.95) 100%)",
+          border: "1px solid rgba(225, 29, 72, 0.25)",
+          padding: "20px",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px", marginBottom: "14px" }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+              <Badge variant="brand" size="sm">Active Mission</Badge>
+              <span style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>Target: 3 Weeks • 24 Hours Total</span>
             </div>
 
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "13.5px", fontWeight: 700 }}>
-                {plan.progress_percentage}% Completed
-              </div>
-              <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>
-                Est. {plan.estimated_total_hours} Hours
-              </div>
+            <h2 style={{ fontSize: "18px", fontWeight: 700 }}>
+              {currentPlan?.title || "Master GPU Triton Serving & Distributed Model Architecture"}
+            </h2>
+
+            <div style={{ fontSize: "12.5px", color: "var(--text-muted)", marginTop: "2px" }}>
+              Closing deficit: <strong>Level {currentPlan?.current_level || 4.1} → Target {currentPlan?.target_level || 7.5}</strong> (Unlocks 12 higher-tier positions)
             </div>
           </div>
 
-          {/* Progress Bar */}
-          <div className="progress-bar-bg" style={{ marginBottom: "16px" }}>
-            <div
-              className="progress-bar-fill"
-              style={{
-                width: `${plan.progress_percentage}%`,
-                background: "var(--accent-primary)",
-              }}
-            />
+          <div style={{ textAlign: "right" }}>
+            <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--accent-primary)" }}>
+              {currentPlan?.progress_percentage || 35}%
+            </div>
+            <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Mission Progress</div>
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="progress-bar-bg">
+          <div
+            className="progress-bar-fill"
+            style={{ width: `${currentPlan?.progress_percentage || 35}%`, background: "var(--accent-primary)" }}
+          />
+        </div>
+      </Card>
+
+      {/* 2. TODAY'S FOCUS DAILY SPRINT */}
+      <Card style={{ borderLeft: "3px solid var(--accent-cyan)", padding: "18px 20px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Flame size={16} color="var(--accent-cyan)" />
+            <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Today&apos;s Focus Sprint (35 Mins Total)</h3>
+          </div>
+          <Badge variant="cyan" size="sm">Daily Goal</Badge>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          {/* Step 1 */}
+          <div
+            onClick={() => toggleSprintStep("step1")}
+            style={{
+              padding: "10px 12px",
+              borderRadius: "4px",
+              background: sprintCompleted["step1"] ? "rgba(16, 185, 129, 0.06)" : "var(--bg-elevated)",
+              border: sprintCompleted["step1"] ? "1px solid rgba(16, 185, 129, 0.25)" : "1px solid var(--border-subtle)",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              cursor: "pointer",
+            }}
+          >
+            <Checkbox checked={!!sprintCompleted["step1"]} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: "13px", fontWeight: 600, textDecoration: sprintCompleted["step1"] ? "line-through" : "none" }}>
+                1. Read: Triton Dynamic Batching & Queue Delays (20 mins)
+              </div>
+              <div style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
+                Understand max_queue_delay_microseconds scheduling tradeoffs.
+              </div>
+            </div>
+            <Badge variant="neutral" size="sm">Read</Badge>
           </div>
 
-          {/* Milestones / Checklist */}
+          {/* Step 2 */}
+          <div
+            onClick={() => toggleSprintStep("step2")}
+            style={{
+              padding: "10px 12px",
+              borderRadius: "4px",
+              background: sprintCompleted["step2"] ? "rgba(16, 185, 129, 0.06)" : "var(--bg-elevated)",
+              border: sprintCompleted["step2"] ? "1px solid rgba(16, 185, 129, 0.25)" : "1px solid var(--border-subtle)",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              cursor: "pointer",
+            }}
+          >
+            <Checkbox checked={!!sprintCompleted["step2"]} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: "13px", fontWeight: 600, textDecoration: sprintCompleted["step2"] ? "line-through" : "none" }}>
+                2. Practice: Configure config.pbtxt for Llama-3 (10 mins)
+              </div>
+              <div style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
+                Define tensor inputs, outputs, and multi-instance concurrency limits.
+              </div>
+            </div>
+            <Badge variant="neutral" size="sm">Lab</Badge>
+          </div>
+
+          {/* Step 3 */}
+          <div
+            onClick={() => toggleSprintStep("step3")}
+            style={{
+              padding: "10px 12px",
+              borderRadius: "4px",
+              background: sprintCompleted["step3"] ? "rgba(16, 185, 129, 0.06)" : "var(--bg-elevated)",
+              border: sprintCompleted["step3"] ? "1px solid rgba(16, 185, 129, 0.25)" : "1px solid var(--border-subtle)",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              cursor: "pointer",
+            }}
+          >
+            <Checkbox checked={!!sprintCompleted["step3"]} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: "13px", fontWeight: 600, textDecoration: sprintCompleted["step3"] ? "line-through" : "none" }}>
+                3. Reflect: Document Memory Footprint & GPU Saturation (5 mins)
+              </div>
+              <div style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
+                Summarize throughput gains ready to mention in technical interviews.
+              </div>
+            </div>
+            <Badge variant="neutral" size="sm">Review</Badge>
+          </div>
+        </div>
+      </Card>
+
+      {/* 3. STRUCTURED MILESTONE CHECKLIST & CURATED LITERATURE */}
+      <div className="grid-2">
+        {/* Milestone Checklist */}
+        <Card>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+            <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Milestone Checklist</h3>
+            <span style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
+              {currentPlan?.items.filter((i) => i.is_completed).length || 0} of {currentPlan?.items.length || 4} Completed
+            </span>
+          </div>
+
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {plan.items.map((item, idx) => (
+            {currentPlan?.items.map((item) => (
               <div
                 key={item.id}
+                onClick={() => handleToggleItem(currentPlan.id, item.id)}
                 style={{
-                  padding: "10px 14px",
-                  borderRadius: "var(--radius-sm)",
-                  background: item.is_completed ? "rgba(16, 185, 129, 0.04)" : "rgba(255, 255, 255, 0.02)",
+                  padding: "10px 12px",
+                  borderRadius: "4px",
+                  background: item.is_completed ? "rgba(16, 185, 129, 0.05)" : "var(--bg-elevated)",
                   border: item.is_completed ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid var(--border-subtle)",
                   display: "flex",
-                  justifyContent: "space-between",
                   alignItems: "center",
-                  flexWrap: "wrap",
                   gap: "10px",
+                  cursor: "pointer",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <Checkbox
-                    checked={item.is_completed}
-                    onChange={() => handleToggleItem(plan.id, item.id)}
-                    disabled={togglingId === item.id}
-                  />
-                  <div>
-                    <div style={{ fontSize: "13.5px", fontWeight: 600, color: item.is_completed ? "var(--text-muted)" : "var(--text-main)", textDecoration: item.is_completed ? "line-through" : "none" }}>
-                      {idx + 1}. {item.title}
-                    </div>
-                    {item.description && (
-                      <div style={{ fontSize: "12px", color: "var(--text-dim)" }}>{item.description}</div>
-                    )}
+                <Checkbox checked={item.is_completed} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "13px", fontWeight: 600, color: item.is_completed ? "var(--text-dim)" : "var(--text-main)", textDecoration: item.is_completed ? "line-through" : "none" }}>
+                    {item.title}
                   </div>
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                    {getItemIcon(item.item_type)}
-                    <Badge variant="neutral" size="sm">{item.item_type}</Badge>
+                  <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>
+                    {item.item_type} • Est. {item.duration_minutes || item.estimated_minutes || 45} mins
                   </div>
-                  {item.resource_url && (
-                    <a
-                      href={item.resource_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ color: "var(--accent-primary)", display: "flex", alignItems: "center" }}
-                    >
-                      <ExternalLink size={13} />
-                    </a>
-                  )}
                 </div>
               </div>
             ))}
           </div>
         </Card>
-      ))}
 
-      {/* Curated Literature Library */}
-      <div>
-        <h2 style={{ fontSize: "17px", fontWeight: 700, marginBottom: "12px" }}>
-          Curated Engineering Resources Library
-        </h2>
-        <div className="grid-3">
-          {resources.map((res) => (
-            <Card key={res.id}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
-                <Badge variant="neutral" size="sm">{res.resource_type}</Badge>
-                <span style={{ fontSize: "11px", color: "var(--text-dim)" }}>⏱ {res.estimated_minutes}m</span>
+        {/* Curated Literature & Rationale */}
+        <Card>
+          <h3 style={{ fontSize: "15px", fontWeight: 700, marginBottom: "12px" }}>
+            Recommended Curated Resources
+          </h3>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {resources.map((res) => (
+              <div
+                key={res.id}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: "4px",
+                  background: "var(--bg-elevated)",
+                  border: "1px solid var(--border-subtle)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "4px",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                  <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-main)" }}>{res.title}</span>
+                  <Badge variant="neutral" size="sm">{res.resource_type}</Badge>
+                </div>
+                <div style={{ fontSize: "11.5px", color: "var(--accent-cyan)" }}>
+                  <strong>Why JobPilot recommends this:</strong> {res.recommendation_reason || "Essential foundational documentation for Triton scheduling."}
+                </div>
               </div>
-              <h3 style={{ fontSize: "14px", fontWeight: 600, marginBottom: "4px" }}>{res.title}</h3>
-              <div style={{ fontSize: "12px", color: "var(--text-dim)", marginBottom: "8px" }}>
-                {res.topic_tag} • {res.difficulty}
-              </div>
-              <p style={{ fontSize: "12px", color: "var(--text-muted)", marginBottom: "12px", lineHeight: 1.4 }}>
-                {res.summary_text}
-              </p>
-              {res.external_url && (
-                <a
-                  href={res.external_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ fontSize: "12.5px", color: "var(--accent-primary)", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}
-                >
-                  <span>Open Resource</span>
-                  <ExternalLink size={12} />
-                </a>
-              )}
-            </Card>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Card>
       </div>
     </div>
   );

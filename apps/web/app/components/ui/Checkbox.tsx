@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 
 export interface CheckboxProps {
   checked: boolean;
-  onChange: (checked: boolean) => void;
+  onChange?: ((checked: boolean) => void) | ((e: any) => void);
   label?: React.ReactNode;
   description?: string;
   disabled?: boolean;
@@ -51,7 +51,10 @@ export function Checkbox({
           type="checkbox"
           id={checkboxId}
           checked={checked}
-          onChange={(e) => !disabled && onChange(e.target.checked)}
+          onChange={(e) => {
+            if (disabled || !onChange) return;
+            (onChange as any)(e.target.checked);
+          }}
           disabled={disabled}
           style={{ position: "absolute", opacity: 0, width: 0, height: 0, pointerEvents: "none" }}
         />

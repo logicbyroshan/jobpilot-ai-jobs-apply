@@ -11,6 +11,11 @@ import {
   ApplicationItem,
   ApplicationPolicyType,
   FunnelAnalytics,
+  CareerGoal,
+  EvidenceItem,
+  NotificationItem,
+  ActivityItem,
+  Job,
 } from "./types";
 
 const API_BASE_URL =
@@ -549,6 +554,10 @@ const MOCK_POLICY: ApplicationPolicyType = {
 };
 
 const MOCK_FUNNEL: FunnelAnalytics = {
+  total_applications: 18,
+  applied: 18,
+  interviews: 4,
+  offers: 1,
   stages: [
     { stage: "Identified Radar Roles", count: 48, conversion_rate_percentage: 100 },
     { stage: "High Fit (85%+ Match)", count: 18, conversion_rate_percentage: 37.5 },
@@ -1051,5 +1060,190 @@ export const api = {
     }
     apiCache.set(cacheKey, { data: MOCK_FUNNEL, timestamp: Date.now() });
     return MOCK_FUNNEL;
+  },
+
+  async getCareerGoal(): Promise<CareerGoal> {
+    const cacheKey = "career_goal";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/goals`, {
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          apiCache.set(cacheKey, { data: data[0], timestamp: Date.now() });
+          return data[0];
+        }
+      }
+    } catch (e) {
+      console.warn("Using fallback career goal", e);
+    }
+    const defaultGoal: CareerGoal = {
+      target_role: "Senior Backend Engineer",
+      target_seniority: "Senior",
+      target_locations: ["Remote", "San Francisco, CA", "Bangalore, India"],
+      target_salary_min: 220000,
+      workplace_preference: "REMOTE",
+    };
+    apiCache.set(cacheKey, { data: defaultGoal, timestamp: Date.now() });
+    return defaultGoal;
+  },
+
+  async updateCareerGoal(goal: Partial<CareerGoal>): Promise<CareerGoal> {
+    apiCache.delete("career_goal");
+    apiCache.delete("matches");
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/goals`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+        body: JSON.stringify({
+          target_role: goal.target_role || "Senior Backend Engineer",
+          target_seniority: goal.target_seniority || "Senior",
+          target_locations: goal.target_locations || ["Remote"],
+          target_salary_min: goal.target_salary_min || 200000,
+        }),
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Update career goal fallback", e);
+    }
+    return {
+      target_role: goal.target_role || "Senior Backend Engineer",
+      target_seniority: goal.target_seniority || "Senior",
+      target_locations: goal.target_locations || ["Remote"],
+      target_salary_min: goal.target_salary_min || 200000,
+    };
+  },
+
+  async getJob(id: string): Promise<Job> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/jobs/${id}`, {
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Using fallback job detail", e);
+    }
+    const found = MOCK_MATCHES.find((m) => m.job.id === id);
+    if (found) return found.job;
+    return MOCK_MATCHES[0].job;
+  },
+
+  async getGap(id: string): Promise<GapItem> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/gaps/${id}`, {
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Using fallback gap detail", e);
+    }
+    return MOCK_GAPS.find((g) => g.id === id) || MOCK_GAPS[0];
+  },
+
+  async getEvidence(): Promise<EvidenceItem[]> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/evidence`, {
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Using fallback evidence", e);
+    }
+    return [
+      {
+        id: "ev-1",
+        title: "raft-engine repository",
+        description: "3.4k stars, 100% test coverage on linearizable reads",
+        source_type: "GITHUB_REPO",
+      },
+      {
+        id: "ev-2",
+        title: "Stripe multi-region consensus patent",
+        description: "Zero downtime distributed state machine replication",
+        source_type: "RESUME_CITATION",
+      },
+      {
+        id: "ev-3",
+        title: "Kubernetes CRD Operator",
+        description: "Multi-tenant namespace controller in production",
+        source_type: "GITHUB_COMMIT",
+      },
+      {
+        id: "ev-4",
+        title: "Raft Consensus Assessment",
+        description: "Verified 100% score in Stage 5 diagnostic",
+        source_type: "ASSESSMENT_VERIFIED",
+      },
+    ];
+  },
+
+  getNotifications(): NotificationItem[] {
+    return [
+      {
+        id: "n-1",
+        title: "New High-Signal Opportunity",
+        message: "Anthropic matched at 95% technical alignment.",
+        timestamp: "10m ago",
+        read: false,
+        action_url: "/opportunities",
+        type: "match",
+      },
+      {
+        id: "n-2",
+        title: "Assessment Ready",
+        message: "Prove Kubernetes control planes to unlock +1.8 skill boost.",
+        timestamp: "1h ago",
+        read: false,
+        action_url: "/prove",
+        type: "assessment",
+      },
+      {
+        id: "n-3",
+        title: "GitHub Sync Completed",
+        message: "14 repositories analyzed. 3 verified skills refreshed.",
+        timestamp: "2h ago",
+        read: true,
+        action_url: "/sources",
+        type: "source",
+      },
+    ];
+  },
+
+  getRecentActivities(): ActivityItem[] {
+    return [
+      {
+        id: "act-1",
+        title: "Raft Consensus Proven",
+        description: "Scored 100% on linearizable reads assessment. Verified level updated to 9.8/10.",
+        timestamp: "2 hours ago",
+        icon_type: "award",
+        stage: "PROVE",
+        action_url: "/prove",
+      },
+      {
+        id: "act-2",
+        title: "12 New Matches Unlocked",
+        description: "Skill boost unlocked high-signal distributed systems positions.",
+        timestamp: "3 hours ago",
+        icon_type: "target",
+        stage: "MATCH",
+        action_url: "/opportunities",
+      },
+      {
+        id: "act-3",
+        title: "Application Tailored for Datadog",
+        description: "Evidence-backed resume kit drafted with policy guardrails.",
+        timestamp: "Yesterday",
+        icon_type: "send",
+        stage: "APPLY",
+        action_url: "/applications",
+      },
+    ];
   },
 };

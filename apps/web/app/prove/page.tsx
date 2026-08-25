@@ -1,13 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   Award,
-  ShieldCheck,
-  Zap,
-  RotateCcw,
   CheckCircle2,
-  AlertTriangle,
+  Clock,
+  ArrowRight,
+  ShieldCheck,
+  Target,
+  Sparkles,
+  Zap,
+  HelpCircle,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { AssessmentType, AssessmentAttemptResult } from "@/lib/types";
@@ -15,262 +19,247 @@ import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
 import { Card } from "../components/ui/Card";
 
-export default function ProveAssessmentsPage() {
+export default function ProvePage() {
   const [assessments, setAssessments] = useState<AssessmentType[]>([]);
-  const [selectedAsm, setSelectedAsm] = useState<AssessmentType | null>(null);
+  const [activeAssessment, setActiveAssessment] = useState<AssessmentType | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [evaluating, setEvaluating] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<AssessmentAttemptResult | null>(null);
 
   useEffect(() => {
-    async function loadData() {
+    async function loadAssessments() {
       try {
         const data = await api.getAssessments();
         setAssessments(data);
-        if (data.length > 0) {
-          setSelectedAsm(data[0]);
-        }
       } catch (err) {
         console.error("Failed to load assessments:", err);
       }
     }
-    loadData();
+    loadAssessments();
   }, []);
 
-  const handleSelectAssessment = (asm: AssessmentType) => {
-    setSelectedAsm(asm);
+  const handleStart = (asm: AssessmentType) => {
+    setActiveAssessment(asm);
     setAnswers({});
     setResult(null);
   };
 
-  const handleOptionSelect = (questionId: string, optionKey: string) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: optionKey,
-    }));
+  const handleAnswer = (questionId: string, option: string) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: option }));
   };
 
-  const handleSubmitAssessment = async () => {
-    if (!selectedAsm) return;
-    setEvaluating(true);
+  const handleSubmit = async () => {
+    if (!activeAssessment) return;
+    setSubmitting(true);
     try {
-      const res = await api.submitAssessment(selectedAsm.id, answers);
+      const res = await api.submitAssessment(activeAssessment.id, answers);
       setResult(res);
     } catch (err) {
-      console.error("Evaluation error:", err);
+      console.error("Error submitting assessment:", err);
     } finally {
-      setEvaluating(false);
+      setSubmitting(false);
     }
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-            <Badge variant="purple">Stage 5</Badge>
-            <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Skill Verification & Credentialing</span>
+            <Badge variant="brand">Stage 5</Badge>
+            <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Deterministic Competency Verification</span>
           </div>
-          <h1 style={{ fontSize: "24px", fontWeight: 700 }}>
-            PROVE — Diagnostic Scenario Assessments
+          <h1 style={{ fontSize: "22px", fontWeight: 700 }}>
+            Prove Your Skills
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "13.5px", marginTop: "2px" }}>
-            Pass deterministic technical evaluations to instantly boost verified skill proficiency and recalculate match fit.
+          <p style={{ color: "var(--text-muted)", fontSize: "13px", marginTop: "2px" }}>
+            Learning is not enough. Complete objective diagnostic verifications to unlock higher-tier opportunities.
           </p>
         </div>
+
+        <Link href="/opportunities" style={{ textDecoration: "none" }}>
+          <Button variant="secondary" size="sm" icon={<Target size={13} />}>
+            View Unlocked Matches
+          </Button>
+        </Link>
       </div>
 
-      {/* Assessment Selector Strip */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "10px" }}>
-        {assessments.map((asm) => {
-          const isSelected = selectedAsm?.id === asm.id;
-          return (
-            <Card
-              key={asm.id}
-              interactive
-              onClick={() => handleSelectAssessment(asm)}
-              style={{
-                border: isSelected ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
-                background: isSelected ? "var(--bg-elevated)" : "var(--bg-card)",
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                <Badge variant="cyan" size="sm">{asm.difficulty}</Badge>
-                <span style={{ fontSize: "11px", color: "var(--text-dim)" }}>⏱ {asm.time_limit_minutes} Mins</span>
-              </div>
-              <div style={{ fontSize: "14px", fontWeight: 700, marginBottom: "2px" }}>{asm.title}</div>
-              <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                Passing: {asm.passing_score}% • {asm.questions?.length || 4} Questions
-              </div>
-            </Card>
-          );
-        })}
-      </div>
-
-      {/* Active Assessment Interactive Workspace */}
-      {selectedAsm && (
-        <Card>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "18px" }}>
+      {/* ASSESSMENT RESULT BANNER (CLOSED-LOOP FEEDBACK) */}
+      {result && (
+        <Card
+          style={{
+            background: "linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(14, 20, 34, 0.95) 100%)",
+            border: "1px solid rgba(16, 185, 129, 0.35)",
+            padding: "20px",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
             <div>
-              <h2 style={{ fontSize: "18px", fontWeight: 700 }}>{selectedAsm.title}</h2>
-              <div style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "2px" }}>
-                {selectedAsm.description || "Answer all diagnostic questions to calibrate technical evidence."}
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                <ShieldCheck size={20} color="var(--accent-emerald)" />
+                <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--accent-emerald)", textTransform: "uppercase" }}>
+                  Skill Verified & Calibrated
+                </span>
+                <Badge variant="success" size="sm">Score: {result.score_percentage}%</Badge>
               </div>
+
+              <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "4px" }}>
+                Proficiency Boost: {result.previous_proficiency_level || 8.0} → {result.new_proficiency_level || 9.8}/10
+              </h2>
+
+              <p style={{ fontSize: "13px", color: "var(--text-muted)", maxWidth: "680px", lineHeight: 1.45 }}>
+                {result.feedback || "Your verified evidence graph has been updated with immutable assessment proof."}
+                <strong style={{ color: "var(--accent-cyan)", marginLeft: "4px" }}>
+                  12 additional high-signal opportunities now match your profile.
+                </strong>
+              </p>
             </div>
-            <Badge variant="success">Passing: {selectedAsm.passing_score}%</Badge>
-          </div>
 
-          {/* Results Feedback Alert */}
-          {result && (
-            <div
-              style={{
-                padding: "16px",
-                borderRadius: "var(--radius-sm)",
-                background: result.passed ? "rgba(16, 185, 129, 0.08)" : "rgba(225, 29, 72, 0.08)",
-                border: result.passed ? "1px solid rgba(16, 185, 129, 0.25)" : "1px solid rgba(225, 29, 72, 0.25)",
-                marginBottom: "20px",
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  {result.passed ? (
-                    <ShieldCheck size={24} color="var(--accent-emerald)" />
-                  ) : (
-                    <AlertTriangle size={24} color="var(--accent-primary)" />
-                  )}
-                  <div>
-                    <h3 style={{ fontSize: "16px", fontWeight: 700 }}>
-                      {result.passed ? "Assessment Passed! Verified Skill Boost Calibrated" : "Assessment Complete — Review Feedback Below"}
-                    </h3>
-                    <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>
-                      Score Achieved: <strong style={{ color: "#ffffff" }}>{result.score_percentage}%</strong> (Passing: {selectedAsm.passing_score}%)
-                    </div>
-                  </div>
-                </div>
-
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setResult(null)}
-                  icon={<RotateCcw size={13} />}
-                >
-                  Retake
+            <div style={{ display: "flex", gap: "10px" }}>
+              <Link href="/opportunities" style={{ textDecoration: "none" }}>
+                <Button variant="primary" size="md" icon={<ArrowRight size={14} />} iconPosition="right">
+                  View New Opportunities
                 </Button>
-              </div>
-
-              {result.skill_boost_applied && (
-                <div
-                  style={{
-                    padding: "8px 12px",
-                    background: "rgba(16, 185, 129, 0.15)",
-                    borderRadius: "4px",
-                    fontSize: "12px",
-                    color: "#34d399",
-                    fontWeight: 600,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                  }}
-                >
-                  <Zap size={14} />
-                  <span>
-                    Proficiency boost applied! Verified level updated to {result.new_proficiency_level}/10 across your KNOW identity graph.
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Questions List */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {selectedAsm.questions?.map((q, idx) => {
-              const currentAns = answers[q.id];
-              const evalItem = result?.evaluations?.find((e) => e.question_id === q.id);
-
-              return (
-                <div
-                  key={q.id}
-                  style={{
-                    padding: "16px",
-                    borderRadius: "var(--radius-sm)",
-                    background: "var(--bg-elevated)",
-                    border: "1px solid var(--border-subtle)",
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
-                    <div style={{ fontSize: "14px", fontWeight: 600, lineHeight: 1.4 }}>
-                      <span style={{ color: "var(--accent-primary)", marginRight: "6px" }}>Q{idx + 1}.</span>
-                      {q.prompt}
-                    </div>
-                    <span style={{ fontSize: "11.5px", color: "var(--text-dim)", flexShrink: 0 }}>
-                      {q.points} Points
-                    </span>
-                  </div>
-
-                  {/* Options */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "10px" }}>
-                    {q.options_json?.map((opt) => {
-                      const optionChar = opt.charAt(0);
-                      const isSelected = currentAns === optionChar;
-
-                      return (
-                        <div
-                          key={opt}
-                          onClick={() => !result && handleOptionSelect(q.id, optionChar)}
-                          style={{
-                            padding: "9px 12px",
-                            borderRadius: "var(--radius-sm)",
-                            background: isSelected ? "rgba(225, 29, 72, 0.12)" : "rgba(255, 255, 255, 0.02)",
-                            border: isSelected ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
-                            fontSize: "13px",
-                            cursor: result ? "default" : "pointer",
-                            color: isSelected ? "#ffffff" : "var(--text-muted)",
-                            transition: "all 0.12s ease",
-                          }}
-                        >
-                          {opt}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Explanation after submission */}
-                  {evalItem && evalItem.explanation && (
-                    <div
-                      style={{
-                        padding: "8px 12px",
-                        borderRadius: "4px",
-                        background: evalItem.is_correct ? "rgba(16, 185, 129, 0.06)" : "rgba(225, 29, 72, 0.06)",
-                        border: evalItem.is_correct ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(225, 29, 72, 0.2)",
-                        fontSize: "12px",
-                        color: evalItem.is_correct ? "#34d399" : "#fda4af",
-                      }}
-                    >
-                      <strong>{evalItem.is_correct ? "✓ Correct" : "✗ Incorrect"}:</strong> {evalItem.explanation}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Submit Action */}
-          {!result && (
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
-              <Button
-                variant="primary"
-                size="md"
-                onClick={handleSubmitAssessment}
-                disabled={evaluating || Object.keys(answers).length === 0}
-                loading={evaluating}
-                icon={<Award size={15} />}
-              >
-                Submit for Skill Verification
+              </Link>
+              <Button variant="secondary" size="md" onClick={() => { setActiveAssessment(null); setResult(null); }}>
+                Done
               </Button>
             </div>
-          )}
+          </div>
         </Card>
+      )}
+
+      {/* ACTIVE ASSESSMENT WORKSPACE (FOCUS MODE) */}
+      {activeAssessment && !result ? (
+        <Card style={{ padding: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", paddingBottom: "12px", borderBottom: "1px solid var(--border-subtle)" }}>
+            <div>
+              <Badge variant="purple" size="sm" style={{ marginBottom: "4px" }}>{activeAssessment.skill_name}</Badge>
+              <h2 style={{ fontSize: "18px", fontWeight: 700 }}>{activeAssessment.title}</h2>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "var(--text-dim)" }}>
+              <Clock size={13} />
+              <span>{activeAssessment.time_limit_minutes} Mins Limit</span>
+            </div>
+          </div>
+
+          {/* Questions */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "20px" }}>
+            {activeAssessment.questions.map((q, idx) => (
+              <div
+                key={q.id}
+                style={{
+                  padding: "16px",
+                  borderRadius: "4px",
+                  background: "var(--bg-elevated)",
+                  border: "1px solid var(--border-subtle)",
+                }}
+              >
+                <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--accent-primary)", marginBottom: "4px" }}>
+                  Question {idx + 1} of {activeAssessment.questions.length} ({q.points} pts)
+                </div>
+                <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-main)", marginBottom: "12px" }}>
+                  {q.prompt || q.question_text}
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {q.options_json.map((opt) => {
+                    const isSelected = answers[q.id] === opt;
+                    return (
+                      <div
+                        key={opt}
+                        onClick={() => handleAnswer(q.id, opt)}
+                        style={{
+                          padding: "10px 14px",
+                          borderRadius: "4px",
+                          background: isSelected ? "rgba(225, 29, 72, 0.12)" : "rgba(255, 255, 255, 0.02)",
+                          border: isSelected ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
+                          fontSize: "13px",
+                          color: isSelected ? "#ffffff" : "var(--text-muted)",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
+                          transition: "all 0.1s ease",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "14px",
+                            height: "14px",
+                            borderRadius: "50%",
+                            border: isSelected ? "4px solid var(--accent-primary)" : "1px solid var(--text-dim)",
+                            background: isSelected ? "#ffffff" : "transparent",
+                          }}
+                        />
+                        <span>{opt}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Button variant="secondary" size="sm" onClick={() => setActiveAssessment(null)}>
+              Cancel
+            </Button>
+
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleSubmit}
+              disabled={submitting}
+              icon={<ShieldCheck size={15} />}
+            >
+              {submitting ? "Evaluating Proof..." : "Submit for Verification"}
+            </Button>
+          </div>
+        </Card>
+      ) : (
+        /* AVAILABLE ASSESSMENTS LIST */
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {assessments.map((asm) => (
+            <Card key={asm.id} style={{ padding: "18px 20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "10px" }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "3px" }}>
+                    <h3 style={{ fontSize: "16px", fontWeight: 700 }}>{asm.title}</h3>
+                    <Badge variant="purple" size="sm">{asm.difficulty}</Badge>
+                  </div>
+                  <div style={{ fontSize: "12.5px", color: "var(--accent-cyan)", fontWeight: 600 }}>
+                    Skill: {asm.skill_name} • Est. Time: {asm.time_limit_minutes} Mins • Passing: {asm.passing_score}%
+                  </div>
+                </div>
+
+                <div style={{ textAlign: "right" }}>
+                  <Badge variant="success" size="sm">Unlocks +12 Matches</Badge>
+                </div>
+              </div>
+
+              <p style={{ fontSize: "12.5px", color: "var(--text-muted)", lineHeight: 1.45, marginBottom: "14px" }}>
+                {asm.description}
+              </p>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+                <span style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
+                  {asm.questions.length} Diagnostic questions evaluating knowledge, troubleshooting, and edge cases.
+                </span>
+
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => handleStart(asm)}
+                  icon={<Award size={13} />}
+                >
+                  Prove Skill Now
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
       )}
     </div>
   );
