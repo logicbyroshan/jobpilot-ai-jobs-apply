@@ -92,7 +92,7 @@ export default function OnboardingPage() {
                 width: s === step ? "28px" : "18px",
                 height: "5px",
                 borderRadius: "3px",
-                background: s <= step ? "var(--accent-primary)" : "rgba(255, 255, 255, 0.08)",
+                background: s <= step ? "var(--accent-emerald)" : "rgba(255, 255, 255, 0.08)",
                 transition: "all 0.2s ease",
               }}
             />
@@ -300,7 +300,7 @@ export default function OnboardingPage() {
 
             <div style={{ padding: "14px", borderRadius: "4px", background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-                <div style={{ width: "36px", height: "36px", borderRadius: "4px", background: "var(--accent-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#fff" }}>
+                <div style={{ width: "36px", height: "36px", borderRadius: "4px", background: "var(--bg-card)", border: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "var(--text-main)" }}>
                   AC
                 </div>
                 <div>
@@ -313,7 +313,7 @@ export default function OnboardingPage() {
                 <div>📍 San Francisco, CA (Remote)</div>
                 <div>💼 8+ Years Experience</div>
                 <div>📊 Profile Confidence: <strong style={{ color: "var(--accent-emerald)" }}>94.2%</strong></div>
-                <div>🎯 Readiness Index: <strong style={{ color: "var(--accent-primary)" }}>82%</strong></div>
+                <div>🎯 Readiness Index: <strong style={{ color: "var(--accent-cyan)" }}>82%</strong></div>
               </div>
             </div>
           </div>

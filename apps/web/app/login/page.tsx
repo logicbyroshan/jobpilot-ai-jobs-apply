@@ -211,7 +211,7 @@ export default function LoginPage() {
             onClick={handleDemoLogin}
             disabled={isLoading}
             style={{ width: "100%", fontSize: "12.5px" }}
-            icon={<Zap size={14} color="var(--accent-primary)" />}
+            icon={<Zap size={14} color="var(--accent-amber)" />}
           >
             1-Click Demo Login (Staff Engineer)
           </Button>
@@ -225,7 +225,7 @@ export default function LoginPage() {
         </span>
         <Link
           href="/register"
-          style={{ fontSize: "13px", color: "var(--accent-primary)", fontWeight: 600, textDecoration: "none" }}
+          style={{ fontSize: "13px", color: "var(--text-main)", fontWeight: 600, textDecoration: "underline" }}
         >
           Sign up
         </Link>

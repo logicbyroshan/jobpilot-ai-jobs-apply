@@ -224,7 +224,7 @@ export default function RegisterPage() {
         </span>
         <Link
           href="/login"
-          style={{ fontSize: "13px", color: "var(--accent-primary)", fontWeight: 600, textDecoration: "none" }}
+          style={{ fontSize: "13px", color: "var(--text-main)", fontWeight: 600, textDecoration: "underline" }}
         >
           Sign in
         </Link>

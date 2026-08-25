@@ -146,37 +146,38 @@ export default function OverviewPage() {
       {/* 2. PRIMARY "NEXT BEST ACTION" CARD */}
       <Card
         style={{
-          background: "linear-gradient(135deg, rgba(225, 29, 72, 0.08) 0%, rgba(14, 20, 34, 0.95) 100%)",
-          border: "1px solid rgba(225, 29, 72, 0.3)",
-          padding: "20px",
+          background: "var(--bg-card)",
+          border: "1px solid rgba(255, 255, 255, 0.12)",
+          padding: "18px 20px",
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
           <div style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
             <div
               style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "6px",
-                background: "var(--accent-primary)",
+                width: "36px",
+                height: "36px",
+                borderRadius: "5px",
+                background: "var(--bg-elevated)",
+                border: "1px solid var(--border-subtle)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
               }}
             >
-              <Award size={20} color="#ffffff" />
+              <Award size={18} color="var(--accent-purple)" />
             </div>
 
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "3px" }}>
-                <span style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "var(--accent-primary)", letterSpacing: "0.06em" }}>
+                <span style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)", letterSpacing: "0.06em" }}>
                   Recommended Next Action
                 </span>
                 <Badge variant="purple" size="sm">⏱ 20 Mins</Badge>
               </div>
 
-              <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "4px" }}>
+              <h2 style={{ fontSize: "16px", fontWeight: 700, marginBottom: "4px" }}>
                 Prove Skill: Distributed Consensus & Raft Quorums
               </h2>
 
@@ -200,11 +201,11 @@ export default function OverviewPage() {
       {/* 3. CAREER JOURNEY LOOP STEPPER */}
       <Card style={{ padding: "14px 18px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-          <div style={{ fontSize: "12px", fontWeight: 700, textTransform: "uppercase", color: "var(--text-dim)", letterSpacing: "0.05em" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "var(--text-dim)", letterSpacing: "0.05em" }}>
             Your Career Operating Journey
           </div>
           <span style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
-            Current Stage: <strong style={{ color: "var(--accent-primary)" }}>Stage 5 (PROVE)</strong>
+            Current Stage: <strong style={{ color: "var(--text-main)" }}>Stage 5 (PROVE)</strong>
           </span>
         </div>
 
@@ -220,19 +221,19 @@ export default function OverviewPage() {
                   flexDirection: "column",
                   padding: "8px",
                   borderRadius: "4px",
-                  background: stg.active ? "rgba(225, 29, 72, 0.12)" : "var(--bg-elevated)",
-                  border: stg.active ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
+                  background: stg.active ? "var(--bg-elevated)" : "rgba(255, 255, 255, 0.02)",
+                  border: stg.active ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid var(--border-subtle)",
                   textDecoration: "none",
                   transition: "all 0.1s ease",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                  <span style={{ fontSize: "10.5px", fontWeight: 700, color: stg.active ? "var(--accent-primary)" : "var(--text-dim)" }}>
+                  <span style={{ fontSize: "10.5px", fontWeight: 700, color: stg.active ? "var(--text-main)" : "var(--text-dim)" }}>
                     {stg.num}. {stg.name}
                   </span>
-                  <Icon size={12} color={stg.active ? "var(--accent-primary)" : "var(--text-dim)"} />
+                  <Icon size={12} color={stg.active ? "var(--text-main)" : "var(--text-dim)"} />
                 </div>
-                <div style={{ fontSize: "11px", fontWeight: 600, color: stg.active ? "#ffffff" : "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <div style={{ fontSize: "11px", fontWeight: 600, color: stg.active ? "var(--accent-emerald)" : "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {stg.tag}
                 </div>
               </Link>
@@ -250,7 +251,7 @@ export default function OverviewPage() {
               <Target size={15} color="var(--accent-cyan)" />
               <h3 style={{ fontSize: "14px", fontWeight: 700 }}>Top Recommended Matches</h3>
             </div>
-            <Link href="/opportunities" style={{ fontSize: "11.5px", color: "var(--accent-primary)", textDecoration: "none", fontWeight: 600 }}>
+            <Link href="/opportunities" style={{ fontSize: "11.5px", color: "var(--text-muted)", textDecoration: "none", fontWeight: 600 }}>
               View All ({matches.length}) →
             </Link>
           </div>
@@ -297,7 +298,7 @@ export default function OverviewPage() {
               <Sparkles size={15} color="var(--accent-amber)" />
               <h3 style={{ fontSize: "14px", fontWeight: 700 }}>Active Skill Deficits</h3>
             </div>
-            <Link href="/gaps" style={{ fontSize: "11.5px", color: "var(--accent-primary)", textDecoration: "none", fontWeight: 600 }}>
+            <Link href="/gaps" style={{ fontSize: "11.5px", color: "var(--text-muted)", textDecoration: "none", fontWeight: 600 }}>
               Close Gaps ({gaps.length}) →
             </Link>
           </div>

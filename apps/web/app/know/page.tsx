@@ -88,16 +88,17 @@ export default function KnowMePage() {
       <Card style={{ display: "flex", gap: "16px", alignItems: "center", flexWrap: "wrap", padding: "16px 20px" }}>
         <div
           style={{
-            width: "48px",
-            height: "48px",
+            width: "44px",
+            height: "44px",
             borderRadius: "6px",
-            background: "var(--accent-primary)",
+            background: "var(--bg-elevated)",
+            border: "1px solid var(--border-subtle)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "18px",
-            fontWeight: 800,
-            color: "#ffffff",
+            fontSize: "16px",
+            fontWeight: 700,
+            color: "var(--text-main)",
             flexShrink: 0,
           }}
         >
@@ -173,7 +174,7 @@ export default function KnowMePage() {
                   interactive
                   onClick={() => setSelectedSkill(skill)}
                   style={{
-                    border: isSelected ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
+                    border: isSelected ? "1px solid rgba(255, 255, 255, 0.25)" : "1px solid var(--border-subtle)",
                     background: isSelected ? "var(--bg-elevated)" : "var(--bg-card)",
                     padding: "14px 16px",
                   }}
@@ -198,7 +199,7 @@ export default function KnowMePage() {
                       className="progress-bar-fill"
                       style={{
                         width: `${skill.proficiency_estimate * 10}%`,
-                        background: "var(--accent-primary)",
+                        background: "var(--accent-emerald)",
                       }}
                     />
                   </div>

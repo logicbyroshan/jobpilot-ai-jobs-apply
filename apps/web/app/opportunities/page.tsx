@@ -139,8 +139,8 @@ export default function OpportunitiesPage() {
                       alignItems: "center",
                       justifyContent: "center",
                       fontWeight: 800,
-                      color: "var(--accent-primary)",
-                      fontSize: "15px",
+                      color: "var(--text-main)",
+                      fontSize: "14px",
                       flexShrink: 0,
                     }}
                   >
@@ -218,7 +218,7 @@ export default function OpportunitiesPage() {
                       border: "1px solid var(--border-subtle)",
                       borderRadius: "4px",
                       padding: "6px 8px",
-                      color: isSaved ? "var(--accent-primary)" : "var(--text-dim)",
+                      color: isSaved ? "var(--accent-amber)" : "var(--text-dim)",
                       cursor: "pointer",
                       display: "flex",
                       alignItems: "center",
@@ -226,7 +226,7 @@ export default function OpportunitiesPage() {
                       fontSize: "12px",
                     }}
                   >
-                    <Bookmark size={13} fill={isSaved ? "var(--accent-primary)" : "none"} />
+                    <Bookmark size={13} fill={isSaved ? "var(--accent-amber)" : "none"} />
                     <span>{isSaved ? "Saved" : "Save"}</span>
                   </button>
 

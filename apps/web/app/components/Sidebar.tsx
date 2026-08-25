@@ -41,7 +41,7 @@ const lifecycleItems: NavItem[] = [
     href: "/know",
     icon: UserCheck,
     tag: "Verified",
-    badgeVariant: "brand",
+    badgeVariant: "neutral",
   },
   {
     name: "Opportunities",
@@ -76,7 +76,7 @@ const lifecycleItems: NavItem[] = [
     href: "/applications",
     icon: Send,
     tag: "2 Active",
-    badgeVariant: "brand",
+    badgeVariant: "neutral",
   },
   {
     name: "Outcomes",

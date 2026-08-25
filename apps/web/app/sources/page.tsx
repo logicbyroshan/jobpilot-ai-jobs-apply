@@ -54,7 +54,7 @@ export default function SourcesPage() {
   const getSourceIcon = (type: string) => {
     if (type.includes("github")) return <Github size={22} color="#ffffff" />;
     if (type.includes("linkedin")) return <Linkedin size={22} color="#0077b5" />;
-    if (type.includes("resume")) return <FileText size={22} color="var(--accent-primary)" />;
+    if (type.includes("resume")) return <FileText size={22} color="var(--accent-cyan)" />;
     return <Globe size={22} color="var(--accent-cyan)" />;
   };
 

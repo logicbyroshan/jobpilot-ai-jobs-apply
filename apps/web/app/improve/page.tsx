@@ -92,7 +92,7 @@ export default function ImprovePage() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px", marginBottom: "14px" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-              <Badge variant="brand" size="sm">Active Mission</Badge>
+              <Badge variant="cyan" size="sm">Active Mission</Badge>
               <span style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>Target: 3 Weeks • 24 Hours Total</span>
             </div>
 
@@ -106,7 +106,7 @@ export default function ImprovePage() {
           </div>
 
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--accent-primary)" }}>
+            <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--accent-emerald)" }}>
               {currentPlan?.progress_percentage || 35}%
             </div>
             <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Mission Progress</div>
@@ -117,7 +117,7 @@ export default function ImprovePage() {
         <div className="progress-bar-bg">
           <div
             className="progress-bar-fill"
-            style={{ width: `${currentPlan?.progress_percentage || 35}%`, background: "var(--accent-primary)" }}
+            style={{ width: `${currentPlan?.progress_percentage || 35}%`, background: "var(--accent-emerald)" }}
           />
         </div>
       </Card>

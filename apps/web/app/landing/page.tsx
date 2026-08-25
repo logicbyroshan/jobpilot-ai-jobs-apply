@@ -143,7 +143,7 @@ export default function LandingPage() {
             </Button>
           </Link>
           <Link href="/login" style={{ textDecoration: "none" }}>
-            <Button variant="secondary" size="lg" icon={<Zap size={16} color="var(--accent-primary)" />}>
+            <Button variant="secondary" size="lg" icon={<Zap size={16} color="var(--accent-amber)" />}>
               1-Click Demo Fast Track
             </Button>
           </Link>
@@ -153,7 +153,7 @@ export default function LandingPage() {
       {/* Core Operating Loop Explainer */}
       <section style={{ marginBottom: "64px" }}>
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--accent-primary)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--accent-cyan)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
             The 7-Stage Career Engine
           </div>
           <h2 style={{ fontSize: "24px", fontWeight: 700, marginTop: "4px" }}>
@@ -182,7 +182,7 @@ export default function LandingPage() {
                       justifyContent: "center",
                     }}
                   >
-                    <Icon size={16} color="var(--accent-primary)" />
+                    <Icon size={16} color="var(--accent-cyan)" />
                   </div>
                   <Badge variant="neutral" size="sm">Stage {stg.num}</Badge>
                 </div>

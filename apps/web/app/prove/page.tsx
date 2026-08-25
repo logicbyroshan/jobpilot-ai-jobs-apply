@@ -156,7 +156,7 @@ export default function ProvePage() {
                   border: "1px solid var(--border-subtle)",
                 }}
               >
-                <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--accent-primary)", marginBottom: "4px" }}>
+                <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--accent-purple)", marginBottom: "4px" }}>
                   Question {idx + 1} of {activeAssessment.questions.length} ({q.points} pts)
                 </div>
                 <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-main)", marginBottom: "12px" }}>
@@ -173,8 +173,8 @@ export default function ProvePage() {
                         style={{
                           padding: "10px 14px",
                           borderRadius: "4px",
-                          background: isSelected ? "rgba(225, 29, 72, 0.12)" : "rgba(255, 255, 255, 0.02)",
-                          border: isSelected ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
+                          background: isSelected ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.02)",
+                          border: isSelected ? "1px solid rgba(255, 255, 255, 0.3)" : "1px solid var(--border-subtle)",
                           fontSize: "13px",
                           color: isSelected ? "#ffffff" : "var(--text-muted)",
                           cursor: "pointer",
@@ -189,8 +189,8 @@ export default function ProvePage() {
                             width: "14px",
                             height: "14px",
                             borderRadius: "50%",
-                            border: isSelected ? "4px solid var(--accent-primary)" : "1px solid var(--text-dim)",
-                            background: isSelected ? "#ffffff" : "transparent",
+                            border: isSelected ? "4px solid #ffffff" : "1px solid var(--text-dim)",
+                            background: isSelected ? "var(--bg-main)" : "transparent",
                           }}
                         />
                         <span>{opt}</span>

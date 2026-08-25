@@ -132,8 +132,8 @@ export default function AutomationSettingsPage() {
             style={{
               padding: "14px",
               borderRadius: "4px",
-              background: policy.mode === "MANUAL" ? "rgba(225, 29, 72, 0.1)" : "var(--bg-elevated)",
-              border: policy.mode === "MANUAL" ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
+              background: policy.mode === "MANUAL" ? "rgba(255, 255, 255, 0.08)" : "var(--bg-elevated)",
+              border: policy.mode === "MANUAL" ? "1px solid rgba(255, 255, 255, 0.25)" : "1px solid var(--border-subtle)",
               cursor: "pointer",
             }}
           >
@@ -149,14 +149,14 @@ export default function AutomationSettingsPage() {
             style={{
               padding: "14px",
               borderRadius: "4px",
-              background: policy.mode === "ASSISTED" ? "rgba(225, 29, 72, 0.1)" : "var(--bg-elevated)",
-              border: policy.mode === "ASSISTED" ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
+              background: policy.mode === "ASSISTED" ? "rgba(255, 255, 255, 0.08)" : "var(--bg-elevated)",
+              border: policy.mode === "ASSISTED" ? "1px solid rgba(255, 255, 255, 0.25)" : "1px solid var(--border-subtle)",
               cursor: "pointer",
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
               <span style={{ fontSize: "14px", fontWeight: 700 }}>Assisted Mode</span>
-              <Badge variant="brand" size="sm">Recommended</Badge>
+              <Badge variant="cyan" size="sm">Recommended</Badge>
             </div>
             <p style={{ fontSize: "11.5px", color: "var(--text-muted)", lineHeight: 1.35 }}>
               JobPilot prepares everything and presents a 1-click review modal for your approval.
@@ -169,8 +169,8 @@ export default function AutomationSettingsPage() {
             style={{
               padding: "14px",
               borderRadius: "4px",
-              background: policy.mode === "AUTONOMOUS" ? "rgba(225, 29, 72, 0.1)" : "var(--bg-elevated)",
-              border: policy.mode === "AUTONOMOUS" ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
+              background: policy.mode === "AUTONOMOUS" ? "rgba(255, 255, 255, 0.08)" : "var(--bg-elevated)",
+              border: policy.mode === "AUTONOMOUS" ? "1px solid rgba(255, 255, 255, 0.25)" : "1px solid var(--border-subtle)",
               cursor: "pointer",
             }}
           >

@@ -35,7 +35,7 @@ export default function OutcomesPage() {
   }, []);
 
   const stages = [
-    { label: "Submitted Applications", count: 18, rate: "100%", color: "var(--accent-primary)" },
+    { label: "Submitted Applications", count: 18, rate: "100%", color: "var(--text-muted)" },
     { label: "Recruiter Responses", count: 6, rate: "33.3%", color: "var(--accent-cyan)" },
     { label: "Technical Interviews", count: 4, rate: "22.2%", color: "var(--accent-amber)" },
     { label: "Final Rounds", count: 2, rate: "11.1%", color: "var(--accent-purple)" },
@@ -48,7 +48,7 @@ export default function OutcomesPage() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-            <Badge variant="brand">Stage 7</Badge>
+            <Badge variant="cyan">Stage 7</Badge>
             <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Strategic Feedback & Funnel Analytics</span>
           </div>
           <h1 style={{ fontSize: "22px", fontWeight: 700 }}>
@@ -69,9 +69,9 @@ export default function OutcomesPage() {
       {/* 1. STRATEGIC BOTTLENECK DIAGNOSTIC (CLOSED LOOP BACK TO GAP) */}
       <Card
         style={{
-          background: "linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(14, 20, 34, 0.95) 100%)",
-          border: "1px solid rgba(6, 182, 212, 0.3)",
-          padding: "20px",
+          background: "var(--bg-card)",
+          border: "1px solid rgba(255, 255, 255, 0.12)",
+          padding: "18px 20px",
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>

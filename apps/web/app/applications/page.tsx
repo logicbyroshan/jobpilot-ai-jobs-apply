@@ -100,10 +100,10 @@ export default function ApplicationsPage() {
       {/* Mode & Policy Banner */}
       <Card style={{ padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Shield size={18} color="var(--accent-primary)" />
+          <Shield size={18} color="var(--accent-cyan)" />
           <div>
             <div style={{ fontSize: "13px", fontWeight: 600 }}>
-              Execution Policy: <span style={{ color: "var(--accent-primary)" }}>{policy?.mode || "ASSISTED"}</span>
+              Execution Policy: <span style={{ color: "var(--accent-cyan)" }}>{policy?.mode || "ASSISTED"}</span>
             </div>
             <div style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
               Min Match Threshold: <strong>{policy?.min_match_score || 85}%</strong> • Daily Limit: <strong>{policy?.daily_application_limit || 5}</strong> • Human Approval Required: <strong>Yes</strong>

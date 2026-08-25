@@ -64,7 +64,7 @@ export default function GapsPage() {
       {/* Critical Blockers Section */}
       <div>
         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-          <Badge variant="brand" size="sm">Critical Priority</Badge>
+          <Badge variant="warning" size="sm">Critical Priority</Badge>
           <span style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>
             Actively blocking top-tier compensation roles
           </span>
@@ -75,7 +75,7 @@ export default function GapsPage() {
             <Card
               key={gap.id}
               style={{
-                borderLeft: "3px solid var(--accent-primary)",
+                borderLeft: "3px solid var(--accent-amber)",
                 padding: "18px 20px",
               }}
             >
@@ -83,7 +83,7 @@ export default function GapsPage() {
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "2px" }}>
                     <h3 style={{ fontSize: "16px", fontWeight: 700 }}>{gap.title}</h3>
-                    <Badge variant="brand" size="sm">{gap.priority}</Badge>
+                    <Badge variant="warning" size="sm">{gap.priority}</Badge>
                   </div>
                   <div style={{ fontSize: "12px", color: "var(--accent-amber)", fontWeight: 600 }}>
                     Impact: {gap.expected_impact || "Required by 74% of target roles • Blocking 12 high-signal matches"}
