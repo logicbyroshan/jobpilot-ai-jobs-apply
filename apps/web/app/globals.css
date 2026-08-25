@@ -75,7 +75,7 @@ html, body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Custom Clean Scrollbars */
@@ -135,12 +135,14 @@ a {
   flex-direction: column;
   min-height: 100vh;
   width: calc(100% - 250px);
+  position: relative;
 }
 
 .topbar {
   height: 60px;
-  background: rgba(11, 15, 25, 0.85);
-  backdrop-filter: blur(12px);
+  background: #0e1422;
+  background: rgba(14, 20, 34, 0.94);
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
@@ -148,8 +150,9 @@ a {
   padding: 0 28px;
   position: sticky;
   top: 0;
-  z-index: var(--z-topbar);
+  z-index: 50;
   box-sizing: border-box;
+  width: 100%;
 }
 
 .page-body {
