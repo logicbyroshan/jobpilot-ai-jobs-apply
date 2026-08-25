@@ -584,45 +584,86 @@ const MOCK_FUNNEL: FunnelAnalytics = {
 };
 
 // API Client Wrapper with Fallback Support
+const apiCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL_MS = 120000; // 2 minutes
+
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 1200): Promise<Response> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+    return response;
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
+}
+
 export const api = {
   async getProfile(): Promise<UserProfile> {
+    const cacheKey = "profile";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}/profile`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/profile`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
       if (res.ok) {
         const data = await res.json();
-        return {
+        const fullProfile = {
           ...MOCK_PROFILE,
           ...data,
           experiences: data.experiences || MOCK_PROFILE.experiences,
           projects: data.projects || MOCK_PROFILE.projects,
         };
+        apiCache.set(cacheKey, { data: fullProfile, timestamp: Date.now() });
+        return fullProfile;
       }
     } catch (e) {
       console.warn("Using fallback profile", e);
     }
+    apiCache.set(cacheKey, { data: MOCK_PROFILE, timestamp: Date.now() });
     return MOCK_PROFILE;
   },
 
   async getSources(): Promise<SourceItem[]> {
+    const cacheKey = "sources";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}/sources`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/sources`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (Array.isArray(data) && data.length > 0) {
+          apiCache.set(cacheKey, { data, timestamp: Date.now() });
+          return data;
+        }
       }
     } catch (e) {
       console.warn("Using fallback sources", e);
     }
+    apiCache.set(cacheKey, { data: MOCK_SOURCES, timestamp: Date.now() });
     return MOCK_SOURCES;
   },
 
   async syncSource(sourceId: string): Promise<any> {
+    apiCache.delete("sources");
+    apiCache.delete("skills");
+    apiCache.delete("profile");
     try {
-      const res = await fetch(`${API_BASE_URL}/sources/${sourceId}/sync`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/sources/${sourceId}/sync`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
@@ -634,38 +675,59 @@ export const api = {
   },
 
   async getSkillsProfile(): Promise<SkillEvidenceItem[]> {
+    const cacheKey = "skills";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}/skills`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/skills`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (Array.isArray(data) && data.length > 0) {
+          apiCache.set(cacheKey, { data, timestamp: Date.now() });
+          return data;
+        }
       }
     } catch (e) {
       console.warn("Using fallback skills", e);
     }
+    apiCache.set(cacheKey, { data: MOCK_SKILLS, timestamp: Date.now() });
     return MOCK_SKILLS;
   },
 
   async getMatches(): Promise<MatchItem[]> {
+    const cacheKey = "matches";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}/matches`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/matches`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (Array.isArray(data) && data.length > 0) {
+          apiCache.set(cacheKey, { data, timestamp: Date.now() });
+          return data;
+        }
       }
     } catch (e) {
       console.warn("Using fallback matches", e);
     }
+    apiCache.set(cacheKey, { data: MOCK_MATCHES, timestamp: Date.now() });
     return MOCK_MATCHES;
   },
 
   async recalculateMatches(): Promise<MatchItem[]> {
+    apiCache.delete("matches");
     try {
-      const res = await fetch(`${API_BASE_URL}/matches/recalculate`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/matches/recalculate`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
@@ -679,23 +741,34 @@ export const api = {
   },
 
   async getGaps(): Promise<GapItem[]> {
+    const cacheKey = "gaps";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}/gaps`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/gaps`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (Array.isArray(data) && data.length > 0) {
+          apiCache.set(cacheKey, { data, timestamp: Date.now() });
+          return data;
+        }
       }
     } catch (e) {
       console.warn("Using fallback gaps", e);
     }
+    apiCache.set(cacheKey, { data: MOCK_GAPS, timestamp: Date.now() });
     return MOCK_GAPS;
   },
 
   async generateLearningPlan(gapId: string): Promise<any> {
+    apiCache.delete("plans");
     try {
-      const res = await fetch(`${API_BASE_URL}/learning/plans`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/learning/plans`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
         body: JSON.stringify({
@@ -712,38 +785,59 @@ export const api = {
   },
 
   async getLearningPlans(): Promise<LearningPlanType[]> {
+    const cacheKey = "plans";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}/learning/plans`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/learning/plans`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (Array.isArray(data) && data.length > 0) {
+          apiCache.set(cacheKey, { data, timestamp: Date.now() });
+          return data;
+        }
       }
     } catch (e) {
       console.warn("Using fallback learning plans", e);
     }
+    apiCache.set(cacheKey, { data: MOCK_PLANS, timestamp: Date.now() });
     return MOCK_PLANS;
   },
 
   async getResources(): Promise<ResourceItem[]> {
+    const cacheKey = "resources";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}/learning/resources`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/learning/resources`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (Array.isArray(data) && data.length > 0) {
+          apiCache.set(cacheKey, { data, timestamp: Date.now() });
+          return data;
+        }
       }
     } catch (e) {
       console.warn("Using fallback resources", e);
     }
+    apiCache.set(cacheKey, { data: MOCK_RESOURCES, timestamp: Date.now() });
     return MOCK_RESOURCES;
   },
 
   async togglePlanItem(planId: string, itemId: string): Promise<LearningPlanType> {
+    apiCache.delete("plans");
     try {
-      const res = await fetch(
+      const res = await fetchWithTimeout(
         `${API_BASE_URL}/learning/plans/${planId}/items/${itemId}/toggle`,
         {
           method: "POST",
@@ -764,23 +858,33 @@ export const api = {
   },
 
   async getAssessments(): Promise<AssessmentType[]> {
+    const cacheKey = "assessments";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}/assessments`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/assessments`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (Array.isArray(data) && data.length > 0) {
+          apiCache.set(cacheKey, { data, timestamp: Date.now() });
+          return data;
+        }
       }
     } catch (e) {
       console.warn("Using fallback assessments", e);
     }
+    apiCache.set(cacheKey, { data: MOCK_ASSESSMENTS, timestamp: Date.now() });
     return MOCK_ASSESSMENTS;
   },
 
   async getAssessment(id: string): Promise<AssessmentType> {
     try {
-      const res = await fetch(`${API_BASE_URL}/assessments/${id}`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/assessments/${id}`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
       if (res.ok) return await res.json();
@@ -796,8 +900,12 @@ export const api = {
     id: string,
     answers: Record<string, string>
   ): Promise<AssessmentAttemptResult> {
+    apiCache.delete("skills");
+    apiCache.delete("matches");
+    apiCache.delete("gaps");
+    apiCache.delete("profile");
     try {
-      const res = await fetch(`${API_BASE_URL}/assessments/${id}/submit`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/assessments/${id}/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
         body: JSON.stringify({ answers }),
@@ -834,17 +942,27 @@ export const api = {
   },
 
   async getApplications(): Promise<ApplicationItem[]> {
+    const cacheKey = "applications";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}/applications`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/applications`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (Array.isArray(data) && data.length > 0) {
+          apiCache.set(cacheKey, { data, timestamp: Date.now() });
+          return data;
+        }
       }
     } catch (e) {
       console.warn("Using fallback applications", e);
     }
+    apiCache.set(cacheKey, { data: MOCK_APPLICATIONS, timestamp: Date.now() });
     return MOCK_APPLICATIONS;
   },
 
@@ -853,8 +971,10 @@ export const api = {
     tailored_role_title?: string;
     notes?: string;
   }): Promise<ApplicationItem> {
+    apiCache.delete("applications");
+    apiCache.delete("funnel");
     try {
-      const res = await fetch(`${API_BASE_URL}/applications`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/applications`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
         body: JSON.stringify(data),
@@ -867,27 +987,43 @@ export const api = {
   },
 
   async getApplicationPolicy(): Promise<ApplicationPolicyType> {
+    const cacheKey = "policy";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}/applications/policy`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/applications/policy`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
-      if (res.ok) return await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        apiCache.set(cacheKey, { data, timestamp: Date.now() });
+        return data;
+      }
     } catch (e) {
       console.warn("Using fallback policy", e);
     }
+    apiCache.set(cacheKey, { data: MOCK_POLICY, timestamp: Date.now() });
     return MOCK_POLICY;
   },
 
   async updateApplicationPolicy(
     policy: ApplicationPolicyType
   ): Promise<ApplicationPolicyType> {
+    apiCache.set("policy", { data: policy, timestamp: Date.now() });
     try {
-      const res = await fetch(`${API_BASE_URL}/applications/policy`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/applications/policy`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
         body: JSON.stringify(policy),
       });
-      if (res.ok) return await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        apiCache.set("policy", { data, timestamp: Date.now() });
+        return data;
+      }
     } catch (e) {
       console.warn("Update policy fallback", e);
     }
@@ -895,14 +1031,25 @@ export const api = {
   },
 
   async getFunnelAnalytics(): Promise<FunnelAnalytics> {
+    const cacheKey = "funnel";
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+
     try {
-      const res = await fetch(`${API_BASE_URL}/outcomes/funnel`, {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/outcomes/funnel`, {
         headers: { "Content-Type": "application/json", ...getAuthHeader() },
       });
-      if (res.ok) return await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        apiCache.set(cacheKey, { data, timestamp: Date.now() });
+        return data;
+      }
     } catch (e) {
       console.warn("Using fallback funnel", e);
     }
+    apiCache.set(cacheKey, { data: MOCK_FUNNEL, timestamp: Date.now() });
     return MOCK_FUNNEL;
   },
 };

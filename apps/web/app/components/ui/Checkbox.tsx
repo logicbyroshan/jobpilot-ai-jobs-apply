@@ -26,7 +26,7 @@ export function Checkbox({
       style={{
         display: "inline-flex",
         alignItems: "flex-start",
-        gap: "10px",
+        gap: "8px",
         cursor: disabled ? "not-allowed" : "pointer",
         userSelect: "none",
         opacity: disabled ? 0.6 : 1,
@@ -34,17 +34,17 @@ export function Checkbox({
     >
       <div
         style={{
-          width: "18px",
-          height: "18px",
-          borderRadius: "4px",
-          background: checked ? "var(--accent-primary)" : "rgba(255, 255, 255, 0.04)",
+          width: "16px",
+          height: "16px",
+          borderRadius: "3px",
+          background: checked ? "var(--accent-primary)" : "var(--bg-input)",
           border: checked ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           marginTop: "2px",
           flexShrink: 0,
-          transition: "all 0.15s ease",
+          transition: "all 0.1s ease",
         }}
       >
         <input
@@ -55,18 +55,18 @@ export function Checkbox({
           disabled={disabled}
           style={{ position: "absolute", opacity: 0, width: 0, height: 0, pointerEvents: "none" }}
         />
-        {checked && <Check size={12} color="#ffffff" strokeWidth={3} />}
+        {checked && <Check size={11} color="#ffffff" strokeWidth={3} />}
       </div>
 
       {(label || description) && (
         <div style={{ display: "flex", flexDirection: "column" }}>
           {label && (
-            <span style={{ fontSize: "13.5px", fontWeight: 500, color: "var(--text-main)", lineHeight: 1.4 }}>
+            <span style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-main)", lineHeight: 1.4 }}>
               {label}
             </span>
           )}
           {description && (
-            <span style={{ fontSize: "12px", color: "var(--text-dim)", marginTop: "2px" }}>
+            <span style={{ fontSize: "11.5px", color: "var(--text-dim)", marginTop: "1px" }}>
               {description}
             </span>
           )}

@@ -21,17 +21,17 @@ export function Button({
   ...props
 }: ButtonProps) {
   const sizeStyles: Record<string, React.CSSProperties> = {
-    sm: { padding: "6px 12px", fontSize: "12.5px", borderRadius: "6px", gap: "6px" },
-    md: { padding: "8px 16px", fontSize: "13.5px", borderRadius: "8px", gap: "8px" },
-    lg: { padding: "11px 22px", fontSize: "15px", borderRadius: "10px", gap: "10px" },
+    sm: { padding: "4px 9px", fontSize: "12px", borderRadius: "4px", gap: "5px" },
+    md: { padding: "6px 13px", fontSize: "13px", borderRadius: "5px", gap: "6px" },
+    lg: { padding: "9px 18px", fontSize: "14px", borderRadius: "6px", gap: "8px" },
   };
 
   const variantStyles: Record<string, React.CSSProperties> = {
     primary: {
       background: "var(--accent-primary)",
       color: "#ffffff",
-      border: "1px solid rgba(255, 255, 255, 0.12)",
-      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
+      border: "1px solid rgba(255, 255, 255, 0.1)",
+      boxShadow: "0 1px 2px rgba(0, 0, 0, 0.2)",
     },
     secondary: {
       background: "var(--bg-elevated)",
@@ -66,7 +66,7 @@ export function Button({
         fontWeight: 600,
         cursor: disabled || loading ? "not-allowed" : "pointer",
         opacity: disabled || loading ? 0.6 : 1,
-        transition: "all 0.15s ease",
+        transition: "all 0.1s ease",
         fontFamily: "inherit",
         whiteSpace: "nowrap",
         ...sizeStyles[size],
@@ -76,7 +76,7 @@ export function Button({
       {...props}
     >
       {loading ? (
-        <span className="ui-spinner" style={{ width: "14px", height: "14px" }} />
+        <span className="ui-spinner" style={{ width: "13px", height: "13px" }} />
       ) : (
         icon && iconPosition === "left" && icon
       )}

@@ -20,10 +20,9 @@ export function Card({
         background: "var(--bg-card)",
         border: "1px solid var(--border-subtle)",
         borderRadius: "var(--radius-md)",
-        padding: padded ? "20px" : "0",
-        transition: "all 0.15s ease",
+        padding: padded ? "18px" : "0",
+        transition: "background-color 0.1s ease, border-color 0.1s ease",
         position: "relative",
-        overflow: "hidden",
         ...style,
       }}
       {...props}

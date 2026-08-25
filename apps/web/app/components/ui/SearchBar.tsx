@@ -20,15 +20,15 @@ export function SearchBar({
         display: "flex",
         alignItems: "center",
         width: "100%",
-        maxWidth: "480px",
+        maxWidth: "460px",
       }}
     >
       <Search
-        size={15}
+        size={14}
         color="var(--text-dim)"
         style={{
           position: "absolute",
-          left: "12px",
+          left: "11px",
           pointerEvents: "none",
         }}
       />
@@ -38,16 +38,16 @@ export function SearchBar({
         className={`ui-searchbar ${className}`}
         style={{
           width: "100%",
-          padding: "8px 14px",
-          paddingLeft: "36px",
-          paddingRight: shortcut ? "48px" : "14px",
-          fontSize: "13.5px",
-          background: "rgba(255, 255, 255, 0.03)",
+          padding: "7px 12px",
+          paddingLeft: "32px",
+          paddingRight: shortcut ? "44px" : "12px",
+          fontSize: "13px",
+          background: "var(--bg-input)",
           border: "1px solid var(--border-subtle)",
-          borderRadius: "8px",
+          borderRadius: "4px",
           color: "var(--text-main)",
           outline: "none",
-          transition: "all 0.15s ease",
+          transition: "border-color 0.1s ease",
           fontFamily: "inherit",
           ...style,
         }}
@@ -57,11 +57,11 @@ export function SearchBar({
         <span
           style={{
             position: "absolute",
-            right: "10px",
-            fontSize: "11px",
+            right: "8px",
+            fontSize: "10.5px",
             fontWeight: 600,
-            padding: "2px 6px",
-            borderRadius: "4px",
+            padding: "1px 5px",
+            borderRadius: "3px",
             background: "rgba(255, 255, 255, 0.06)",
             color: "var(--text-dim)",
             border: "1px solid var(--border-subtle)",

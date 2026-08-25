@@ -61,8 +61,8 @@ export function Badge({
   };
 
   const current = variantStyles[variant] || variantStyles.neutral;
-  const padding = size === "sm" ? "2px 8px" : "3px 10px";
-  const fontSize = size === "sm" ? "11px" : "12px";
+  const padding = size === "sm" ? "1px 6px" : "2px 7px";
+  const fontSize = size === "sm" ? "10.5px" : "11.5px";
 
   return (
     <span
@@ -70,11 +70,11 @@ export function Badge({
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: "6px",
+        gap: "5px",
         padding,
         fontSize,
         fontWeight: 600,
-        borderRadius: "9999px",
+        borderRadius: "4px",
         background: current.bg,
         color: current.color,
         border: `1px solid ${current.border}`,
@@ -87,8 +87,8 @@ export function Badge({
       {dot && (
         <span
           style={{
-            width: "6px",
-            height: "6px",
+            width: "5px",
+            height: "5px",
             borderRadius: "50%",
             backgroundColor: current.dotColor,
             flexShrink: 0,

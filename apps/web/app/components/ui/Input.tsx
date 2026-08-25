@@ -22,12 +22,12 @@ export function Input({
   const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, "-") : undefined);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "6px", width: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "5px", width: "100%" }}>
       {label && (
         <label
           htmlFor={inputId}
           style={{
-            fontSize: "13px",
+            fontSize: "12.5px",
             fontWeight: 500,
             color: "var(--text-muted)",
           }}
@@ -41,7 +41,7 @@ export function Input({
           <div
             style={{
               position: "absolute",
-              left: "12px",
+              left: "10px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -58,16 +58,16 @@ export function Input({
           className={`ui-input ${error ? "ui-input-error" : ""} ${className}`}
           style={{
             width: "100%",
-            padding: "9px 14px",
-            paddingLeft: leftIcon ? "38px" : "14px",
-            paddingRight: rightIcon ? "38px" : "14px",
-            fontSize: "14px",
-            background: "rgba(255, 255, 255, 0.03)",
+            padding: "8px 12px",
+            paddingLeft: leftIcon ? "34px" : "12px",
+            paddingRight: rightIcon ? "34px" : "12px",
+            fontSize: "13.5px",
+            background: "var(--bg-input)",
             border: error ? "1px solid #e11d48" : "1px solid var(--border-subtle)",
-            borderRadius: "8px",
+            borderRadius: "4px",
             color: "var(--text-main)",
             outline: "none",
-            transition: "all 0.15s ease",
+            transition: "border-color 0.1s ease",
             fontFamily: "inherit",
             ...style,
           }}
@@ -78,7 +78,7 @@ export function Input({
           <div
             style={{
               position: "absolute",
-              right: "12px",
+              right: "10px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -91,12 +91,12 @@ export function Input({
       </div>
 
       {error && (
-        <span style={{ fontSize: "12px", color: "#fca5a5", fontWeight: 500 }}>
+        <span style={{ fontSize: "11.5px", color: "#fca5a5", fontWeight: 500 }}>
           {error}
         </span>
       )}
       {!error && helperText && (
-        <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>
+        <span style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
           {helperText}
         </span>
       )}
