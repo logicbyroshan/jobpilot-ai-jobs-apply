@@ -11,13 +11,9 @@ import {
   Award,
   Send,
   TrendingUp,
-  ArrowRight,
   RefreshCw,
-  CheckCircle2,
-  AlertTriangle,
   ChevronRight,
-  Shield,
-  Zap,
+  ExternalLink,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import {
@@ -28,6 +24,9 @@ import {
   ApplicationItem,
   FunnelAnalytics,
 } from "@/lib/types";
+import { Button } from "./components/ui/Button";
+import { Badge } from "./components/ui/Badge";
+import { Card } from "./components/ui/Card";
 
 export default function DashboardOverviewPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -81,210 +80,179 @@ export default function DashboardOverviewPage() {
   const stages = [
     {
       id: "KNOW",
-      name: "1. KNOW",
+      num: "1",
+      name: "KNOW",
       title: "Identity & Provenance",
-      description: "Aggregates GitHub commits, verified repositories, resume history & skill evidence.",
+      description: "Aggregates GitHub commits, verified repositories, resume history, and skill evidence.",
       metrics: `${profile?.summary_json?.verified_skills || 8} Verified Skills`,
-      status: "Verified",
+      badge: { text: "Verified", variant: "brand" as const },
       icon: UserCheck,
-      color: "#ef4444",
       link: "/know",
     },
     {
       id: "MATCH",
-      name: "2. MATCH",
-      title: "Opportunity Scoring",
-      description: "Multi-dimensional scoring: Technical fit, seniority match, preference alignment.",
+      num: "2",
+      name: "MATCH",
+      title: "Opportunity Radar",
+      description: "Multi-dimensional scoring across technical capability, seniority, and preferences.",
       metrics: `${matches.length} Opportunities`,
-      status: "93.5% Top Fit",
+      badge: { text: "94% Top Fit", variant: "cyan" as const },
       icon: Target,
-      color: "#06b6d4",
       link: "/match",
     },
     {
       id: "GAP",
-      name: "3. GAP",
-      title: "Skill & Evidence Gap Analysis",
+      num: "3",
+      name: "GAP",
+      title: "Competency Diagnostics",
       description: "Identifies technical deficits preventing candidate from closing top tier offers.",
       metrics: `${gaps.length} Actionable Gaps`,
-      status: "1 Critical",
+      badge: { text: "1 Critical", variant: "warning" as const },
       icon: Sparkles,
-      color: "#f59e0b",
       link: "/gap",
     },
     {
       id: "IMPROVE",
-      name: "4. IMPROVE",
-      title: "Curated Learning Pathways",
-      description: "Step-by-step technical blueprints with high-ROI books, courses, and hands-on projects.",
+      num: "4",
+      name: "IMPROVE",
+      title: "Learning Pathways",
+      description: "Step-by-step blueprints with high-signal literature, code tutorials, and architectures.",
       metrics: `${plans.length} Active Plan`,
-      status: "3/5 Milestones",
+      badge: { text: "3/5 Done", variant: "success" as const },
       icon: BookOpen,
-      color: "#10b981",
       link: "/improve",
     },
     {
       id: "PROVE",
-      name: "5. PROVE",
-      title: "Skill Verification & Assessments",
+      num: "5",
+      name: "PROVE",
+      title: "Skill Verification",
       description: "Deterministic technical evaluations with instant skill evidence credentialing.",
-      metrics: "3 Assessments Ready",
-      status: "+1.8 Boost",
+      metrics: "3 Assessments",
+      badge: { text: "+1.8 Boost", variant: "purple" as const },
       icon: Award,
-      color: "#f43f5e",
       link: "/prove",
     },
     {
       id: "APPLY",
-      name: "6. APPLY",
-      title: "Tailored Submissions",
-      description: "Automated & assisted submissions with personalized cover letters & resumes.",
+      num: "6",
+      name: "APPLY",
+      title: "Governed Submissions",
+      description: "Automated tailored artifact generation, resume tailoring, and policy guardrails.",
       metrics: `${applications.length} Submissions`,
-      status: "2 Active",
+      badge: { text: "2 Active", variant: "brand" as const },
       icon: Send,
-      color: "#e11d48",
       link: "/apply",
     },
     {
       id: "OUTCOME",
-      name: "7. OUTCOME",
-      title: "Funnel & Bottlenecks",
+      num: "7",
+      name: "OUTCOME",
+      title: "Funnel Analytics",
       description: "Full funnel tracking from screening to offers, diagnosing stage drop-offs.",
-      metrics: `${funnel?.offers || 1} Offer Received`,
-      status: "16.7% Offer Rate",
+      metrics: `${funnel?.offers || 1} Offer`,
+      badge: { text: "16.7% Rate", variant: "neutral" as const },
       icon: TrendingUp,
-      color: "#3b82f6",
       link: "/outcome",
     },
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-      {/* Hero Welcome Banner */}
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      {/* Sleek Top Banner Header */}
       <div
-        className="card"
         style={{
-          background: "linear-gradient(135deg, rgba(28, 18, 24, 0.85) 0%, rgba(13, 17, 26, 0.95) 100%)",
-          border: "1px solid rgba(239, 68, 68, 0.25)",
-          position: "relative",
-          overflow: "hidden",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "16px",
+          paddingBottom: "8px",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            top: "-40px",
-            right: "-40px",
-            width: "250px",
-            height: "250px",
-            background: "radial-gradient(circle, rgba(239, 68, 68, 0.18) 0%, transparent 70%)",
-            borderRadius: "50%",
-            pointerEvents: "none",
-          }}
-        />
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", position: "relative", zIndex: 1 }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-              <span className="badge badge-primary">AI Career Operating System</span>
-              <span className="badge badge-emerald" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                <span className="pulse-dot" style={{ background: "var(--accent-emerald)" }} />
-                Active Feedback Loop
-              </span>
-            </div>
-            <h1 style={{ fontSize: "28px", fontWeight: 800, marginBottom: "8px", letterSpacing: "-0.03em" }}>
-              Welcome back, {profile?.full_name || "Alex Chen"}
-            </h1>
-            <p style={{ color: "var(--text-muted)", maxWidth: "720px", fontSize: "14.5px" }}>
-              JobPilot is continuously orchestrating your career operating loop: diagnosing skill deficits, curating learning paths, proving competence via interactive assessments, and aligning high-signal opportunities.
-            </p>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Badge variant="brand">Career Operating System</Badge>
+            <Badge variant="success" dot>Loop Active</Badge>
           </div>
-
-          <div style={{ display: "flex", gap: "12px" }}>
-            <button
-              onClick={handleRecalculate}
-              disabled={recalculating}
-              className="btn btn-primary"
-              style={{ fontSize: "13.5px" }}
-            >
-              <RefreshCw
-                size={16}
-                style={{ animation: recalculating ? "spin 1s linear infinite" : "none" }}
-              />
-              <span>{recalculating ? "Re-scoring..." : "Recalculate AI Match Scores"}</span>
-            </button>
-          </div>
+          <h1 style={{ fontSize: "24px", fontWeight: 700 }}>
+            Welcome back, {profile?.full_name || "Alex Chen"}
+          </h1>
+          <p style={{ color: "var(--text-muted)", fontSize: "13.5px", marginTop: "2px" }}>
+            {profile?.headline || "Staff Distributed Systems & Infrastructure Architect • Ex-Stripe"}
+          </p>
         </div>
+
+        <Button
+          variant="secondary"
+          size="md"
+          onClick={handleRecalculate}
+          disabled={recalculating}
+          icon={
+            <RefreshCw
+              size={14}
+              style={{ animation: recalculating ? "spin 0.8s linear infinite" : "none" }}
+            />
+          }
+        >
+          {recalculating ? "Recalculating..." : "Recalculate Match Scores"}
+        </Button>
       </div>
 
-      {/* 8-Stage Operating Loop Interactive Visualizer */}
-      <div className="card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+      {/* Closed-Loop Operating Engine Stepper */}
+      <Card>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
           <div>
-            <div style={{ fontSize: "12px", color: "var(--text-dim)", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.06em" }}>
-              Closed-Loop Career Engine
+            <div style={{ fontSize: "11px", color: "var(--text-dim)", textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.05em" }}>
+              Closed-Loop Workflow
             </div>
-            <h2 style={{ fontSize: "20px", fontWeight: 700 }}>
-              The Closed-Loop Autonomous Career Engine
-            </h2>
+            <h2 style={{ fontSize: "17px", fontWeight: 700 }}>Operating Loop Stages</h2>
           </div>
-          <div style={{ fontSize: "12.5px", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "6px" }}>
-            <span>Click any node to inspect real-time state</span>
-          </div>
+          <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>
+            Select any stage to inspect state
+          </span>
         </div>
 
-        {/* Stages Chain */}
+        {/* Horizontal Stage Stepper Strip */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-            gap: "12px",
-            marginBottom: "24px",
+            gridTemplateColumns: "repeat(7, 1fr)",
+            gap: "8px",
+            marginBottom: "16px",
           }}
         >
           {stages.map((stg) => {
             const isSelected = activeStage === stg.id;
             const Icon = stg.icon;
+
             return (
-              <div
+              <button
                 key={stg.id}
                 onClick={() => setActiveStage(stg.id)}
                 style={{
-                  padding: "16px 12px",
+                  padding: "12px 10px",
                   borderRadius: "var(--radius-sm)",
-                  background: isSelected
-                    ? "rgba(99, 102, 241, 0.15)"
-                    : "rgba(255, 255, 255, 0.03)",
-                  border: isSelected
-                    ? `1px solid ${stg.color}`
-                    : "1px solid var(--border-subtle)",
+                  background: isSelected ? "var(--bg-elevated)" : "rgba(255, 255, 255, 0.02)",
+                  border: isSelected ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
+                  textAlign: "left",
                   cursor: "pointer",
-                  transition: "all 0.2s ease",
+                  transition: "all 0.12s ease",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "8px",
+                  gap: "6px",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <Icon size={20} color={stg.color} />
-                  <span
-                    style={{
-                      fontSize: "10px",
-                      fontWeight: 700,
-                      color: stg.color,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
-                    {stg.status}
+                  <span style={{ fontSize: "11px", fontWeight: 700, color: isSelected ? "var(--accent-primary)" : "var(--text-dim)" }}>
+                    {stg.num}. {stg.name}
                   </span>
+                  <Icon size={14} color={isSelected ? "var(--accent-primary)" : "var(--text-dim)"} />
                 </div>
-                <div style={{ fontSize: "13px", fontWeight: 700, color: isSelected ? "#ffffff" : "var(--text-main)" }}>
-                  {stg.name}
-                </div>
-                <div style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {stg.metrics}
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>
@@ -294,219 +262,172 @@ export default function DashboardOverviewPage() {
           const sel = stages.find((s) => s.id === activeStage);
           if (!sel) return null;
           const Icon = sel.icon;
+
           return (
             <div
               style={{
-                background: "rgba(10, 15, 30, 0.6)",
+                background: "rgba(255, 255, 255, 0.02)",
                 border: "1px solid var(--border-subtle)",
                 borderRadius: "var(--radius-sm)",
-                padding: "20px",
+                padding: "16px 18px",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
+                flexWrap: "wrap",
+                gap: "12px",
               }}
             >
-              <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+              <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
                 <div
                   style={{
-                    width: "44px",
-                    height: "44px",
-                    borderRadius: "10px",
-                    background: `rgba(${parseInt(sel.color.slice(1, 3), 16)}, ${parseInt(sel.color.slice(3, 5), 16)}, ${parseInt(sel.color.slice(5, 7), 16)}, 0.15)`,
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "8px",
+                    background: "var(--bg-elevated)",
+                    border: "1px solid var(--border-subtle)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    flexShrink: 0,
                   }}
                 >
-                  <Icon size={24} color={sel.color} />
+                  <Icon size={18} color="var(--accent-primary)" />
                 </div>
                 <div>
-                  <div style={{ fontSize: "16px", fontWeight: 700, color: "#ffffff" }}>
-                    Stage {sel.name}: {sel.title}
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ fontSize: "14.5px", fontWeight: 700, color: "#ffffff" }}>
+                      Stage {sel.num}: {sel.title}
+                    </span>
+                    <Badge variant={sel.badge.variant} size="sm">{sel.badge.text}</Badge>
                   </div>
-                  <div style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "2px" }}>
+                  <div style={{ fontSize: "12.5px", color: "var(--text-muted)", marginTop: "2px" }}>
                     {sel.description}
                   </div>
                 </div>
               </div>
 
-              <Link href={sel.link} className="btn btn-secondary" style={{ fontSize: "13px", gap: "6px" }}>
-                <span>Open {sel.name.split(". ")[1]} Stage</span>
-                <ChevronRight size={16} />
+              <Link href={sel.link} style={{ textDecoration: "none" }}>
+                <Button variant="primary" size="sm" icon={<ChevronRight size={14} />} iconPosition="right">
+                  Open Stage Workspace
+                </Button>
               </Link>
             </div>
           );
         })()}
-      </div>
+      </Card>
 
-      {/* Top 3 High-Impact Radar Columns */}
+      {/* 3 Balanced Summary Columns */}
       <div className="grid-3">
-        {/* MATCH Column */}
-        <div className="card">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Target size={18} color="var(--accent-cyan)" />
-              <h3 style={{ fontSize: "16px", fontWeight: 700 }}>Top Opportunity Matches</h3>
+        {/* Top Matches */}
+        <Card>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Target size={16} color="var(--accent-cyan)" />
+              <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Top Opportunity Matches</h3>
             </div>
-            <Link href="/match" style={{ fontSize: "12px", color: "var(--accent-cyan)", fontWeight: 600 }}>
-              View All ({matches.length})
+            <Link href="/match" style={{ fontSize: "12px", color: "var(--accent-primary)", textDecoration: "none", fontWeight: 600 }}>
+              View All
             </Link>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {matches.slice(0, 3).map((match) => (
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            {matches.slice(0, 2).map((m) => (
               <div
-                key={match.id}
+                key={m.id}
                 style={{
-                  padding: "14px",
+                  padding: "12px 14px",
                   borderRadius: "var(--radius-sm)",
-                  background: "rgba(255, 255, 255, 0.02)",
+                  background: "var(--bg-elevated)",
                   border: "1px solid var(--border-subtle)",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                  <div style={{ fontWeight: 600, fontSize: "14px" }}>{match.job.title}</div>
-                  <span
-                    className="badge"
-                    style={{
-                      background: match.overall_score >= 90 ? "rgba(16, 185, 129, 0.15)" : "rgba(6, 182, 212, 0.15)",
-                      color: match.overall_score >= 90 ? "#34d399" : "#22d3ee",
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
-                    }}
-                  >
-                    {match.overall_score.toFixed(1)}% Match
-                  </span>
+                  <div>
+                    <div style={{ fontSize: "13.5px", fontWeight: 600 }}>{m.job.title}</div>
+                    <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                      {m.job.company.name} • {m.job.location}
+                    </div>
+                  </div>
+                  <Badge variant="cyan" size="sm">{m.overall_score.toFixed(0)}% Match</Badge>
                 </div>
-                <div style={{ fontSize: "12px", color: "var(--text-dim)", marginBottom: "8px" }}>
-                  {match.job.company.name} • {match.job.location} • ${((match.job.salary_max || 200000) / 1000).toFixed(0)}k
-                </div>
-                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                  {match.matched_skills_json.slice(0, 3).map((s) => (
-                    <span
-                      key={s}
-                      style={{
-                        fontSize: "11px",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                        background: "rgba(99, 102, 241, 0.1)",
-                        color: "#a5b4fc",
-                      }}
-                    >
-                      ✓ {s}
-                    </span>
+                <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginTop: "8px" }}>
+                  {m.matched_skills_json.slice(0, 2).map((s) => (
+                    <span key={s} style={{ fontSize: "11px", color: "#34d399" }}>✓ {s}</span>
                   ))}
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
-        {/* GAP & IMPROVE Column */}
-        <div className="card">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Sparkles size={18} color="var(--accent-amber)" />
-              <h3 style={{ fontSize: "16px", fontWeight: 700 }}>Critical Skill Gaps</h3>
+        {/* Critical Skill Gaps */}
+        <Card>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Sparkles size={16} color="var(--accent-amber)" />
+              <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Critical Skill Gaps</h3>
             </div>
-            <Link href="/gap" style={{ fontSize: "12px", color: "var(--accent-amber)", fontWeight: 600 }}>
-              View Gaps ({gaps.length})
+            <Link href="/gap" style={{ fontSize: "12px", color: "var(--accent-primary)", textDecoration: "none", fontWeight: 600 }}>
+              Diagnostics
             </Link>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {gaps.slice(0, 3).map((gap) => (
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            {gaps.slice(0, 2).map((g) => (
               <div
-                key={gap.id}
+                key={g.id}
                 style={{
-                  padding: "14px",
+                  padding: "12px 14px",
                   borderRadius: "var(--radius-sm)",
-                  background: "rgba(255, 255, 255, 0.02)",
+                  background: "var(--bg-elevated)",
                   border: "1px solid var(--border-subtle)",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                  <div style={{ fontWeight: 600, fontSize: "13.5px" }}>{gap.title}</div>
-                  <span
-                    className={`badge ${gap.priority === "CRITICAL" ? "badge-rose" : "badge-amber"}`}
-                    style={{ fontSize: "10.5px" }}
-                  >
-                    {gap.priority}
-                  </span>
+                  <div style={{ fontSize: "13.5px", fontWeight: 600 }}>{g.title}</div>
+                  <Badge variant={g.priority === "CRITICAL" ? "brand" : "warning"} size="sm">{g.priority}</Badge>
                 </div>
-                <div style={{ fontSize: "12px", color: "var(--text-dim)", marginBottom: "8px" }}>
-                  Current Level: <span style={{ color: "#ffffff" }}>{gap.current_level}/10</span> → Target:{" "}
-                  <span style={{ color: "var(--accent-emerald)" }}>{gap.target_level}/10</span>
-                </div>
-                <div style={{ fontSize: "11.5px", color: "var(--text-muted)" }}>
-                  {gap.expected_impact}
+                <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                  Level {g.current_level} → Target {g.target_level} (Delta: +{(g.target_level - g.current_level).toFixed(1)})
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
-        {/* OUTCOME & FUNNEL Column */}
-        <div className="card">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <TrendingUp size={18} color="var(--accent-emerald)" />
-              <h3 style={{ fontSize: "16px", fontWeight: 700 }}>Conversion Funnel</h3>
+        {/* Conversion Funnel */}
+        <Card>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <TrendingUp size={16} color="var(--accent-emerald)" />
+              <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Conversion Funnel</h3>
             </div>
-            <Link href="/outcome" style={{ fontSize: "12px", color: "var(--accent-emerald)", fontWeight: 600 }}>
+            <Link href="/outcome" style={{ fontSize: "12px", color: "var(--accent-primary)", textDecoration: "none", fontWeight: 600 }}>
               Deep Dive
             </Link>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: "8px",
-                textAlign: "center",
-              }}
-            >
-              <div style={{ padding: "10px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "8px" }}>
-                <div style={{ fontSize: "20px", fontWeight: 800, color: "#ffffff" }}>{applications.length}</div>
-                <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Applications</div>
-              </div>
-              <div style={{ padding: "10px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "8px" }}>
-                <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--accent-cyan)" }}>
-                  {funnel?.interviews || 2}
-                </div>
-                <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Interviews</div>
-              </div>
-              <div style={{ padding: "10px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "8px" }}>
-                <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--accent-emerald)" }}>
-                  {funnel?.offers || 1}
-                </div>
-                <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Offers</div>
-              </div>
+          <div style={{ display: "flex", gap: "10px", marginBottom: "14px" }}>
+            <div style={{ flex: 1, padding: "10px", background: "var(--bg-elevated)", borderRadius: "var(--radius-sm)", textAlign: "center" }}>
+              <div style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff" }}>{funnel?.applied || 2}</div>
+              <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Submissions</div>
             </div>
-
-            {/* Bottleneck Diagnostic */}
-            <div
-              style={{
-                padding: "12px",
-                borderRadius: "var(--radius-sm)",
-                background: "rgba(244, 63, 94, 0.08)",
-                border: "1px solid rgba(244, 63, 94, 0.2)",
-              }}
-            >
-              <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--accent-rose)", textTransform: "uppercase", marginBottom: "4px" }}>
-                AI Diagnostic Feedback
-              </div>
-              <div style={{ fontSize: "12.5px", color: "var(--text-muted)", lineHeight: 1.4 }}>
-                {funnel?.primary_bottleneck || "Candidate screening pass-rate increased by 40% after Kubernetes Proving Assessment submission."}
-              </div>
+            <div style={{ flex: 1, padding: "10px", background: "var(--bg-elevated)", borderRadius: "var(--radius-sm)", textAlign: "center" }}>
+              <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--accent-cyan)" }}>{funnel?.interviews || 4}</div>
+              <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Interviews</div>
             </div>
-
-            <Link href="/prove" className="btn btn-primary" style={{ width: "100%", fontSize: "13px", marginTop: "4px" }}>
-              <Award size={15} />
-              <span>Prove Next Skill Assessment</span>
-            </Link>
+            <div style={{ flex: 1, padding: "10px", background: "var(--bg-elevated)", borderRadius: "var(--radius-sm)", textAlign: "center" }}>
+              <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--accent-emerald)" }}>{funnel?.offers || 1}</div>
+              <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Offers</div>
+            </div>
           </div>
-        </div>
+
+          <Link href="/prove" style={{ textDecoration: "none" }}>
+            <Button variant="secondary" size="sm" style={{ width: "100%" }} icon={<Award size={14} color="var(--accent-primary)" />}>
+              Verify Next Skill in Stage 5
+            </Button>
+          </Link>
+        </Card>
       </div>
     </div>
   );

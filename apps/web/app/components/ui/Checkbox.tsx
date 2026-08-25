@@ -1,0 +1,77 @@
+import React from "react";
+import { Check } from "lucide-react";
+
+export interface CheckboxProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  label?: React.ReactNode;
+  description?: string;
+  disabled?: boolean;
+  id?: string;
+}
+
+export function Checkbox({
+  checked,
+  onChange,
+  label,
+  description,
+  disabled = false,
+  id,
+}: CheckboxProps) {
+  const checkboxId = id || (typeof label === "string" ? label.toLowerCase().replace(/\s+/g, "-") : undefined);
+
+  return (
+    <label
+      htmlFor={checkboxId}
+      style={{
+        display: "inline-flex",
+        alignItems: "flex-start",
+        gap: "10px",
+        cursor: disabled ? "not-allowed" : "pointer",
+        userSelect: "none",
+        opacity: disabled ? 0.6 : 1,
+      }}
+    >
+      <div
+        style={{
+          width: "18px",
+          height: "18px",
+          borderRadius: "4px",
+          background: checked ? "var(--accent-primary)" : "rgba(255, 255, 255, 0.04)",
+          border: checked ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: "2px",
+          flexShrink: 0,
+          transition: "all 0.15s ease",
+        }}
+      >
+        <input
+          type="checkbox"
+          id={checkboxId}
+          checked={checked}
+          onChange={(e) => !disabled && onChange(e.target.checked)}
+          disabled={disabled}
+          style={{ position: "absolute", opacity: 0, width: 0, height: 0, pointerEvents: "none" }}
+        />
+        {checked && <Check size={12} color="#ffffff" strokeWidth={3} />}
+      </div>
+
+      {(label || description) && (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {label && (
+            <span style={{ fontSize: "13.5px", fontWeight: 500, color: "var(--text-main)", lineHeight: 1.4 }}>
+              {label}
+            </span>
+          )}
+          {description && (
+            <span style={{ fontSize: "12px", color: "var(--text-dim)", marginTop: "2px" }}>
+              {description}
+            </span>
+          )}
+        </div>
+      )}
+    </label>
+  );
+}

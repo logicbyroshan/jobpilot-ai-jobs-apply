@@ -4,33 +4,38 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { Input } from "../components/ui/Input";
+import { Button } from "../components/ui/Button";
+import { User, Mail, Lock, Briefcase } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
   const { register, loginWithGoogle } = useAuth();
 
   const [fullName, setFullName] = useState("");
+  const [headline, setHeadline] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [headline, setHeadline] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password || !fullName) {
-      setErrorMessage("Please complete all required fields.");
-      return;
-    }
-    if (password.length < 6) {
-      setErrorMessage("Password must be at least 6 characters.");
+    if (!fullName || !email || !password) {
+      setErrorMessage("Please fill out all required fields.");
       return;
     }
 
     setIsLoading(true);
     setErrorMessage(null);
 
-    const res = await register(email, password, fullName, headline);
+    const res = await register(
+      email,
+      password,
+      fullName,
+      headline || "Software Engineer"
+    );
+
     setIsLoading(false);
 
     if (res.success) {
@@ -45,8 +50,8 @@ export default function RegisterPage() {
     setErrorMessage(null);
 
     const res = await loginWithGoogle({
-      email: "new.developer.google@gmail.com",
-      full_name: "New Developer",
+      email: "new.engineer.google@gmail.com",
+      full_name: fullName || "New Engineer",
       avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
     });
     setIsLoading(false);
@@ -59,282 +64,170 @@ export default function RegisterPage() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "85vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px",
-      }}
-    >
-      <div
-        className="glass-card"
-        style={{
-          width: "100%",
-          maxWidth: "460px",
-          padding: "36px",
-          borderRadius: "16px",
-          boxShadow: "0 20px 40px rgba(0, 0, 0, 0.4)",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        {/* Ambient Top Glow */}
-        <div
-          style={{
-            position: "absolute",
-            top: "-40px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "220px",
-            height: "90px",
-            background: "radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, rgba(239, 68, 68, 0) 70%)",
-            pointerEvents: "none",
-          }}
-        />
-
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "28px" }}>
+    <div style={{ width: "100%", maxWidth: "420px" }}>
+      {/* Brand Header */}
+      <div style={{ textAlign: "center", marginBottom: "24px" }}>
+        <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "10px", textDecoration: "none", marginBottom: "14px" }}>
           <div
             style={{
-              display: "inline-flex",
+              width: "40px",
+              height: "40px",
+              borderRadius: "10px",
+              background: "#131929",
+              border: "1px solid var(--border-subtle)",
+              display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              width: "72px",
-              height: "72px",
-              borderRadius: "18px",
-              background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid rgba(239, 68, 68, 0.3)",
-              padding: "10px",
-              marginBottom: "16px",
-              boxShadow: "0 8px 28px rgba(239, 68, 68, 0.3)",
+              padding: "6px",
             }}
           >
-            <img
-              src="/logo-dark.png"
-              alt="JobPilot Logo"
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
-            />
+            <img src="/logo-dark.png" alt="JobPilot" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
           </div>
-          <h1 style={{ fontSize: "22px", fontWeight: "700", color: "var(--text-main)", marginBottom: "6px" }}>
-            Create your JobPilot Account
-          </h1>
-          <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>
-            Unlock automated identity modeling, skill gap diagnostics, and closed-loop matching
-          </p>
-        </div>
+          <div style={{ textAlign: "left" }}>
+            <div style={{ fontWeight: 800, fontSize: "18px", letterSpacing: "-0.02em" }}>
+              Job<span style={{ color: "var(--accent-primary)" }}>Pilot</span>
+            </div>
+            <div style={{ fontSize: "11px", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
+              Career OS
+            </div>
+          </div>
+        </Link>
+        <h1 style={{ fontSize: "22px", fontWeight: 700, marginBottom: "4px" }}>Create your account</h1>
+        <p style={{ fontSize: "13.5px", color: "var(--text-muted)" }}>
+          Join the closed-loop autonomous career platform
+        </p>
+      </div>
 
+      {/* Auth Card */}
+      <div
+        style={{
+          background: "var(--bg-card)",
+          border: "1px solid var(--border-subtle)",
+          borderRadius: "var(--radius-md)",
+          padding: "26px",
+          boxShadow: "var(--shadow-lg)",
+        }}
+      >
         {/* Error Alert */}
         {errorMessage && (
           <div
             style={{
-              padding: "12px 14px",
-              borderRadius: "8px",
-              background: "rgba(239, 68, 68, 0.15)",
-              border: "1px solid rgba(239, 68, 68, 0.3)",
-              color: "#f87171",
+              padding: "10px 12px",
+              borderRadius: "var(--radius-sm)",
+              background: "rgba(225, 29, 72, 0.1)",
+              border: "1px solid rgba(225, 29, 72, 0.25)",
+              color: "#fda4af",
               fontSize: "13px",
-              marginBottom: "20px",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
+              marginBottom: "16px",
             }}
           >
-            <span>⚠️</span>
-            <span>{errorMessage}</span>
+            {errorMessage}
           </div>
         )}
 
-        {/* Google Sign Up Button */}
-        <button
+        {/* Google SSO Button */}
+        <Button
           type="button"
+          variant="secondary"
           onClick={handleGoogleSignUp}
           disabled={isLoading}
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "12px",
-            padding: "12px 16px",
-            borderRadius: "8px",
-            background: "rgba(255, 255, 255, 0.06)",
-            border: "1px solid rgba(255, 255, 255, 0.14)",
-            color: "var(--text-primary)",
-            fontSize: "14px",
-            fontWeight: "600",
-            cursor: isLoading ? "not-allowed" : "pointer",
-            transition: "all 0.2s ease",
-            marginBottom: "20px",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255, 255, 255, 0.12)")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255, 255, 255, 0.06)")}
+          style={{ width: "100%", marginBottom: "16px" }}
+          icon={
+            <svg width="16" height="16" viewBox="0 0 24 24">
+              <path
+                fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+              />
+            </svg>
+          }
         >
-          {/* Google Icon */}
-          <svg width="18" height="18" viewBox="0 0 24 24">
-            <path
-              fill="#4285F4"
-              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-            />
-            <path
-              fill="#34A853"
-              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-            />
-            <path
-              fill="#FBBC05"
-              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-            />
-            <path
-              fill="#EA4335"
-              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-            />
-          </svg>
           Sign up with Google
-        </button>
+        </Button>
 
         {/* Divider */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "20px",
-          }}
-        >
-          <div style={{ flex: 1, height: "1px", background: "rgba(255, 255, 255, 0.1)" }} />
-          <span style={{ fontSize: "12px", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+          <div style={{ flex: 1, height: "1px", background: "var(--border-subtle)" }} />
+          <span style={{ fontSize: "11.5px", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
             or with email
           </span>
-          <div style={{ flex: 1, height: "1px", background: "rgba(255, 255, 255, 0.1)" }} />
+          <div style={{ flex: 1, height: "1px", background: "var(--border-subtle)" }} />
         </div>
 
         {/* Form */}
-        <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-          <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: "500", color: "var(--text-secondary)", marginBottom: "6px" }}>
-              Full Name *
-            </label>
-            <input
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="e.g. Alex Chen"
-              required
-              style={{
-                width: "100%",
-                padding: "10px 14px",
-                borderRadius: "8px",
-                background: "rgba(0, 0, 0, 0.3)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
-                color: "var(--text-primary)",
-                fontSize: "14px",
-                outline: "none",
-              }}
-            />
-          </div>
+        <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <Input
+            label="Full Name"
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="Alex Chen"
+            leftIcon={<User size={15} />}
+            required
+          />
 
-          <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: "500", color: "var(--text-secondary)", marginBottom: "6px" }}>
-              Professional Headline
-            </label>
-            <input
-              type="text"
-              value={headline}
-              onChange={(e) => setHeadline(e.target.value)}
-              placeholder="e.g. Senior Backend / Distributed Systems Engineer"
-              style={{
-                width: "100%",
-                padding: "10px 14px",
-                borderRadius: "8px",
-                background: "rgba(0, 0, 0, 0.3)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
-                color: "var(--text-primary)",
-                fontSize: "14px",
-                outline: "none",
-              }}
-            />
-          </div>
+          <Input
+            label="Professional Title"
+            type="text"
+            value={headline}
+            onChange={(e) => setHeadline(e.target.value)}
+            placeholder="Staff Distributed Systems Architect"
+            leftIcon={<Briefcase size={15} />}
+          />
 
-          <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: "500", color: "var(--text-secondary)", marginBottom: "6px" }}>
-              Email Address *
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@company.com"
-              required
-              style={{
-                width: "100%",
-                padding: "10px 14px",
-                borderRadius: "8px",
-                background: "rgba(0, 0, 0, 0.3)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
-                color: "var(--text-primary)",
-                fontSize: "14px",
-                outline: "none",
-              }}
-            />
-          </div>
+          <Input
+            label="Email Address"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="alex.chen@jobpilot.dev"
+            leftIcon={<Mail size={15} />}
+            required
+          />
 
-          <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: "500", color: "var(--text-secondary)", marginBottom: "6px" }}>
-              Password (min. 6 characters) *
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••••••"
-              required
-              style={{
-                width: "100%",
-                padding: "10px 14px",
-                borderRadius: "8px",
-                background: "rgba(0, 0, 0, 0.3)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
-                color: "var(--text-primary)",
-                fontSize: "14px",
-                outline: "none",
-              }}
-            />
-          </div>
+          <Input
+            label="Password (min. 6 characters)"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••••••"
+            leftIcon={<Lock size={15} />}
+            required
+          />
 
-          <button
+          <Button
             type="submit"
-            disabled={isLoading}
-            className="btn btn-primary"
-            style={{
-              width: "100%",
-              padding: "12px",
-              marginTop: "8px",
-              fontWeight: "600",
-              fontSize: "14px",
-            }}
+            variant="primary"
+            loading={isLoading}
+            style={{ width: "100%", marginTop: "6px" }}
           >
-            {isLoading ? "Creating Account..." : "Create Account"}
-          </button>
+            Create Account
+          </Button>
         </form>
+      </div>
 
-        {/* Footer Link */}
-        <div style={{ textAlign: "center", marginTop: "24px" }}>
-          <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
-            Already have an account?{" "}
-          </span>
-          <Link
-            href="/login"
-            style={{
-              fontSize: "13px",
-              color: "var(--accent-primary)",
-              fontWeight: "600",
-              textDecoration: "none",
-            }}
-          >
-            Sign in
-          </Link>
-        </div>
+      {/* Footer Link */}
+      <div style={{ textAlign: "center", marginTop: "20px" }}>
+        <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>
+          Already have an account?{" "}
+        </span>
+        <Link
+          href="/login"
+          style={{ fontSize: "13px", color: "var(--accent-primary)", fontWeight: 600, textDecoration: "none" }}
+        >
+          Sign in
+        </Link>
       </div>
     </div>
   );

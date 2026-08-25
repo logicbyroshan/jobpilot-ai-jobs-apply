@@ -119,16 +119,19 @@ export interface GapItem {
   rationale: string;
   current_level: number;
   target_level: number;
-  estimated_effort_hours: number;
-  expected_impact: string;
+  estimated_effort_hours?: number;
+  estimated_hours_to_close?: number;
+  expected_impact?: string;
 }
 
 export interface LearningItem {
   id: string;
   title: string;
+  description?: string;
   item_type: string;
   resource_type?: string;
   url?: string;
+  resource_url?: string;
   duration_minutes?: number;
   estimated_minutes?: number;
   is_completed: boolean;
@@ -144,6 +147,8 @@ export interface LearningPlanType {
   id: string;
   title: string;
   target_skill: string;
+  target_gap_title?: string;
+  estimated_total_hours?: number;
   status: string;
   current_level: number;
   target_level: number;
@@ -154,14 +159,18 @@ export interface LearningPlanType {
 export interface ResourceItem {
   id: string;
   title: string;
-  url: string;
+  url?: string;
+  external_url?: string;
   resource_type: string;
-  provider: string;
+  provider?: string;
+  topic_tag?: string;
+  summary_text?: string;
   duration_minutes?: number;
+  estimated_minutes?: number;
   difficulty?: string;
   difficulty_level?: string;
   cost?: string;
-  topics_json: string[];
+  topics_json?: string[];
 }
 
 export interface AssessmentQuestion {
@@ -215,7 +224,9 @@ export interface ApplicationItem {
   id: string;
   status: string;
   created_at: string;
+  tailored_role_title?: string;
   match_score_at_application: number;
+  notes?: string;
   job: Job;
   artifacts: ApplicationArtifact[];
 }
@@ -225,6 +236,9 @@ export interface ApplicationPolicyType {
   mode: "MANUAL" | "ASSISTED" | "AUTONOMOUS" | string;
   min_match_score: number;
   daily_application_limit: number;
+  require_user_review?: boolean;
+  auto_tailor_resume?: boolean;
+  auto_generate_cover_letter?: boolean;
   require_review_for_senior_roles?: boolean;
   prohibited_keywords?: string[];
   restricted_companies?: string[];

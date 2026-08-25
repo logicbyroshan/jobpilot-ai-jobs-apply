@@ -12,72 +12,69 @@ import {
   Award,
   Send,
   TrendingUp,
-  Activity,
-  Layers,
 } from "lucide-react";
+import { Badge } from "./ui/Badge";
 
 interface NavItem {
   name: string;
   href: string;
   icon: React.ElementType;
-  loopStage: string;
   tag?: string;
+  stageNumber?: string;
 }
 
 const navItems: NavItem[] = [
   {
-    name: "Career Loop",
+    name: "Operating Loop",
     href: "/",
     icon: Compass,
-    loopStage: "OVERVIEW",
   },
   {
-    name: "Identity & Sources",
+    name: "Identity & Provenance",
     href: "/know",
     icon: UserCheck,
-    loopStage: "KNOW",
-    tag: "8 verified",
+    tag: "Verified",
+    stageNumber: "1",
   },
   {
-    name: "Opportunity Match",
+    name: "Opportunity Radar",
     href: "/match",
     icon: Target,
-    loopStage: "MATCH",
-    tag: "6 active",
+    tag: "94% fit",
+    stageNumber: "2",
   },
   {
-    name: "Gaps & Diagnostics",
+    name: "Gap Diagnostics",
     href: "/gap",
     icon: Sparkles,
-    loopStage: "GAP",
-    tag: "3 open",
+    tag: "1 critical",
+    stageNumber: "3",
   },
   {
-    name: "Learning Plans",
+    name: "Learning Pathways",
     href: "/improve",
     icon: BookOpen,
-    loopStage: "IMPROVE",
+    stageNumber: "4",
   },
   {
-    name: "Assessment & Proving",
+    name: "Skill Verification",
     href: "/prove",
     icon: Award,
-    loopStage: "PROVE",
-    tag: "2 ready",
+    tag: "+1.8",
+    stageNumber: "5",
   },
   {
     name: "Application Pipeline",
     href: "/apply",
     icon: Send,
-    loopStage: "APPLY",
-    tag: "Policy active",
+    tag: "2 active",
+    stageNumber: "6",
   },
   {
-    name: "Outcome & Funnel",
+    name: "Conversion Funnel",
     href: "/outcome",
     icon: TrendingUp,
-    loopStage: "OUTCOME",
-    tag: "+15% fit",
+    stageNumber: "7",
   },
 ];
 
@@ -87,64 +84,63 @@ export function Sidebar() {
   return (
     <aside className="sidebar">
       {/* Brand Header */}
-      <div style={{ padding: "24px 20px 20px", borderBottom: "1px solid var(--border-subtle)" }}>
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none" }}>
+      <div style={{ padding: "18px 18px", borderBottom: "1px solid var(--border-subtle)" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
           <div
             style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "10px",
+              width: "32px",
+              height: "32px",
+              borderRadius: "8px",
               background: "rgba(255, 255, 255, 0.04)",
               border: "1px solid var(--border-subtle)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              padding: "5px",
-              boxShadow: "0 0 16px rgba(229, 30, 37, 0.2)",
+              padding: "4px",
               flexShrink: 0,
             }}
           >
             <img
               src="/logo-dark.png"
-              alt="JobPilot Logo"
+              alt="JobPilot"
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
           </div>
           <div>
-            <div style={{ fontWeight: 800, fontSize: "17px", letterSpacing: "-0.03em", display: "flex", alignItems: "center", gap: "1px" }}>
+            <div style={{ fontWeight: 700, fontSize: "15px", letterSpacing: "-0.02em", display: "flex", alignItems: "center", gap: "1px" }}>
               <span style={{ color: "var(--text-main)" }}>Job</span>
-              <span style={{ color: "#ef4444" }}>Pilot</span>
+              <span style={{ color: "var(--accent-primary)" }}>Pilot</span>
             </div>
-            <div style={{ fontSize: "11px", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
-              Career OS v1.0
+            <div style={{ fontSize: "10.5px", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
+              Career OS
             </div>
           </div>
         </Link>
       </div>
 
-      {/* Loop Stages Navigation */}
-      <div style={{ padding: "16px 12px", flex: 1, overflowY: "auto" }}>
+      {/* Navigation */}
+      <div style={{ padding: "12px 10px", flex: 1, overflowY: "auto" }}>
         <div
           style={{
             fontSize: "11px",
-            fontWeight: 700,
+            fontWeight: 600,
             textTransform: "uppercase",
-            letterSpacing: "0.08em",
+            letterSpacing: "0.06em",
             color: "var(--text-dim)",
-            padding: "8px 12px 12px",
+            padding: "6px 10px 10px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          <span>Operating Loop</span>
+          <span>Lifecycle Stages</span>
           <span style={{ fontSize: "10px", color: "var(--accent-emerald)", display: "flex", alignItems: "center", gap: "4px" }}>
-            <span className="pulse-dot" style={{ background: "var(--accent-emerald)" }}></span>
-            LIVE
+            <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: "var(--accent-emerald)" }} />
+            Live
           </span>
         </div>
 
-        <nav style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+        <nav style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -157,34 +153,32 @@ export function Sidebar() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  padding: "10px 14px",
+                  padding: "8px 10px",
                   borderRadius: "var(--radius-sm)",
-                  fontSize: "13.5px",
+                  fontSize: "13px",
                   fontWeight: isActive ? 600 : 500,
                   color: isActive ? "#ffffff" : "var(--text-muted)",
-                  background: isActive
-                    ? "linear-gradient(90deg, rgba(239, 68, 68, 0.18) 0%, rgba(239, 68, 68, 0.03) 100%)"
-                    : "transparent",
-                  borderLeft: isActive ? "3px solid var(--accent-primary)" : "3px solid transparent",
-                  transition: "all 0.15s ease",
+                  background: isActive ? "var(--bg-elevated)" : "transparent",
+                  borderLeft: isActive ? "2px solid var(--accent-primary)" : "2px solid transparent",
+                  transition: "all 0.1s ease",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
                   <Icon
-                    size={18}
+                    size={16}
                     color={isActive ? "var(--accent-primary)" : "var(--text-dim)"}
                     style={{ flexShrink: 0 }}
                   />
-                  <span style={{ color: isActive ? "#ffffff" : "var(--text-muted)" }}>{item.name}</span>
+                  <span>{item.name}</span>
                 </div>
                 {item.tag && (
                   <span
                     style={{
                       fontSize: "10px",
-                      padding: "2px 6px",
-                      borderRadius: "6px",
-                      background: isActive ? "rgba(239, 68, 68, 0.25)" : "rgba(255, 255, 255, 0.06)",
-                      color: isActive ? "#fca5a5" : "var(--text-dim)",
+                      padding: "1px 6px",
+                      borderRadius: "4px",
+                      background: isActive ? "rgba(225, 29, 72, 0.18)" : "rgba(255, 255, 255, 0.05)",
+                      color: isActive ? "#fda4af" : "var(--text-dim)",
                       fontWeight: 600,
                     }}
                   >
@@ -197,26 +191,24 @@ export function Sidebar() {
         </nav>
       </div>
 
-      {/* Autonomous Policy Status */}
+      {/* Mode Footer Badge */}
       <div
         style={{
-          padding: "16px",
-          margin: "12px",
-          borderRadius: "var(--radius-md)",
-          background: "rgba(15, 23, 42, 0.8)",
+          padding: "12px 14px",
+          margin: "10px",
+          borderRadius: "var(--radius-sm)",
+          background: "rgba(255, 255, 255, 0.02)",
           border: "1px solid var(--border-subtle)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-          <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>
-            Autonomous Mode
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
+          <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-dim)", textTransform: "uppercase" }}>
+            Autonomy Mode
           </span>
-          <span className="badge badge-emerald" style={{ padding: "2px 8px", fontSize: "10px" }}>
-            ASSISTED
-          </span>
+          <Badge variant="success" size="sm">Assisted</Badge>
         </div>
-        <div style={{ fontSize: "12px", color: "var(--text-dim)", lineHeight: 1.4 }}>
-          Auto-evaluating matches &gt;90%. User confirmation on submission.
+        <div style={{ fontSize: "11.5px", color: "var(--text-dim)", lineHeight: 1.35 }}>
+          Auto-matching &gt;90%. User confirmation on submit.
         </div>
       </div>
     </aside>

@@ -4,17 +4,17 @@ import React, { useState, useEffect } from "react";
 import {
   Send,
   Sliders,
-  FileCheck,
-  Building,
   CheckCircle2,
-  Clock,
-  Sparkles,
-  Shield,
-  FileText,
+  Building,
   Save,
+  Shield,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { ApplicationItem, ApplicationPolicyType } from "@/lib/types";
+import { Button } from "../components/ui/Button";
+import { Badge } from "../components/ui/Badge";
+import { Card } from "../components/ui/Card";
+import { Checkbox } from "../components/ui/Checkbox";
 
 export default function ApplyPipelinePage() {
   const [applications, setApplications] = useState<ApplicationItem[]>([]);
@@ -58,273 +58,238 @@ export default function ApplyPipelinePage() {
     }
   };
 
-  const stages = [
-    { key: "SUBMITTED", label: "Submitted", color: "var(--accent-cyan)" },
-    { key: "RECRUITER_RESPONSE", label: "Recruiter Screen", color: "var(--accent-primary)" },
-    { key: "INTERVIEW", label: "Interview", color: "var(--accent-amber)" },
-    { key: "TECHNICAL_ROUND", label: "Technical Round", color: "#a855f7" },
-    { key: "OFFER", label: "Offer Received", color: "var(--accent-emerald)" },
-  ];
-
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-            <span className="badge badge-rose">Loop Stage 6</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Badge variant="brand">Stage 6</Badge>
             <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Autonomous Application Execution</span>
           </div>
-          <h1 style={{ fontSize: "26px", fontWeight: 800, letterSpacing: "-0.03em" }}>
-            APPLY — Application Pipeline & Tailored Artifacts
+          <h1 style={{ fontSize: "24px", fontWeight: 700 }}>
+            APPLY — Governed Pipeline & Tailored Artifacts
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "14px", marginTop: "4px" }}>
-            Autonomous and assisted submission workflows with customized cover letters, resume provenance citations, and governance guardrails.
+          <p style={{ color: "var(--text-muted)", fontSize: "13.5px", marginTop: "2px" }}>
+            Automated submission workflows with tailored resumes, cover letters, and policy controls.
           </p>
         </div>
 
         {/* Tab Toggle */}
-        <div style={{ display: "flex", gap: "8px" }}>
-          <button
+        <div style={{ display: "flex", gap: "6px" }}>
+          <Button
+            variant={activeTab === "pipeline" ? "primary" : "secondary"}
+            size="sm"
             onClick={() => setActiveTab("pipeline")}
-            className={`btn ${activeTab === "pipeline" ? "btn-primary" : "btn-secondary"}`}
-            style={{ fontSize: "13px" }}
           >
-            Pipeline ({applications.length})
-          </button>
-          <button
+            Submissions ({applications.length})
+          </Button>
+          <Button
+            variant={activeTab === "policy" ? "primary" : "secondary"}
+            size="sm"
             onClick={() => setActiveTab("policy")}
-            className={`btn ${activeTab === "policy" ? "btn-primary" : "btn-secondary"}`}
-            style={{ fontSize: "13px" }}
+            icon={<Sliders size={13} />}
           >
-            <Sliders size={15} />
-            <span>Autonomous Policy</span>
-          </button>
+            Policy Guardrails
+          </Button>
         </div>
       </div>
 
+      {/* Policy Saved Notice */}
+      {policySavedNotice && (
+        <div
+          style={{
+            padding: "10px 14px",
+            borderRadius: "var(--radius-sm)",
+            background: "rgba(16, 185, 129, 0.1)",
+            border: "1px solid rgba(16, 185, 129, 0.25)",
+            color: "#34d399",
+            fontSize: "13px",
+            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <CheckCircle2 size={16} />
+          <span>Application policy guardrails successfully updated!</span>
+        </div>
+      )}
+
+      {/* PIPELINE TAB */}
       {activeTab === "pipeline" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "24px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
           {/* Applications List */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {applications.map((app) => {
               const isSelected = selectedApp?.id === app.id;
               return (
-                <div
+                <Card
                   key={app.id}
+                  interactive
                   onClick={() => setSelectedApp(app)}
-                  className="card card-interactive"
                   style={{
                     border: isSelected ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
-                    background: isSelected ? "rgba(99, 102, 241, 0.1)" : "var(--bg-card)",
+                    background: isSelected ? "var(--bg-elevated)" : "var(--bg-card)",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                     <div>
-                      <h3 style={{ fontSize: "16px", fontWeight: 700 }}>{app.job.title}</h3>
-                      <div style={{ fontSize: "13px", color: "var(--accent-cyan)", fontWeight: 600 }}>
-                        {app.job.company.name} • {app.job.location}
+                      <h3 style={{ fontSize: "15px", fontWeight: 700 }}>{app.tailored_role_title}</h3>
+                      <div style={{ fontSize: "12.5px", color: "var(--accent-cyan)", fontWeight: 600 }}>
+                        {app.job?.company?.name || "Target Employer"} • {app.job?.location || "Remote"}
                       </div>
                     </div>
-                    <span
-                      className="badge"
-                      style={{
-                        background:
-                          app.status === "OFFER"
-                            ? "rgba(16, 185, 129, 0.2)"
-                            : app.status === "INTERVIEW"
-                            ? "rgba(245, 158, 11, 0.2)"
-                            : "rgba(99, 102, 241, 0.2)",
-                        color:
-                          app.status === "OFFER"
-                            ? "#34d399"
-                            : app.status === "INTERVIEW"
-                            ? "#fbbf24"
-                            : "#a5b4fc",
-                        fontWeight: 700,
-                      }}
-                    >
+                    <Badge variant={app.status === "OFFER" ? "success" : "brand"} size="sm">
                       {app.status}
-                    </span>
+                    </Badge>
                   </div>
 
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", color: "var(--text-dim)", marginTop: "10px" }}>
-                    <span>Applied: {new Date(app.created_at).toLocaleDateString()}</span>
-                    <span>Match at Apply: {app.match_score_at_application || 92}%</span>
-                    <span>{app.artifacts.length} Tailored Artifacts</span>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", color: "var(--text-dim)", marginTop: "8px" }}>
+                    <span>Match at Apply: <strong>{app.match_score_at_application}%</strong></span>
+                    <span>Artifacts: {app.artifacts?.length || 1}</span>
                   </div>
-                </div>
+                </Card>
               );
             })}
           </div>
 
-          {/* Selected Application Artifact Viewer */}
+          {/* Selected Application Details */}
           {selectedApp && (
-            <div className="card" style={{ position: "sticky", top: "84px", height: "fit-content" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+            <Card style={{ position: "sticky", top: "80px", height: "fit-content" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px" }}>
                 <div>
-                  <h3 style={{ fontSize: "18px", fontWeight: 700 }}>{selectedApp.job.title}</h3>
-                  <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>
-                    {selectedApp.job.company.name}
+                  <Badge variant="brand" size="sm" style={{ marginBottom: "6px" }}>{selectedApp.status}</Badge>
+                  <h2 style={{ fontSize: "18px", fontWeight: 700 }}>{selectedApp.tailored_role_title}</h2>
+                  <div style={{ fontSize: "13px", color: "var(--accent-cyan)", fontWeight: 600 }}>
+                    {selectedApp.job?.company?.name} • {selectedApp.job?.location}
                   </div>
                 </div>
-                <span className="badge badge-emerald">Status: {selectedApp.status}</span>
+
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: "22px", fontWeight: 800, color: "var(--accent-emerald)" }}>
+                    {selectedApp.match_score_at_application}%
+                  </div>
+                  <div style={{ fontSize: "10.5px", color: "var(--text-dim)" }}>Initial Score</div>
+                </div>
               </div>
 
-              {/* Artifacts list */}
-              <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: "10px" }}>
-                Generated Tailored Artifacts ({selectedApp.artifacts.length})
-              </div>
+              {/* Artifacts Kit */}
+              <div style={{ marginBottom: "16px" }}>
+                <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-dim)", textTransform: "uppercase", marginBottom: "8px" }}>
+                  Generated Tailored Artifacts ({selectedApp.artifacts?.length || 0})
+                </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {selectedApp.artifacts.map((art) => (
-                  <div
-                    key={art.id}
-                    style={{
-                      padding: "14px",
-                      borderRadius: "var(--radius-sm)",
-                      background: "rgba(255, 255, 255, 0.02)",
-                      border: "1px solid var(--border-subtle)",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                      <FileText size={16} color="var(--accent-primary)" />
-                      <span style={{ fontWeight: 600, fontSize: "14px", color: "#ffffff" }}>{art.title}</span>
-                    </div>
-
-                    {art.content_text && (
-                      <p style={{ fontSize: "12.5px", color: "var(--text-muted)", lineHeight: 1.5, marginBottom: "8px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {selectedApp.artifacts?.map((art) => (
+                    <div
+                      key={art.id}
+                      style={{
+                        padding: "12px",
+                        background: "rgba(255, 255, 255, 0.02)",
+                        borderRadius: "var(--radius-sm)",
+                        border: "1px solid var(--border-subtle)",
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+                        <span style={{ fontSize: "13px", fontWeight: 600 }}>{art.title}</span>
+                        <Badge variant="neutral" size="sm">{art.artifact_type}</Badge>
+                      </div>
+                      <p style={{ fontSize: "12px", color: "var(--text-muted)", lineHeight: 1.4 }}>
                         {art.content_text}
                       </p>
-                    )}
-
-                    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                      {art.provenance_sources_json.map((p) => (
-                        <span
-                          key={p}
-                          style={{
-                            fontSize: "10px",
-                            padding: "2px 6px",
-                            borderRadius: "4px",
-                            background: "rgba(99, 102, 241, 0.15)",
-                            color: "#a5b4fc",
-                          }}
-                        >
-                          Source: {p}
-                        </span>
-                      ))}
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            </Card>
           )}
         </div>
       )}
 
-      {/* Autonomous Policy Settings */}
+      {/* POLICY TAB */}
       {activeTab === "policy" && policy && (
-        <div className="card" style={{ maxWidth: "800px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-            <div>
-              <h2 style={{ fontSize: "20px", fontWeight: 700 }}>Autonomous Policy & Governance</h2>
-              <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>
-                Control safety boundaries, submission approval requirements, and matching score thresholds.
-              </div>
-            </div>
-            {policySavedNotice && (
-              <span className="badge badge-emerald">Policy Saved & Active!</span>
-            )}
+        <Card style={{ maxWidth: "600px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+            <Shield size={18} color="var(--accent-primary)" />
+            <h2 style={{ fontSize: "17px", fontWeight: 700 }}>Autonomous Policy & Guardrails</h2>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            {/* Mode Select */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
-              <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)", display: "block", marginBottom: "8px" }}>
+              <label style={{ display: "block", fontSize: "13px", fontWeight: 500, color: "var(--text-muted)", marginBottom: "6px" }}>
                 Execution Mode
               </label>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
-                {(["MANUAL", "ASSISTED", "AUTONOMOUS"] as const).map((m) => (
-                  <div
-                    key={m}
-                    onClick={() => setPolicy({ ...policy, mode: m })}
-                    style={{
-                      padding: "16px",
-                      borderRadius: "var(--radius-sm)",
-                      background: policy.mode === m ? "rgba(99, 102, 241, 0.15)" : "rgba(255, 255, 255, 0.02)",
-                      border: policy.mode === m ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
-                      cursor: "pointer",
-                      textAlign: "center",
-                    }}
-                  >
-                    <div style={{ fontWeight: 700, fontSize: "14px", color: policy.mode === m ? "#ffffff" : "var(--text-muted)" }}>
-                      {m}
-                    </div>
-                    <div style={{ fontSize: "11px", color: "var(--text-dim)", marginTop: "4px" }}>
-                      {m === "MANUAL"
-                        ? "User initiates all steps"
-                        : m === "ASSISTED"
-                        ? "AI prepares, user confirms"
-                        : "Full background execution"}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Daily Application Limit */}
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)" }}>
-                  Daily Application Limit
-                </label>
-                <span style={{ fontWeight: 700, color: "#ffffff" }}>
-                  {policy.daily_application_limit} Applications / Day
-                </span>
-              </div>
-              <input
-                type="range"
-                min="1"
-                max="25"
-                value={policy.daily_application_limit}
-                onChange={(e) => setPolicy({ ...policy, daily_application_limit: parseInt(e.target.value) })}
-                style={{ width: "100%", accentColor: "var(--accent-primary)" }}
-              />
-            </div>
-
-            {/* Min Match Score */}
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-muted)" }}>
-                  Minimum Match Score Threshold
-                </label>
-                <span style={{ fontWeight: 700, color: "var(--accent-emerald)" }}>
-                  {policy.min_match_score}%
-                </span>
-              </div>
-              <input
-                type="range"
-                min="60"
-                max="95"
-                value={policy.min_match_score}
-                onChange={(e) => setPolicy({ ...policy, min_match_score: parseFloat(e.target.value) })}
-                style={{ width: "100%", accentColor: "var(--accent-emerald)" }}
-              />
-            </div>
-
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "12px" }}>
-              <button
-                onClick={handleSavePolicy}
-                disabled={savingPolicy}
-                className="btn btn-primary"
-                style={{ fontSize: "13.5px" }}
+              <select
+                value={policy.mode}
+                onChange={(e) => setPolicy({ ...policy, mode: e.target.value })}
+                style={{ width: "100%", padding: "8px 12px", fontSize: "13.5px" }}
               >
-                <Save size={15} />
-                <span>{savingPolicy ? "Saving Policy..." : "Update Policy Guardrails"}</span>
-              </button>
+                <option value="ASSISTED">Assisted (Review Required Before Submission)</option>
+                <option value="AUTONOMOUS">Autonomous (Auto-Submit When Criteria Met)</option>
+                <option value="MANUAL">Manual Only</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: "13px", fontWeight: 500, color: "var(--text-muted)", marginBottom: "6px" }}>
+                Daily Application Limit
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="50"
+                value={policy.daily_application_limit}
+                onChange={(e) => setPolicy({ ...policy, daily_application_limit: parseInt(e.target.value) || 1 })}
+                style={{ width: "100%", padding: "8px 12px", fontSize: "13.5px" }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: "13px", fontWeight: 500, color: "var(--text-muted)", marginBottom: "6px" }}>
+                Minimum Match Score Threshold (%)
+              </label>
+              <input
+                type="number"
+                min="50"
+                max="99"
+                value={policy.min_match_score}
+                onChange={(e) => setPolicy({ ...policy, min_match_score: parseFloat(e.target.value) || 75 })}
+                style={{ width: "100%", padding: "8px 12px", fontSize: "13.5px" }}
+              />
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "4px" }}>
+              <Checkbox
+                checked={!!policy.require_user_review}
+                onChange={(checked) => setPolicy({ ...policy, require_user_review: checked })}
+                label="Require manual confirmation before sending external applications"
+              />
+              <Checkbox
+                checked={!!policy.auto_tailor_resume}
+                onChange={(checked) => setPolicy({ ...policy, auto_tailor_resume: checked })}
+                label="Automatically generate evidence-backed tailored resume kits"
+              />
+              <Checkbox
+                checked={!!policy.auto_generate_cover_letter}
+                onChange={(checked) => setPolicy({ ...policy, auto_generate_cover_letter: checked })}
+                label="Automatically draft role-specific provenance cover letters"
+              />
+            </div>
+
+            <div style={{ paddingTop: "12px", borderTop: "1px solid var(--border-subtle)" }}>
+              <Button
+                variant="primary"
+                size="md"
+                onClick={handleSavePolicy}
+                loading={savingPolicy}
+                icon={<Save size={14} />}
+              >
+                Save Policy Changes
+              </Button>
             </div>
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );

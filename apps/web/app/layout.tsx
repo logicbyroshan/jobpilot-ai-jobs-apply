@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Sidebar } from "./components/Sidebar";
-import { Topbar } from "./components/Topbar";
+import { AppShell } from "./components/AppShell";
 import { AuthProvider } from "@/lib/auth-context";
 
 export const metadata: Metadata = {
@@ -31,13 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="dark">
         <AuthProvider>
-          <div className="app-container">
-            <Sidebar />
-            <div className="main-content">
-              <Topbar />
-              <main className="page-body">{children}</main>
-            </div>
-          </div>
+          <AppShell>{children}</AppShell>
         </AuthProvider>
       </body>
     </html>

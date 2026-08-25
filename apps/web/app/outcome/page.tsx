@@ -6,15 +6,13 @@ import {
   TrendingUp,
   AlertTriangle,
   Sparkles,
-  ArrowRight,
-  CheckCircle2,
-  Clock,
   Compass,
-  Repeat,
-  ShieldCheck,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { FunnelAnalytics } from "@/lib/types";
+import { Button } from "../components/ui/Button";
+import { Badge } from "../components/ui/Badge";
+import { Card } from "../components/ui/Card";
 
 export default function OutcomeFunnelPage() {
   const [funnel, setFunnel] = useState<FunnelAnalytics | null>(null);
@@ -32,52 +30,53 @@ export default function OutcomeFunnelPage() {
   }, []);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-            <span className="badge badge-primary">Loop Stage 7</span>
-            <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Conversion Analytics & Closed-Loop Feedback</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Badge variant="brand">Stage 7</Badge>
+            <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Conversion Analytics & Closed Loop</span>
           </div>
-          <h1 style={{ fontSize: "26px", fontWeight: 800, letterSpacing: "-0.03em" }}>
+          <h1 style={{ fontSize: "24px", fontWeight: 700 }}>
             OUTCOME — Conversion Funnel & Strategic Feedback Loop
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "14px", marginTop: "4px" }}>
-            Tracks drop-offs across screening, technical rounds, and offer stages to continuously improve the KNOW and IMPROVE recommendations.
+          <p style={{ color: "var(--text-muted)", fontSize: "13.5px", marginTop: "2px" }}>
+            Tracks drop-offs across stages to continuously update KNOW and IMPROVE recommendations.
           </p>
         </div>
 
-        <Link href="/" className="btn btn-primary" style={{ fontSize: "13px" }}>
-          <Compass size={15} />
-          <span>Return to Career Operating Loop</span>
+        <Link href="/" style={{ textDecoration: "none" }}>
+          <Button variant="secondary" size="md" icon={<Compass size={14} />}>
+            Return to Career Loop
+          </Button>
         </Link>
       </div>
 
       {/* Funnel Conversion Visualizer */}
-      <div className="card">
-        <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "16px" }}>
+      <Card>
+        <h2 style={{ fontSize: "17px", fontWeight: 700, marginBottom: "16px" }}>
           End-to-End Application Conversion Funnel
         </h2>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {funnel?.stages.map((stg, idx) => {
             const widthPct = Math.max(15, 100 - idx * 18);
             return (
               <div key={stg.stage}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13.5px", marginBottom: "6px" }}>
-                  <span style={{ fontWeight: 600, color: "#ffffff" }}>{stg.stage}</span>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", marginBottom: "4px" }}>
+                  <span style={{ fontWeight: 600, color: "var(--text-main)" }}>{stg.stage}</span>
                   <span style={{ color: "var(--text-muted)" }}>
                     <strong style={{ color: "#ffffff" }}>{stg.count}</strong> candidates (
                     <span style={{ color: "var(--accent-emerald)" }}>{stg.conversion_rate_percentage}% conversion</span>)
                   </span>
                 </div>
-                <div className="progress-bar-bg" style={{ height: "12px" }}>
+                <div className="progress-bar-bg">
                   <div
                     className="progress-bar-fill"
                     style={{
                       width: `${widthPct}%`,
-                      background: "linear-gradient(90deg, #6366f1 0%, #06b6d4 50%, #10b981 100%)",
+                      background: "var(--accent-primary)",
                     }}
                   />
                 </div>
@@ -85,85 +84,41 @@ export default function OutcomeFunnelPage() {
             );
           })}
         </div>
-      </div>
+      </Card>
 
       {/* Closed-Loop AI Insights Box */}
       <div className="grid-2">
         {/* Primary Bottleneck Diagnostic */}
-        <div
-          className="card"
-          style={{
-            background: "rgba(244, 63, 94, 0.06)",
-            border: "1px solid rgba(244, 63, 94, 0.2)",
-          }}
-        >
+        <Card style={{ background: "rgba(225, 29, 72, 0.04)", border: "1px solid rgba(225, 29, 72, 0.2)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-            <AlertTriangle size={20} color="var(--accent-rose)" />
-            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "var(--accent-rose)" }}>
-              Identified Funnel Bottleneck
-            </h3>
+            <AlertTriangle size={18} color="var(--accent-primary)" />
+            <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Primary Detected Bottleneck</h3>
           </div>
-          <p style={{ fontSize: "13.5px", color: "var(--text-main)", lineHeight: 1.6 }}>
-            {funnel?.primary_bottleneck ||
-              "Recruiter initial screen response rate was lower on infrastructure roles prior to completing hands-on Kubernetes verification assessments."}
+          <div style={{ fontSize: "13px", fontWeight: 600, color: "#fda4af", marginBottom: "4px" }}>
+            {funnel?.bottleneck_summary?.primary_bottleneck_stage || "TECHNICAL_ROUND"}
+          </div>
+          <p style={{ fontSize: "12.5px", color: "var(--text-muted)", lineHeight: 1.45 }}>
+            {funnel?.bottleneck_summary?.bottleneck_reason ||
+              "Drop-off observed between recruiter screen and architectural system design rounds."}
           </p>
-        </div>
+        </Card>
 
-        {/* Strategic Feedback Recommendation */}
-        <div
-          className="card"
-          style={{
-            background: "rgba(16, 185, 129, 0.06)",
-            border: "1px solid rgba(16, 185, 129, 0.2)",
-          }}
-        >
+        {/* Adaptive Closed-Loop Strategy */}
+        <Card style={{ background: "rgba(16, 185, 129, 0.04)", border: "1px solid rgba(16, 185, 129, 0.2)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-            <Repeat size={20} color="var(--accent-emerald)" />
-            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#34d399" }}>
-              Closed-Loop Feedback Action
-            </h3>
+            <Sparkles size={18} color="var(--accent-emerald)" />
+            <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Adaptive Loop Recommendations</h3>
           </div>
-          <p style={{ fontSize: "13.5px", color: "var(--text-main)", lineHeight: 1.6 }}>
-            {funnel?.strategic_recommendation ||
-              "Outcome data indicates high interview conversion (+60%) when System Design and Distributed Consensus evidence is cited on tailored application resumes."}
+          <p style={{ fontSize: "12.5px", color: "var(--text-muted)", lineHeight: 1.45, marginBottom: "12px" }}>
+            {funnel?.bottleneck_summary?.actionable_recommendation ||
+              "Complete the distributed transactions & consensus assessment in Stage 5 to calibrate proof evidence."}
           </p>
-        </div>
-      </div>
-
-      {/* Lifecycle Timeline */}
-      <div className="card">
-        <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "16px" }}>
-          Recent Conversion Lifecycle Events
-        </h3>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          {funnel?.recent_events.map((ev) => (
-            <div
-              key={ev.id}
-              style={{
-                padding: "12px 16px",
-                borderRadius: "var(--radius-sm)",
-                background: "rgba(255, 255, 255, 0.02)",
-                border: "1px solid var(--border-subtle)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <CheckCircle2 size={18} color="var(--accent-emerald)" />
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: "14px" }}>{ev.event_type}</div>
-                  <div style={{ fontSize: "12px", color: "var(--text-dim)" }}>{ev.notes}</div>
-                </div>
-              </div>
-
-              <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>
-                {new Date(ev.occurred_at).toLocaleDateString()}
-              </span>
-            </div>
-          ))}
-        </div>
+          <Link href="/improve" style={{ textDecoration: "none" }}>
+            <Button variant="secondary" size="sm">
+              Open Recommended Pathways
+            </Button>
+          </Link>
+        </Card>
       </div>
     </div>
   );

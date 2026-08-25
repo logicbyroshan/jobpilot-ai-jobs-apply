@@ -4,13 +4,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   BookOpen,
-  CheckCircle2,
-  Circle,
   ExternalLink,
   Award,
-  Layers,
-  Sparkles,
-  Clock,
   BookMarked,
   Video,
   FileCode,
@@ -18,6 +13,10 @@ import {
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { LearningPlanType, ResourceItem } from "@/lib/types";
+import { Button } from "../components/ui/Button";
+import { Badge } from "../components/ui/Badge";
+import { Card } from "../components/ui/Card";
+import { Checkbox } from "../components/ui/Checkbox";
 
 export default function ImproveLearningPage() {
   const [plans, setPlans] = useState<LearningPlanType[]>([]);
@@ -55,200 +54,166 @@ export default function ImproveLearningPage() {
   const getItemIcon = (type: string) => {
     switch (type) {
       case "READ":
-        return <BookMarked size={16} color="var(--accent-cyan)" />;
+        return <BookMarked size={14} color="var(--accent-cyan)" />;
       case "WATCH":
-        return <Video size={16} color="var(--accent-amber)" />;
+        return <Video size={14} color="var(--accent-amber)" />;
       case "BUILD":
       case "PRACTICE":
-        return <FileCode size={16} color="var(--accent-emerald)" />;
+        return <FileCode size={14} color="var(--accent-emerald)" />;
       case "PROVE":
-        return <Award size={16} color="#a855f7" />;
+        return <Award size={14} color="var(--accent-primary)" />;
       default:
-        return <GraduationCap size={16} color="var(--accent-primary)" />;
+        return <GraduationCap size={14} color="var(--text-muted)" />;
     }
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-            <span className="badge badge-emerald">Loop Stage 4</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <Badge variant="success">Stage 4</Badge>
             <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>Curated Learning Pathways</span>
           </div>
-          <h1 style={{ fontSize: "26px", fontWeight: 800, letterSpacing: "-0.03em" }}>
+          <h1 style={{ fontSize: "24px", fontWeight: 700 }}>
             IMPROVE — High-Signal Skill Acquisition
           </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "14px", marginTop: "4px" }}>
-            Personalized, gap-targeted learning plans linking authoritative engineering resources and hands-on milestones.
+          <p style={{ color: "var(--text-muted)", fontSize: "13.5px", marginTop: "2px" }}>
+            Personalized, gap-targeted plans linking engineering resources and hands-on milestones.
           </p>
         </div>
 
-        <Link href="/prove" className="btn btn-primary" style={{ fontSize: "13px" }}>
-          <Award size={15} />
-          <span>Proceed to Proving & Assessments</span>
+        <Link href="/prove" style={{ textDecoration: "none" }}>
+          <Button variant="primary" size="md" icon={<Award size={14} />}>
+            Proceed to Proving (Stage 5)
+          </Button>
         </Link>
       </div>
 
       {/* Active Learning Plans */}
       {plans.map((plan) => (
-        <div key={plan.id} className="card">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+        <Card key={plan.id}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "14px" }}>
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
-                <h2 style={{ fontSize: "19px", fontWeight: 700 }}>{plan.title}</h2>
-                <span className="badge badge-emerald">{plan.status}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "2px" }}>
+                <h2 style={{ fontSize: "17px", fontWeight: 700 }}>{plan.title}</h2>
+                <Badge variant={plan.status === "COMPLETED" ? "success" : "brand"} size="sm">
+                  {plan.status}
+                </Badge>
               </div>
-              <div style={{ fontSize: "13px", color: "var(--text-dim)" }}>
-                Target Competency: <strong style={{ color: "#ffffff" }}>{plan.target_skill}</strong> • Level {plan.current_level} → {plan.target_level}
+              <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>
+                Targeting: <strong style={{ color: "var(--text-main)" }}>{plan.target_gap_title}</strong>
               </div>
             </div>
 
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "24px", fontWeight: 800, color: "var(--accent-emerald)" }}>
-                {plan.progress_percentage.toFixed(0)}%
+              <div style={{ fontSize: "13.5px", fontWeight: 700 }}>
+                {plan.progress_percentage}% Completed
               </div>
-              <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Milestones Completed</div>
+              <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>
+                Est. {plan.estimated_total_hours} Hours
+              </div>
             </div>
           </div>
 
           {/* Progress Bar */}
-          <div className="progress-bar-bg" style={{ height: "8px", marginBottom: "20px" }}>
+          <div className="progress-bar-bg" style={{ marginBottom: "16px" }}>
             <div
               className="progress-bar-fill"
               style={{
                 width: `${plan.progress_percentage}%`,
-                background: "linear-gradient(90deg, #10b981 0%, #06b6d4 100%)",
+                background: "var(--accent-primary)",
               }}
             />
           </div>
 
-          {/* Checklist Items */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            {plan.items.map((item) => (
+          {/* Milestones / Checklist */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {plan.items.map((item, idx) => (
               <div
                 key={item.id}
-                onClick={() => handleToggleItem(plan.id, item.id)}
                 style={{
-                  padding: "12px 16px",
+                  padding: "10px 14px",
                   borderRadius: "var(--radius-sm)",
-                  background: item.is_completed ? "rgba(16, 185, 129, 0.05)" : "rgba(255, 255, 255, 0.02)",
-                  border: item.is_completed ? "1px solid rgba(16, 185, 129, 0.25)" : "1px solid var(--border-subtle)",
+                  background: item.is_completed ? "rgba(16, 185, 129, 0.04)" : "rgba(255, 255, 255, 0.02)",
+                  border: item.is_completed ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid var(--border-subtle)",
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  cursor: "pointer",
-                  transition: "all 0.15s ease",
+                  flexWrap: "wrap",
+                  gap: "10px",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  {item.is_completed ? (
-                    <CheckCircle2 size={20} color="var(--accent-emerald)" />
-                  ) : (
-                    <Circle size={20} color="var(--text-dim)" />
-                  )}
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <Checkbox
+                    checked={item.is_completed}
+                    onChange={() => handleToggleItem(plan.id, item.id)}
+                    disabled={togglingId === item.id}
+                  />
                   <div>
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: 600,
-                        textDecoration: item.is_completed ? "line-through" : "none",
-                        color: item.is_completed ? "var(--text-muted)" : "#ffffff",
-                      }}
-                    >
-                      {item.title}
+                    <div style={{ fontSize: "13.5px", fontWeight: 600, color: item.is_completed ? "var(--text-muted)" : "var(--text-main)", textDecoration: item.is_completed ? "line-through" : "none" }}>
+                      {idx + 1}. {item.title}
                     </div>
-                    {item.resource && (
-                      <div style={{ fontSize: "12px", color: "var(--accent-cyan)", marginTop: "2px" }}>
-                        {item.resource.provider} • {item.resource.difficulty}
-                      </div>
+                    {item.description && (
+                      <div style={{ fontSize: "12px", color: "var(--text-dim)" }}>{item.description}</div>
                     )}
                   </div>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <span className="badge badge-subtle" style={{ fontSize: "11px", gap: "4px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                     {getItemIcon(item.item_type)}
-                    {item.item_type}
-                  </span>
-                  {item.estimated_minutes && (
-                    <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>
-                      {item.estimated_minutes} min
-                    </span>
+                    <Badge variant="neutral" size="sm">{item.item_type}</Badge>
+                  </div>
+                  {item.resource_url && (
+                    <a
+                      href={item.resource_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "var(--accent-primary)", display: "flex", alignItems: "center" }}
+                    >
+                      <ExternalLink size={13} />
+                    </a>
                   )}
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       ))}
 
-      {/* Curated Resource Registry */}
-      <div className="card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-          <div>
-            <h3 style={{ fontSize: "18px", fontWeight: 700 }}>Curated Technical Resource Registry</h3>
-            <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>
-              Vetted engineering books, video courses, official CNCF guides, and hands-on lab sandboxes.
-            </div>
-          </div>
-        </div>
-
-        <div className="grid-2">
+      {/* Curated Literature Library */}
+      <div>
+        <h2 style={{ fontSize: "17px", fontWeight: 700, marginBottom: "12px" }}>
+          Curated Engineering Resources Library
+        </h2>
+        <div className="grid-3">
           {resources.map((res) => (
-            <div
-              key={res.id}
-              style={{
-                padding: "16px",
-                borderRadius: "var(--radius-sm)",
-                background: "rgba(255, 255, 255, 0.02)",
-                border: "1px solid var(--border-subtle)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                gap: "12px",
-              }}
-            >
-              <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
-                  <h4 style={{ fontSize: "14.5px", fontWeight: 700 }}>{res.title}</h4>
-                  <span className={`badge ${res.cost === "FREE" ? "badge-emerald" : "badge-amber"}`} style={{ fontSize: "10px" }}>
-                    {res.cost}
-                  </span>
-                </div>
-                <div style={{ fontSize: "12px", color: "var(--accent-cyan)", fontWeight: 600, marginBottom: "8px" }}>
-                  {res.provider} • {res.resource_type} • {res.difficulty}
-                </div>
-                <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
-                  {res.topics_json.map((top) => (
-                    <span
-                      key={top}
-                      style={{
-                        fontSize: "10.5px",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                        background: "rgba(255, 255, 255, 0.05)",
-                        color: "var(--text-muted)",
-                      }}
-                    >
-                      {top}
-                    </span>
-                  ))}
-                </div>
+            <Card key={res.id}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
+                <Badge variant="neutral" size="sm">{res.resource_type}</Badge>
+                <span style={{ fontSize: "11px", color: "var(--text-dim)" }}>⏱ {res.estimated_minutes}m</span>
               </div>
-
-              <a
-                href={res.url}
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-secondary btn-sm"
-                style={{ width: "fit-content", fontSize: "12px" }}
-              >
-                <span>Launch Resource</span>
-                <ExternalLink size={13} />
-              </a>
-            </div>
+              <h3 style={{ fontSize: "14px", fontWeight: 600, marginBottom: "4px" }}>{res.title}</h3>
+              <div style={{ fontSize: "12px", color: "var(--text-dim)", marginBottom: "8px" }}>
+                {res.topic_tag} • {res.difficulty}
+              </div>
+              <p style={{ fontSize: "12px", color: "var(--text-muted)", marginBottom: "12px", lineHeight: 1.4 }}>
+                {res.summary_text}
+              </p>
+              {res.external_url && (
+                <a
+                  href={res.external_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontSize: "12.5px", color: "var(--accent-primary)", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}
+                >
+                  <span>Open Resource</span>
+                  <ExternalLink size={12} />
+                </a>
+              )}
+            </Card>
           ))}
         </div>
       </div>
