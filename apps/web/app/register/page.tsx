@@ -80,16 +80,16 @@ export default function RegisterPage() {
           overflow: "hidden",
         }}
       >
-        {/* Ambient Glow */}
+        {/* Ambient Top Glow */}
         <div
           style={{
             position: "absolute",
             top: "-40px",
             left: "50%",
             transform: "translateX(-50%)",
-            width: "200px",
-            height: "80px",
-            background: "radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, rgba(168, 85, 247, 0) 70%)",
+            width: "220px",
+            height: "90px",
+            background: "radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, rgba(239, 68, 68, 0) 70%)",
             pointerEvents: "none",
           }}
         />
@@ -105,10 +105,10 @@ export default function RegisterPage() {
               height: "72px",
               borderRadius: "18px",
               background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid rgba(255, 255, 255, 0.12)",
+              border: "1px solid rgba(239, 68, 68, 0.3)",
               padding: "10px",
               marginBottom: "16px",
-              boxShadow: "0 8px 28px rgba(229, 30, 37, 0.25)",
+              boxShadow: "0 8px 28px rgba(239, 68, 68, 0.3)",
             }}
           >
             <img
@@ -117,10 +117,10 @@ export default function RegisterPage() {
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
           </div>
-          <h1 style={{ fontSize: "22px", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "22px", fontWeight: "700", color: "var(--text-main)", marginBottom: "6px" }}>
             Create your JobPilot Account
           </h1>
-          <p style={{ fontSize: "14px", color: "var(--text-secondary)" }}>
+          <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>
             Unlock automated identity modeling, skill gap diagnostics, and closed-loop matching
           </p>
         </div>

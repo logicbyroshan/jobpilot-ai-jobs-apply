@@ -98,7 +98,7 @@ export default function KnowIdentityPage() {
             width: "72px",
             height: "72px",
             borderRadius: "20px",
-            background: "linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)",
+            background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -106,7 +106,7 @@ export default function KnowIdentityPage() {
             fontWeight: 800,
             color: "#ffffff",
             flexShrink: 0,
-            boxShadow: "0 8px 24px rgba(99, 102, 241, 0.35)",
+            boxShadow: "0 8px 24px rgba(239, 68, 68, 0.35)",
           }}
         >
           AC

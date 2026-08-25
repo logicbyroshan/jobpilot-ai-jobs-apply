@@ -91,13 +91,17 @@ export default function ProveAssessmentsPage() {
           return (
             <button
               key={asm.id}
-              onClick={() => handleSelectAssessment(asm)}
-              className="card"
+              onClick={() => {
+                setSelectedAsm(asm);
+                setResult(null);
+                setAnswers({});
+              }}
+              className="card card-interactive"
               style={{
                 minWidth: "300px",
                 textAlign: "left",
                 border: isSelected ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
-                background: isSelected ? "rgba(99, 102, 241, 0.12)" : "var(--bg-card)",
+                background: isSelected ? "rgba(239, 68, 68, 0.15)" : "var(--bg-card)",
                 cursor: "pointer",
               }}
             >
@@ -212,7 +216,7 @@ export default function ProveAssessmentsPage() {
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
                     <div style={{ fontSize: "15px", fontWeight: 600, lineHeight: 1.4 }}>
-                      <span style={{ color: "var(--accent-cyan)", marginRight: "8px" }}>Q{idx + 1}.</span>
+                      <span style={{ color: "var(--accent-primary)", marginRight: "8px" }}>Q{idx + 1}.</span>
                       {q.prompt}
                     </div>
                     <span style={{ fontSize: "12px", color: "var(--text-dim)", flexShrink: 0 }}>
@@ -233,7 +237,7 @@ export default function ProveAssessmentsPage() {
                           style={{
                             padding: "10px 14px",
                             borderRadius: "6px",
-                            background: isSelected ? "rgba(99, 102, 241, 0.2)" : "rgba(255, 255, 255, 0.03)",
+                            background: isSelected ? "rgba(239, 68, 68, 0.2)" : "rgba(255, 255, 255, 0.03)",
                             border: isSelected ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
                             fontSize: "13.5px",
                             cursor: result ? "default" : "pointer",

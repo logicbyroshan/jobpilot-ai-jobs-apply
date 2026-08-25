@@ -173,7 +173,7 @@ export default function MatchOpportunitiesPage() {
                 className="card card-interactive"
                 style={{
                   border: isSelected ? "1px solid var(--accent-primary)" : "1px solid var(--border-subtle)",
-                  background: isSelected ? "rgba(99, 102, 241, 0.1)" : "var(--bg-card)",
+                  background: isSelected ? "rgba(239, 68, 68, 0.12)" : "var(--bg-card)",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
@@ -186,8 +186,8 @@ export default function MatchOpportunitiesPage() {
                   <span
                     className="badge"
                     style={{
-                      background: m.overall_score >= 90 ? "rgba(16, 185, 129, 0.2)" : "rgba(6, 182, 212, 0.2)",
-                      color: m.overall_score >= 90 ? "#34d399" : "#22d3ee",
+                      background: m.overall_score >= 90 ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)",
+                      color: m.overall_score >= 90 ? "#34d399" : "#fca5a5",
                       fontWeight: 700,
                       fontSize: "13px",
                     }}
@@ -283,16 +283,16 @@ export default function MatchOpportunitiesPage() {
               style={{
                 padding: "12px",
                 borderRadius: "var(--radius-sm)",
-                background: "rgba(99, 102, 241, 0.08)",
-                border: "1px solid rgba(99, 102, 241, 0.2)",
+                background: "rgba(239, 68, 68, 0.08)",
+                border: "1px solid rgba(239, 68, 68, 0.25)",
                 fontSize: "13px",
-                color: "#c7d2fe",
+                color: "#fca5a5",
                 lineHeight: 1.5,
                 marginBottom: "16px",
               }}
             >
               <div style={{ fontWeight: 700, marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-                <Sparkles size={14} /> AI Recommendation Rationale
+                <Sparkles size={14} color="#ef4444" /> AI Recommendation Rationale
               </div>
               {selectedMatch.explanation ||
                 "Exceptional technical alignment across Python, Go, and PostgreSQL distributed systems. Verified commit evidence strongly reinforces performance scalability expectations."}

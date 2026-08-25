@@ -69,9 +69,9 @@ export function Topbar() {
         <div
           style={{
             fontSize: "12px",
-            color: "#818cf8",
-            background: "rgba(99, 102, 241, 0.15)",
-            border: "1px solid rgba(99, 102, 241, 0.3)",
+            color: "#fca5a5",
+            background: "rgba(239, 68, 68, 0.15)",
+            border: "1px solid rgba(239, 68, 68, 0.35)",
             padding: "4px 12px",
             borderRadius: "var(--radius-full)",
             display: "flex",
@@ -80,7 +80,7 @@ export function Topbar() {
             animation: "fadeIn 0.2s ease",
           }}
         >
-          <Zap size={14} />
+          <Zap size={14} color="#ef4444" />
           <span>{syncNotice}</span>
         </div>
       )}
@@ -132,13 +132,14 @@ export function Topbar() {
                     width: "28px",
                     height: "28px",
                     borderRadius: "50%",
-                    background: "linear-gradient(135deg, #06b6d4 0%, #6366f1 100%)",
+                    background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: "12px",
                     fontWeight: 700,
                     color: "#ffffff",
+                    boxShadow: "0 0 10px rgba(239, 68, 68, 0.3)",
                   }}
                 >
                   {getInitials(user.full_name)}

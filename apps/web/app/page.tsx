@@ -87,7 +87,7 @@ export default function DashboardOverviewPage() {
       metrics: `${profile?.summary_json?.verified_skills || 8} Verified Skills`,
       status: "Verified",
       icon: UserCheck,
-      color: "#818cf8",
+      color: "#ef4444",
       link: "/know",
     },
     {
@@ -118,7 +118,7 @@ export default function DashboardOverviewPage() {
       title: "Curated Learning Pathways",
       description: "Step-by-step technical blueprints with high-ROI books, courses, and hands-on projects.",
       metrics: `${plans.length} Active Plan`,
-      status: `${plans[0]?.progress_percentage || 45}% Progress`,
+      status: "3/5 Milestones",
       icon: BookOpen,
       color: "#10b981",
       link: "/improve",
@@ -126,23 +126,23 @@ export default function DashboardOverviewPage() {
     {
       id: "PROVE",
       name: "5. PROVE",
-      title: "Diagnostic Assessments",
-      description: "Hands-on quizzes & scenarios that scientifically boost verified skill confidence.",
-      metrics: "2 Proving Quizzes",
-      status: "Ready",
+      title: "Skill Verification & Assessments",
+      description: "Deterministic technical evaluations with instant skill evidence credentialing.",
+      metrics: "3 Assessments Ready",
+      status: "+1.8 Boost",
       icon: Award,
-      color: "#a855f7",
+      color: "#f43f5e",
       link: "/prove",
     },
     {
       id: "APPLY",
       name: "6. APPLY",
-      title: "Autonomous & Assisted Apply",
-      description: "Automated tailored artifact generation, resume tailoring, and controlled submissions.",
-      metrics: `${applications.length} Applications`,
-      status: "Assisted Policy",
+      title: "Tailored Submissions",
+      description: "Automated & assisted submissions with personalized cover letters & resumes.",
+      metrics: `${applications.length} Submissions`,
+      status: "2 Active",
       icon: Send,
-      color: "#ec4899",
+      color: "#e11d48",
       link: "/apply",
     },
     {
@@ -164,8 +164,8 @@ export default function DashboardOverviewPage() {
       <div
         className="card"
         style={{
-          background: "linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%)",
-          border: "1px solid rgba(99, 102, 241, 0.25)",
+          background: "linear-gradient(135deg, rgba(28, 18, 24, 0.85) 0%, rgba(13, 17, 26, 0.95) 100%)",
+          border: "1px solid rgba(239, 68, 68, 0.25)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -177,7 +177,7 @@ export default function DashboardOverviewPage() {
             right: "-40px",
             width: "250px",
             height: "250px",
-            background: "radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(239, 68, 68, 0.18) 0%, transparent 70%)",
             borderRadius: "50%",
             pointerEvents: "none",
           }}

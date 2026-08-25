@@ -97,9 +97,9 @@ export default function LoginPage() {
             top: "-40px",
             left: "50%",
             transform: "translateX(-50%)",
-            width: "200px",
-            height: "80px",
-            background: "radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(99, 102, 241, 0) 70%)",
+            width: "220px",
+            height: "90px",
+            background: "radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, rgba(239, 68, 68, 0) 70%)",
             pointerEvents: "none",
           }}
         />
@@ -115,10 +115,10 @@ export default function LoginPage() {
               height: "72px",
               borderRadius: "18px",
               background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid rgba(255, 255, 255, 0.12)",
+              border: "1px solid rgba(239, 68, 68, 0.3)",
               padding: "10px",
               marginBottom: "16px",
-              boxShadow: "0 8px 28px rgba(229, 30, 37, 0.25)",
+              boxShadow: "0 8px 28px rgba(239, 68, 68, 0.3)",
             }}
           >
             <img
@@ -127,10 +127,10 @@ export default function LoginPage() {
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
           </div>
-          <h1 style={{ fontSize: "22px", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "22px", fontWeight: "700", color: "var(--text-main)", marginBottom: "6px" }}>
             Welcome to JobPilot
           </h1>
-          <p style={{ fontSize: "14px", color: "var(--text-secondary)" }}>
+          <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>
             Sign in to access your closed-loop career operating system
           </p>
         </div>
@@ -171,7 +171,7 @@ export default function LoginPage() {
             borderRadius: "8px",
             background: "rgba(255, 255, 255, 0.06)",
             border: "1px solid rgba(255, 255, 255, 0.14)",
-            color: "var(--text-primary)",
+            color: "var(--text-main)",
             fontSize: "14px",
             fontWeight: "600",
             cursor: isLoading ? "not-allowed" : "pointer",
@@ -213,7 +213,7 @@ export default function LoginPage() {
           }}
         >
           <div style={{ flex: 1, height: "1px", background: "rgba(255, 255, 255, 0.1)" }} />
-          <span style={{ fontSize: "12px", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+          <span style={{ fontSize: "12px", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
             or with email
           </span>
           <div style={{ flex: 1, height: "1px", background: "rgba(255, 255, 255, 0.1)" }} />
@@ -222,7 +222,7 @@ export default function LoginPage() {
         {/* Email & Password Form */}
         <form onSubmit={handleEmailLogin} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: "500", color: "var(--text-secondary)", marginBottom: "6px" }}>
+            <label style={{ display: "block", fontSize: "13px", fontWeight: "500", color: "var(--text-muted)", marginBottom: "6px" }}>
               Email Address
             </label>
             <input
@@ -237,7 +237,7 @@ export default function LoginPage() {
                 borderRadius: "8px",
                 background: "rgba(0, 0, 0, 0.3)",
                 border: "1px solid rgba(255, 255, 255, 0.12)",
-                color: "var(--text-primary)",
+                color: "var(--text-main)",
                 fontSize: "14px",
                 outline: "none",
               }}
@@ -246,7 +246,7 @@ export default function LoginPage() {
 
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-              <label style={{ fontSize: "13px", fontWeight: "500", color: "var(--text-secondary)" }}>
+              <label style={{ fontSize: "13px", fontWeight: "500", color: "var(--text-muted)" }}>
                 Password
               </label>
               <a href="#" style={{ fontSize: "12px", color: "var(--accent-primary)", textDecoration: "none" }}>
@@ -265,7 +265,7 @@ export default function LoginPage() {
                 borderRadius: "8px",
                 background: "rgba(0, 0, 0, 0.3)",
                 border: "1px solid rgba(255, 255, 255, 0.12)",
-                color: "var(--text-primary)",
+                color: "var(--text-main)",
                 fontSize: "14px",
                 outline: "none",
               }}
@@ -298,9 +298,9 @@ export default function LoginPage() {
               width: "100%",
               padding: "10px",
               borderRadius: "8px",
-              background: "rgba(99, 102, 241, 0.12)",
-              border: "1px solid rgba(99, 102, 241, 0.25)",
-              color: "#a5b4fc",
+              background: "rgba(239, 68, 68, 0.12)",
+              border: "1px solid rgba(239, 68, 68, 0.3)",
+              color: "#fca5a5",
               fontSize: "13px",
               fontWeight: "600",
               cursor: "pointer",
@@ -316,7 +316,7 @@ export default function LoginPage() {
 
         {/* Footer Link */}
         <div style={{ textAlign: "center", marginTop: "24px" }}>
-          <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
+          <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>
             Don&apos;t have an account?{" "}
           </span>
           <Link

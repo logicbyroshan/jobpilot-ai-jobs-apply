@@ -163,7 +163,7 @@ export function Sidebar() {
                   fontWeight: isActive ? 600 : 500,
                   color: isActive ? "#ffffff" : "var(--text-muted)",
                   background: isActive
-                    ? "linear-gradient(90deg, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0.05) 100%)"
+                    ? "linear-gradient(90deg, rgba(239, 68, 68, 0.18) 0%, rgba(239, 68, 68, 0.03) 100%)"
                     : "transparent",
                   borderLeft: isActive ? "3px solid var(--accent-primary)" : "3px solid transparent",
                   transition: "all 0.15s ease",
@@ -175,7 +175,7 @@ export function Sidebar() {
                     color={isActive ? "var(--accent-primary)" : "var(--text-dim)"}
                     style={{ flexShrink: 0 }}
                   />
-                  <span>{item.name}</span>
+                  <span style={{ color: isActive ? "#ffffff" : "var(--text-muted)" }}>{item.name}</span>
                 </div>
                 {item.tag && (
                   <span
@@ -183,8 +183,8 @@ export function Sidebar() {
                       fontSize: "10px",
                       padding: "2px 6px",
                       borderRadius: "6px",
-                      background: isActive ? "rgba(99, 102, 241, 0.3)" : "rgba(255, 255, 255, 0.06)",
-                      color: isActive ? "#c7d2fe" : "var(--text-dim)",
+                      background: isActive ? "rgba(239, 68, 68, 0.25)" : "rgba(255, 255, 255, 0.06)",
+                      color: isActive ? "#fca5a5" : "var(--text-dim)",
                       fontWeight: 600,
                     }}
                   >
