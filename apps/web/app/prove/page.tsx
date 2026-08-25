@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Award,
   CheckCircle2,
@@ -12,19 +13,31 @@ import {
   Sparkles,
   Zap,
   HelpCircle,
+  Camera,
+  Mic,
+  Monitor,
+  Lock,
+  Eye,
+  AlertTriangle,
 } from "lucide-react";
 import { api } from "@/lib/api";
-import { AssessmentType, AssessmentAttemptResult } from "@/lib/types";
+import { AssessmentType } from "@/lib/types";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
 import { Card } from "../components/ui/Card";
 
 export default function ProvePage() {
+  const router = useRouter();
   const [assessments, setAssessments] = useState<AssessmentType[]>([]);
-  const [activeAssessment, setActiveAssessment] = useState<AssessmentType | null>(null);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<AssessmentAttemptResult | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedAssessment, setSelectedAssessment] = useState<AssessmentType | null>(null);
+  const [isConsentModalOpen, setIsConsentModalOpen] = useState(false);
+
+  // Security Checkbox state
+  const [cameraChecked, setCameraChecked] = useState(true);
+  const [micChecked, setMicChecked] = useState(true);
+  const [screenChecked, setScreenChecked] = useState(true);
+  const [fullscreenChecked, setFullscreenChecked] = useState(true);
 
   useEffect(() => {
     async function loadAssessments() {
@@ -33,232 +46,221 @@ export default function ProvePage() {
         setAssessments(data);
       } catch (err) {
         console.error("Failed to load assessments:", err);
+      } finally {
+        setLoading(false);
       }
     }
     loadAssessments();
   }, []);
 
-  const handleStart = (asm: AssessmentType) => {
-    setActiveAssessment(asm);
-    setAnswers({});
-    setResult(null);
+  const handleOpenSecurityModal = (asm: AssessmentType) => {
+    setSelectedAssessment(asm);
+    setIsConsentModalOpen(true);
   };
 
-  const handleAnswer = (questionId: string, option: string) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: option }));
+  const handleStartProctoredSession = () => {
+    if (!selectedAssessment) return;
+    setIsConsentModalOpen(false);
+    router.push(`/prove/${selectedAssessment.id}/take`);
   };
 
-  const handleSubmit = async () => {
-    if (!activeAssessment) return;
-    setSubmitting(true);
-    try {
-      const res = await api.submitAssessment(activeAssessment.id, answers);
-      setResult(res);
-    } catch (err) {
-      console.error("Error submitting assessment:", err);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  if (loading) {
+    return (
+      <div style={{ padding: "40px 0", textAlign: "center", color: "var(--text-sub)" }}>
+        <p>Loading competency assessment verifications...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
+    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-            <Badge variant="brand">Stage 5</Badge>
+            <Badge variant="brand">Stage 4 • Integrity & Proving</Badge>
             <span style={{ fontSize: "13px", color: "var(--text-sub)" }}>Deterministic Competency Verification</span>
           </div>
-          <h1 style={{ fontSize: "24px", fontWeight: 800, letterSpacing: "-0.025em" }}>
-            Prove Your Skills
+          <h1 style={{ fontSize: "28px", fontWeight: 800, letterSpacing: "-0.03em" }}>
+            Prove Your Skills — Objective Verification
           </h1>
           <p style={{ color: "var(--text-sub)", fontSize: "14px", marginTop: "4px", lineHeight: 1.55 }}>
-            Learning is not enough. Complete objective diagnostic verifications to unlock higher-tier opportunities.
+            Claims are not enough. Complete proctored deterministic assessments to instantly boost your living portfolio and unlock Tier-1 opportunities.
           </p>
         </div>
 
         <Link href="/opportunities" prefetch={true} style={{ textDecoration: "none" }}>
-          <Button variant="secondary" size="sm" icon={<Target size={14} />}>
-            View Unlocked Matches
+          <Button variant="secondary" size="md" icon={<Target size={15} />}>
+            View Opportunity Radar
           </Button>
         </Link>
       </div>
 
-      {/* ASSESSMENT RESULT BANNER (CLOSED-LOOP FEEDBACK) */}
-      {result && (
-        <Card
-          style={{
-            background: "linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(14, 20, 34, 0.95) 100%)",
-            border: "1px solid rgba(16, 185, 129, 0.35)",
-            padding: "20px",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
+      {/* Proving System Banner */}
+      <Card
+        style={{
+          background: "linear-gradient(135deg, rgba(157,78,221,0.08) 0%, rgba(20,22,30,0.95) 100%)",
+          borderColor: "rgba(157,78,221,0.25)",
+          padding: "24px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "16px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div style={{ width: "48px", height: "48px", borderRadius: "10px", background: "rgba(157,78,221,0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "#9d4edd" }}>
+            <ShieldCheck size={26} />
+          </div>
+          <div>
+            <h2 style={{ fontSize: "18px", fontWeight: 800 }}>Fullscreen Assessment Environment & Anti-Cheat Layer</h2>
+            <p style={{ fontSize: "13px", color: "var(--text-sub)", marginTop: "2px" }}>
+              Assessment sessions run in a dedicated distraction-free workspace with tab focus monitoring and camera/mic verification.
+            </p>
+          </div>
+        </div>
+        <Badge variant="purple" icon={<Lock size={13} />}>
+          Verified Proof Protocol
+        </Badge>
+      </Card>
+
+      {/* Assessment Catalog */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+        {assessments.map((asm) => (
+          <Card
+            key={asm.id}
+            style={{
+              padding: "24px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              gap: "20px",
+            }}
+          >
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                <ShieldCheck size={20} color="var(--accent-emerald)" />
-                <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--accent-emerald)", textTransform: "uppercase" }}>
-                  Skill Verified & Calibrated
-                </span>
-                <Badge variant="success" size="sm">Score: {result.score_percentage}%</Badge>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
+                <div>
+                  <Badge variant="brand">{asm.difficulty}</Badge>
+                  <h3 style={{ fontSize: "19px", fontWeight: 800, marginTop: "8px" }}>{asm.title}</h3>
+                </div>
+                <Badge variant="neutral" icon={<Clock size={13} />}>{asm.time_limit_minutes} mins</Badge>
               </div>
 
-              <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "4px" }}>
-                Proficiency Boost: {result.previous_proficiency_level || 8.0} → {result.new_proficiency_level || 9.8}/10
-              </h2>
-
-              <p style={{ fontSize: "13px", color: "var(--text-muted)", maxWidth: "680px", lineHeight: 1.45 }}>
-                {result.feedback || "Your verified evidence graph has been updated with immutable assessment proof."}
-                <strong style={{ color: "var(--accent-cyan)", marginLeft: "4px" }}>
-                  12 additional high-signal opportunities now match your profile.
-                </strong>
+              <p style={{ fontSize: "14px", color: "var(--text-sub)", marginTop: "10px", lineHeight: 1.6 }}>
+                {asm.description || "Comprehensive diagnostic assessing low-latency consensus, log compaction, quorums, and fault tolerance under network partitions."}
               </p>
-            </div>
 
-            <div style={{ display: "flex", gap: "10px" }}>
-              <Link href="/opportunities" style={{ textDecoration: "none" }}>
-                <Button variant="primary" size="md" icon={<ArrowRight size={14} />} iconPosition="right">
-                  View New Opportunities
-                </Button>
-              </Link>
-              <Button variant="secondary" size="md" onClick={() => { setActiveAssessment(null); setResult(null); }}>
-                Done
-              </Button>
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {/* ACTIVE ASSESSMENT WORKSPACE (FOCUS MODE) */}
-      {activeAssessment && !result ? (
-        <Card style={{ padding: "24px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", paddingBottom: "12px", borderBottom: "1px solid var(--border-subtle)" }}>
-            <div>
-              <Badge variant="purple" size="sm" style={{ marginBottom: "4px" }}>{activeAssessment.skill_name}</Badge>
-              <h2 style={{ fontSize: "18px", fontWeight: 700 }}>{activeAssessment.title}</h2>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "var(--text-dim)" }}>
-              <Clock size={13} />
-              <span>{activeAssessment.time_limit_minutes} Mins Limit</span>
-            </div>
-          </div>
-
-          {/* Questions */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "20px" }}>
-            {activeAssessment.questions.map((q, idx) => (
-              <div
-                key={q.id}
-                style={{
-                  padding: "16px",
-                  borderRadius: "4px",
-                  background: "var(--bg-elevated)",
-                  border: "1px solid var(--border-subtle)",
-                }}
-              >
-                <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--accent-purple)", marginBottom: "4px" }}>
-                  Question {idx + 1} of {activeAssessment.questions.length} ({q.points} pts)
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "16px", background: "rgba(255,255,255,0.02)", padding: "12px 14px", borderRadius: "8px", border: "1px solid var(--border-subtle)", fontSize: "13px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ color: "var(--text-sub)" }}>Skills Evaluated:</span>
+                  <span style={{ fontWeight: 600, color: "var(--text-main)" }}>Distributed Consensus, Raft, Fault Tolerance</span>
                 </div>
-                <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-main)", marginBottom: "12px" }}>
-                  {q.prompt || q.question_text}
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ color: "var(--text-sub)" }}>Passing Score:</span>
+                  <span style={{ fontWeight: 700, color: "var(--brand)" }}>{asm.passing_score}%</span>
                 </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {q.options_json.map((opt) => {
-                    const isSelected = answers[q.id] === opt;
-                    return (
-                      <div
-                        key={opt}
-                        onClick={() => handleAnswer(q.id, opt)}
-                        style={{
-                          padding: "10px 14px",
-                          borderRadius: "4px",
-                          background: isSelected ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.02)",
-                          border: isSelected ? "1px solid rgba(255, 255, 255, 0.3)" : "1px solid var(--border-subtle)",
-                          fontSize: "13px",
-                          color: isSelected ? "#ffffff" : "var(--text-muted)",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "10px",
-                          transition: "all 0.1s ease",
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: "14px",
-                            height: "14px",
-                            borderRadius: "50%",
-                            border: isSelected ? "4px solid #ffffff" : "1px solid var(--text-dim)",
-                            background: isSelected ? "var(--bg-main)" : "transparent",
-                          }}
-                        />
-                        <span>{opt}</span>
-                      </div>
-                    );
-                  })}
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ color: "var(--text-sub)" }}>Unlocks:</span>
+                  <span style={{ fontWeight: 700, color: "#10b981" }}>+1.8 Skill Boost & 12 Target Opportunities</span>
                 </div>
               </div>
-            ))}
-          </div>
-
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Button variant="secondary" size="sm" onClick={() => setActiveAssessment(null)}>
-              Cancel
-            </Button>
+            </div>
 
             <Button
               variant="primary"
+              fullWidth
               size="md"
-              onClick={handleSubmit}
-              disabled={submitting}
-              icon={<ShieldCheck size={15} />}
+              icon={<Award size={16} />}
+              onClick={() => handleOpenSecurityModal(asm)}
             >
-              {submitting ? "Evaluating Proof..." : "Submit for Verification"}
+              Start Proctored Assessment
             </Button>
-          </div>
-        </Card>
-      ) : (
-        /* AVAILABLE ASSESSMENTS LIST */
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          {assessments.map((asm) => (
-            <Card key={asm.id} style={{ padding: "18px 20px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "10px" }}>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "3px" }}>
-                    <h3 style={{ fontSize: "16px", fontWeight: 700 }}>{asm.title}</h3>
-                    <Badge variant="purple" size="sm">{asm.difficulty}</Badge>
-                  </div>
-                  <div style={{ fontSize: "12.5px", color: "var(--accent-cyan)", fontWeight: 600 }}>
-                    Skill: {asm.skill_name} • Est. Time: {asm.time_limit_minutes} Mins • Passing: {asm.passing_score}%
+          </Card>
+        ))}
+      </div>
+
+      {/* PRE-ASSESSMENT SECURITY CHECK & CONSENT MODAL */}
+      {isConsentModalOpen && selectedAssessment && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: "20px",
+          }}
+        >
+          <Card style={{ maxWidth: "580px", width: "100%", padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <ShieldCheck size={22} style={{ color: "#9d4edd" }} />
+                <h3 style={{ fontSize: "19px", fontWeight: 800 }}>Pre-Assessment Security & Environment Check</h3>
+              </div>
+              <button onClick={() => setIsConsentModalOpen(false)} style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "18px", cursor: "pointer" }}>
+                ✕
+              </button>
+            </div>
+
+            <p style={{ fontSize: "13px", color: "var(--text-sub)", lineHeight: 1.6 }}>
+              To ensure objective credibility with hiring managers, this assessment session runs in an authenticated, fullscreen proctored mode.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", background: "var(--bg-elevated)", borderRadius: "8px", border: "1px solid var(--border-subtle)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <Monitor size={18} style={{ color: "var(--cyan)" }} />
+                  <div>
+                    <div style={{ fontSize: "13px", fontWeight: 600 }}>Fullscreen Mode & Tab Focus</div>
+                    <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Hides dashboard chrome to prevent tab switching</div>
                   </div>
                 </div>
+                <input type="checkbox" checked={fullscreenChecked} onChange={(e) => setFullscreenChecked(e.target.checked)} />
+              </div>
 
-                <div style={{ textAlign: "right" }}>
-                  <Badge variant="success" size="sm">Unlocks +12 Matches</Badge>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", background: "var(--bg-elevated)", borderRadius: "8px", border: "1px solid var(--border-subtle)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <Camera size={18} style={{ color: "#9d4edd" }} />
+                  <div>
+                    <div style={{ fontSize: "13px", fontWeight: 600 }}>Camera Presence Verification</div>
+                    <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Periodic local integrity verification</div>
+                  </div>
                 </div>
+                <input type="checkbox" checked={cameraChecked} onChange={(e) => setCameraChecked(e.target.checked)} />
               </div>
 
-              <p style={{ fontSize: "12.5px", color: "var(--text-muted)", lineHeight: 1.45, marginBottom: "14px" }}>
-                {asm.description}
-              </p>
-
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-                <span style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
-                  {asm.questions.length} Diagnostic questions evaluating knowledge, troubleshooting, and edge cases.
-                </span>
-
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => handleStart(asm)}
-                  icon={<Award size={13} />}
-                >
-                  Prove Skill Now
-                </Button>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", background: "var(--bg-elevated)", borderRadius: "8px", border: "1px solid var(--border-subtle)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <Mic size={18} style={{ color: "#10b981" }} />
+                  <div>
+                    <div style={{ fontSize: "13px", fontWeight: 600 }}>Microphone Active Sensor</div>
+                    <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Ensures quiet assessment environment</div>
+                  </div>
+                </div>
+                <input type="checkbox" checked={micChecked} onChange={(e) => setMicChecked(e.target.checked)} />
               </div>
-            </Card>
-          ))}
+            </div>
+
+            <div style={{ padding: "12px", background: "rgba(230,57,70,0.06)", borderRadius: "8px", border: "1px solid rgba(230,57,70,0.2)", fontSize: "12px", color: "var(--text-sub)", display: "flex", gap: "8px", alignItems: "center" }}>
+              <AlertTriangle size={16} style={{ color: "var(--brand)", flexShrink: 0 }} />
+              <span>Exiting fullscreen or switching browser tabs will record an integrity event.</span>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", borderTop: "1px solid var(--border-subtle)", paddingTop: "16px" }}>
+              <Button variant="secondary" onClick={() => setIsConsentModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="primary" onClick={handleStartProctoredSession} icon={<Lock size={15} />}>
+                Enter Fullscreen Proctored Mode
+              </Button>
+            </div>
+          </Card>
         </div>
       )}
     </div>

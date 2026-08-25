@@ -1,6 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
-
+from typing import Dict, List, Optional
 from pydantic import BaseModel, ConfigDict
 
 
@@ -15,15 +14,13 @@ class ResourceResponse(BaseModel):
     difficulty: str
     duration_hours: float
     topics_json: List[str] = []
-    quality_score: float
-    created_at: datetime
+    quality_score: float = 4.8
 
 
 class LearningPlanItemResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: str
     learning_plan_id: str
-    resource_id: Optional[str] = None
     title: str
     item_type: str
     order_index: int
@@ -33,19 +30,9 @@ class LearningPlanItemResponse(BaseModel):
     resource: Optional[ResourceResponse] = None
 
 
-class LearningPlanCreate(BaseModel):
-    gap_id: Optional[str] = None
-    target_skill: str
-    title: Optional[str] = None
-    current_level: float = 3.0
-    target_level: float = 7.0
-
-
 class LearningPlanResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: str
-    user_id: str
-    gap_id: Optional[str] = None
     title: str
     target_skill: str
     current_level: float
@@ -54,5 +41,69 @@ class LearningPlanResponse(BaseModel):
     estimated_duration_days: int
     status: str
     items: List[LearningPlanItemResponse] = []
-    created_at: datetime
-    updated_at: datetime
+
+
+# ==============================================================================
+# Daily Plan & Kanban Task Schemas
+# ==============================================================================
+
+class LearningResourceCard(BaseModel):
+    title: str
+    resource_type: str  # "Documentation", "Video", "Lab", "Project", "Course"
+    cost: str           # "FREE", "PAID"
+    duration_minutes: int
+    why_chosen: str
+    what_you_will_learn: List[str]
+    url: str
+
+
+class LearningTaskResponse(BaseModel):
+    id: str
+    user_id: str
+    source_gap_id: Optional[str] = None
+    learning_plan_id: Optional[str] = None
+    title: str
+    description: str
+    estimated_minutes: int
+    scheduled_day: str  # "TODAY", "MONDAY", "TUESDAY", etc.
+    priority: str       # "CRITICAL", "HIGH", "MEDIUM"
+    status: str         # "BACKLOG", "TODAY", "IN_PROGRESS", "DONE", "READY_TO_PROVE"
+    task_type: str      # "READ", "WATCH", "PRACTICE", "BUILD", "REVIEW", "TEST"
+    order: int
+    resource: Optional[LearningResourceCard] = None
+
+
+class DailyPlanResponse(BaseModel):
+    today_focus_skill: str
+    current_level: float
+    target_level: float
+    target_role_impact: str
+    tasks_completed_count: int
+    total_tasks_count: int
+    concepts_practiced_count: int
+    total_concepts_count: int
+    proof_completed_count: int
+    total_proof_count: int
+    today_tasks: List[LearningTaskResponse]
+    kanban_columns: Dict[str, List[LearningTaskResponse]]
+
+
+class PlanWeekRequest(BaseModel):
+    available_hours_per_week: Optional[float] = 10.0
+    primary_focus_skill: Optional[str] = None
+
+
+class CustomSkillAnalysisRequest(BaseModel):
+    skill_name: str
+    current_confidence: Optional[str] = "Intermediate"
+    goal: Optional[str] = "Learn for Staff/Principal target roles"
+
+
+class CustomSkillAnalysisResponse(BaseModel):
+    skill_name: str
+    relevance_score: float
+    target_opportunities_unlocked: int
+    estimated_effort_hours: float
+    diagnostic_gap: str
+    recommended_plan_id: str
+    initial_tasks: List[LearningTaskResponse]

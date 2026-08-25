@@ -8,10 +8,17 @@
     "packages/*"
   ],
   "scripts": {
+    "dev": "npm --workspace=apps/web run dev",
+    "build": "npm --workspace=apps/web run build",
+    "start": "npm --workspace=apps/web run start",
+    "lint": "npm --workspace=apps/web run lint",
     "dev:web": "npm --workspace=apps/web run dev",
     "build:web": "npm --workspace=apps/web run build",
+    "start:web": "npm --workspace=apps/web run start",
     "lint:web": "npm --workspace=apps/web run lint",
-    "test:web": "npm --workspace=apps/web run test"
+    "test:web": "npm --workspace=apps/web run test",
+    "dev:api": "apps\\api\\.venv\\Scripts\\uvicorn.exe app.main:app --port 8000 --reload",
+    "test:api": "apps\\api\\.venv\\Scripts\\pytest.exe apps/api/tests"
   },
   "keywords": [
     "jobpilot",

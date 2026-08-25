@@ -107,13 +107,13 @@ async def get_career_overview(
 
     # 4. Lifecycle stages definition
     lifecycle_stages = [
-        StageStatus(stage_num="1", name="Know Me", href="/know", status_tag="8 Verified", is_active=False),
-        StageStatus(stage_num="2", name="Opportunities", href="/opportunities", status_tag="94% Fit", is_active=False),
-        StageStatus(stage_num="3", name="Gaps", href="/gaps", status_tag="1 Blocker", is_active=False),
-        StageStatus(stage_num="4", name="Improve", href="/improve", status_tag="Today's Focus", is_active=False),
-        StageStatus(stage_num="5", name="Prove", href="/prove", status_tag="Ready", is_active=True),
-        StageStatus(stage_num="6", name="Applications", href="/applications", status_tag="2 Active", is_active=False),
-        StageStatus(stage_num="7", name="Outcomes", href="/outcomes", status_tag="1 Offer", is_active=False),
+        StageStatus(stage_num="01", name="Know Me", href="/know", status_tag="Portfolio Live", is_active=False),
+        StageStatus(stage_num="02", name="Opportunities", href="/opportunities", status_tag="94% Top Fit", is_active=False),
+        StageStatus(stage_num="03", name="Gaps", href="/opportunities", status_tag="Contextual", is_active=False),
+        StageStatus(stage_num="04", name="Improve", href="/improve", status_tag="Today's Focus", is_active=False),
+        StageStatus(stage_num="05", name="Prove", href="/prove", status_tag="Ready", is_active=True),
+        StageStatus(stage_num="06", name="Applications", href="/applications", status_tag="2 Active", is_active=False),
+        StageStatus(stage_num="07", name="Outcomes", href="/outcomes", status_tag="1 Offer", is_active=False),
     ]
 
     # 5. Format top matches

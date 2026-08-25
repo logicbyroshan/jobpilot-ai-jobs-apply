@@ -12,6 +12,11 @@ import {
   Target,
   RefreshCw,
   AlertCircle,
+  BarChart3,
+  CheckCircle2,
+  AlertTriangle,
+  Lightbulb,
+  Zap,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { FunnelAnalytics } from "@/lib/types";
@@ -21,6 +26,7 @@ import { Card } from "../components/ui/Card";
 
 export default function OutcomesPage() {
   const [funnel, setFunnel] = useState<FunnelAnalytics | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadFunnel() {
@@ -29,6 +35,8 @@ export default function OutcomesPage() {
         setFunnel(data);
       } catch (err) {
         console.error("Failed to load outcomes:", err);
+      } finally {
+        setLoading(false);
       }
     }
     loadFunnel();
@@ -36,167 +44,172 @@ export default function OutcomesPage() {
 
   const stages = [
     { label: "Submitted Applications", count: 18, rate: "100%", color: "var(--text-muted)" },
-    { label: "Recruiter Responses", count: 6, rate: "33.3%", color: "var(--accent-cyan)" },
-    { label: "Technical Interviews", count: 4, rate: "22.2%", color: "var(--accent-amber)" },
-    { label: "Final Rounds", count: 2, rate: "11.1%", color: "var(--accent-purple)" },
-    { label: "Offers Received", count: 1, rate: "5.5%", color: "var(--accent-emerald)" },
+    { label: "Recruiter Screen", count: 6, rate: "33.3%", color: "var(--cyan)" },
+    { label: "Technical Deep Dive", count: 4, rate: "22.2%", color: "var(--brand)" },
+    { label: "Final Architecture Round", count: 2, rate: "11.1%", color: "#9d4edd" },
+    { label: "Offers Received", count: 1, rate: "5.5%", color: "#10b981" },
   ];
 
+  if (loading) {
+    return (
+      <div style={{ padding: "40px 0", textAlign: "center", color: "var(--text-sub)" }}>
+        <p>Loading career intelligence and conversion analytics...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
+    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-            <Badge variant="cyan">Stage 7</Badge>
-            <span style={{ fontSize: "13px", color: "var(--text-sub)" }}>Strategic Feedback & Funnel Analytics</span>
+            <Badge variant="brand">Stage 6 • Intelligence & Closed Loop</Badge>
+            <span style={{ fontSize: "13px", color: "var(--text-sub)" }}>Career Analytics & Failure Diagnostics</span>
           </div>
-          <h1 style={{ fontSize: "24px", fontWeight: 800, letterSpacing: "-0.025em" }}>
-            What&apos;s Happening With Your Career?
+          <h1 style={{ fontSize: "28px", fontWeight: 800, letterSpacing: "-0.03em" }}>
+            Outcomes — Career Funnel Intelligence
           </h1>
           <p style={{ color: "var(--text-sub)", fontSize: "14px", marginTop: "4px", lineHeight: 1.55 }}>
-            End-to-end conversion diagnostics feeding real interview outcomes back into your skill gap priorities.
+            Every interview outcome, offer, and rejection is analyzed to diagnose your single biggest bottleneck and feed actionable gaps back into your loop.
           </p>
         </div>
 
-        <Link href="/gaps" prefetch={true} style={{ textDecoration: "none" }}>
-          <Button variant="primary" size="sm" icon={<Sparkles size={14} />}>
-            Address Diagnostic Bottleneck (Stage 3)
+        <Link href="/improve" prefetch={true} style={{ textDecoration: "none" }}>
+          <Button variant="primary" size="md" icon={<BookOpen size={15} />}>
+            Address Diagnostic Bottleneck →
           </Button>
         </Link>
       </div>
 
-      {/* 1. STRATEGIC BOTTLENECK DIAGNOSTIC (CLOSED LOOP BACK TO GAP) */}
+      {/* STRATEGIC BOTTLENECK DIAGNOSTIC (CLOSED LOOP TO IMPROVE) */}
       <Card
         style={{
-          background: "var(--bg-card)",
-          border: "1px solid rgba(255, 255, 255, 0.12)",
-          padding: "18px 20px",
+          background: "linear-gradient(135deg, rgba(230,57,70,0.08) 0%, rgba(20,22,30,0.95) 100%)",
+          borderColor: "rgba(230,57,70,0.3)",
+          padding: "24px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
           <div style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
-            <div
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "6px",
-                background: "var(--accent-cyan)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <Sparkles size={20} color="#090d16" />
+            <div style={{ width: "44px", height: "44px", borderRadius: "10px", background: "rgba(230,57,70,0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand)", flexShrink: 0 }}>
+              <Sparkles size={22} />
             </div>
-
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                <span style={{ fontSize: "11.5px", fontWeight: 700, textTransform: "uppercase", color: "var(--accent-cyan)", letterSpacing: "0.06em" }}>
-                  Primary Career Bottleneck Identified
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <span style={{ fontSize: "12px", fontWeight: 700, textTransform: "uppercase", color: "var(--brand)", letterSpacing: "0.06em" }}>
+                  Primary Career Bottleneck Diagnosed
                 </span>
-                <Badge variant="cyan" size="sm">High Impact Loop</Badge>
+                <Badge variant="brand">High Impact Loop (9.2 / 10)</Badge>
               </div>
-
-              <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "4px" }}>
-                Technical Interview Conversion Drop-off
+              <h2 style={{ fontSize: "19px", fontWeight: 800, marginTop: "4px" }}>
+                Technical Round Drop-off in GPU Cluster Scheduling & Triton Serving
               </h2>
-
-              <p style={{ fontSize: "13px", color: "var(--text-muted)", maxWidth: "680px", lineHeight: 1.45 }}>
-                {funnel?.bottleneck_summary?.bottleneck_reason ||
-                  "Your resume profile generates interviews at a strong 33% response rate. However, your primary drop-off occurs during live GPU infrastructure and Triton dynamic batching technical rounds."}
+              <p style={{ fontSize: "14px", color: "var(--text-sub)", marginTop: "6px", lineHeight: 1.6 }}>
+                You have a 100% pass rate at recruiter screen, but 50% of recent rejections cite a lack of demonstrable hands-on proof with GPU streaming concurrency and Triton dynamic batching.
               </p>
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: "8px" }}>
-            <Link href="/improve" style={{ textDecoration: "none" }}>
-              <Button variant="primary" size="md" icon={<ArrowRight size={14} />} iconPosition="right">
-                Improve Technical Interviews
-              </Button>
-            </Link>
-          </div>
+          <Link href="/improve" prefetch={true} style={{ textDecoration: "none" }}>
+            <Button variant="primary" size="md" icon={<ArrowRight size={15} />}>
+              Start Recommended Focus Mission
+            </Button>
+          </Link>
         </div>
       </Card>
 
-      {/* 2. CONVERSION FUNNEL METRICS BAR */}
-      <Card style={{ padding: "20px" }}>
-        <h3 style={{ fontSize: "15px", fontWeight: 700, marginBottom: "14px" }}>
-          Full Lifecycle Conversion Funnel
-        </h3>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "10px" }}>
-          {stages.map((stg) => (
-            <div
-              key={stg.label}
-              style={{
-                padding: "14px 12px",
-                borderRadius: "4px",
-                background: "var(--bg-elevated)",
-                border: "1px solid var(--border-subtle)",
-                textAlign: "center",
-              }}
-            >
-              <div style={{ fontSize: "24px", fontWeight: 800, color: stg.color, marginBottom: "2px" }}>
-                {stg.count}
+      {/* Conversion Funnel Breakdown */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+        <h3 style={{ fontSize: "18px", fontWeight: 700 }}>Conversion Funnel Analytics</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "14px" }}>
+          {stages.map((stage, idx) => (
+            <Card key={idx} style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "8px", position: "relative" }}>
+              <div style={{ fontSize: "12px", color: "var(--text-sub)", fontWeight: 600 }}>{stage.label}</div>
+              <div style={{ fontSize: "28px", fontWeight: 800, color: "var(--text-main)" }}>{stage.count}</div>
+              <div style={{ fontSize: "12px", color: stage.color, fontWeight: 700 }}>
+                {stage.rate} conversion
               </div>
-              <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-main)", marginBottom: "4px" }}>
-                {stg.label}
-              </div>
-              <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>
-                Conversion: <strong>{stg.rate}</strong>
-              </div>
-            </div>
+              {idx < stages.length - 1 && (
+                <div style={{ position: "absolute", right: "-12px", top: "50%", transform: "translateY(-50%)", zIndex: 2, color: "var(--text-muted)" }}>
+                  →
+                </div>
+              )}
+            </Card>
           ))}
         </div>
-      </Card>
+      </div>
 
-      {/* 3. RECENT OUTCOME EVENTS & NEXT STEPS */}
-      <div className="grid-2">
-        <Card>
-          <h3 style={{ fontSize: "15px", fontWeight: 700, marginBottom: "12px" }}>
-            Interview Status History
-          </h3>
+      {/* REJECTION & FAILURE REASONS (CLOSED-LOOP FEEDBACK MATRIX) */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+        <Card style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <AlertTriangle size={20} style={{ color: "var(--brand)" }} />
+            <h3 style={{ fontSize: "17px", fontWeight: 800 }}>Outcome Gap Intelligence</h3>
+          </div>
+          <p style={{ fontSize: "13px", color: "var(--text-sub)", lineHeight: 1.6 }}>
+            Direct interview feedback analyzed and mapped to specific competencies:
+          </p>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            <div style={{ padding: "10px 12px", borderRadius: "4px", background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: "13px", fontWeight: 600 }}>Anthropic — Staff Infra Architect</span>
-                <Badge variant="cyan" size="sm">Technical Round</Badge>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ padding: "14px", background: "rgba(255,255,255,0.02)", borderRadius: "8px", border: "1px solid var(--border-subtle)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "14px", fontWeight: 700 }}>Anthropic (Principal Infrastructure)</span>
+                <Badge variant="warning">Outcome Gap</Badge>
               </div>
-              <div style={{ fontSize: "11.5px", color: "var(--text-dim)", marginTop: "2px" }}>
-                Scheduled for Thursday 2:00 PM PST • Focus: Raft state replication
+              <p style={{ fontSize: "13px", color: "var(--text-sub)", marginTop: "6px", lineHeight: 1.5 }}>
+                &ldquo;Candidate demonstrated stellar Raft consensus foundations, but lacked production evidence for multi-stream dynamic GPU queuing.&rdquo;
+              </p>
+              <div style={{ marginTop: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px solid var(--border-subtle)" }}>
+                <span style={{ fontSize: "12px", color: "var(--brand)", fontWeight: 600 }}>Diagnosed Gap: Triton Dynamic Batching</span>
+                <Link href="/improve" prefetch={true} style={{ textDecoration: "none", fontSize: "12px", color: "var(--brand)", fontWeight: 700 }}>
+                  Fix in Improve →
+                </Link>
               </div>
             </div>
 
-            <div style={{ padding: "10px 12px", borderRadius: "4px", background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: "13px", fontWeight: 600 }}>Datadog — Principal Distributed Systems</span>
-                <Badge variant="success" size="sm">Offer Extended</Badge>
+            <div style={{ padding: "14px", background: "rgba(255,255,255,0.02)", borderRadius: "8px", border: "1px solid var(--border-subtle)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "14px", fontWeight: 700 }}>Datadog (Staff Storage Architect)</span>
+                <Badge variant="cyan">Advancing</Badge>
               </div>
-              <div style={{ fontSize: "11.5px", color: "var(--text-dim)", marginTop: "2px" }}>
-                Base $240,000 + Equity • Review compensation package in Stage 6
-              </div>
+              <p style={{ fontSize: "13px", color: "var(--text-sub)", lineHeight: 1.5 }}>
+                &ldquo;Exceptional mastery in zero-copy LSM compaction algorithms. Fast-tracked to final offer committee.&rdquo;
+              </p>
             </div>
           </div>
         </Card>
 
-        <Card>
-          <h3 style={{ fontSize: "15px", fontWeight: 700, marginBottom: "12px" }}>
-            Self-Optimizing Career Feedback
-          </h3>
-
-          <p style={{ fontSize: "12.5px", color: "var(--text-muted)", lineHeight: 1.45, marginBottom: "14px" }}>
-            Every interview outcome, assessment score, and application response automatically recalculates your
-            fit scores across all 6 stages of the JobPilot loop.
+        {/* Offer & Negotiation Intelligence */}
+        <Card style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <CheckCircle2 size={20} style={{ color: "#10b981" }} />
+            <h3 style={{ fontSize: "17px", fontWeight: 800 }}>Offer & Compensation Intelligence</h3>
+          </div>
+          <p style={{ fontSize: "13px", color: "var(--text-sub)", lineHeight: 1.6 }}>
+            Current active offer benchmarked against industry peer percentiles:
           </p>
 
-          <Link href="/know" style={{ textDecoration: "none" }}>
-            <Button variant="secondary" size="sm" style={{ width: "100%" }}>
-              Review Calibrated Identity Graph (Stage 1) →
-            </Button>
-          </Link>
+          <div style={{ padding: "16px", background: "rgba(16,185,129,0.06)", borderRadius: "10px", border: "1px solid rgba(16,185,129,0.25)", display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: "15px", fontWeight: 800 }}>Stripe (Staff Infrastructure)</span>
+              <Badge variant="success">Offer Received</Badge>
+            </div>
+            <div style={{ fontSize: "24px", fontWeight: 900, color: "#10b981" }}>
+              $290,000 / yr <span style={{ fontSize: "14px", color: "var(--text-sub)", fontWeight: 500 }}>+ $140k Equity/yr</span>
+            </div>
+            <div style={{ fontSize: "12px", color: "var(--text-sub)" }}>
+              📍 92nd percentile for San Francisco Staff Infrastructure Architects
+            </div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--border-subtle)", paddingTop: "14px" }}>
+            <span style={{ fontSize: "13px", color: "var(--text-sub)" }}>Career Operating Loop Status:</span>
+            <Badge variant="brand">82% Overall Readiness</Badge>
+          </div>
         </Card>
       </div>
     </div>

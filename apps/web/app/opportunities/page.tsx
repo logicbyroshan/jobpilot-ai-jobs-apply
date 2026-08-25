@@ -42,13 +42,16 @@ export default function OpportunitiesPage() {
   };
 
   const filteredMatches = matches.filter((m) => {
+    const title = m.job?.title || "";
+    const company = m.job?.company?.name || "";
+    const location = m.job?.location || "";
     const matchesSearch =
-      m.job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      m.job.company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      m.job.location.toLowerCase().includes(searchQuery.toLowerCase());
+      title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      location.toLowerCase().includes(searchQuery.toLowerCase());
 
-    if (selectedFit === "STRONG") return matchesSearch && m.overall_score >= 90;
-    if (selectedFit === "GOOD") return matchesSearch && m.overall_score >= 80 && m.overall_score < 90;
+    if (selectedFit === "STRONG") return matchesSearch && (m.overall_score || 0) >= 90;
+    if (selectedFit === "GOOD") return matchesSearch && (m.overall_score || 0) >= 80 && (m.overall_score || 0) < 90;
     return matchesSearch;
   });
 
@@ -145,25 +148,25 @@ export default function OpportunitiesPage() {
                       flexShrink: 0,
                     }}
                   >
-                    {m.job.company.name.slice(0, 2).toUpperCase()}
+                    {(m.job?.company?.name || "CO").slice(0, 2).toUpperCase()}
                   </div>
 
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-                      <h2 style={{ fontSize: "17.5px", fontWeight: 700, color: "#ffffff" }}>{m.job.title}</h2>
-                      <Badge variant={m.overall_score >= 90 ? "success" : "cyan"} size="sm">
-                        {m.overall_score.toFixed(0)}% Match
+                      <h2 style={{ fontSize: "17.5px", fontWeight: 700, color: "#ffffff" }}>{m.job?.title || "Target Role"}</h2>
+                      <Badge variant={(m.overall_score || 0) >= 90 ? "success" : "cyan"} size="sm">
+                        {(m.overall_score || 0).toFixed(0)}% Match
                       </Badge>
                     </div>
 
                     <div style={{ display: "flex", gap: "14px", fontSize: "13.5px", color: "var(--text-sub)", marginTop: "6px", flexWrap: "wrap" }}>
                       <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                        <Building2 size={14} color="var(--text-muted)" /> {m.job.company.name}
+                        <Building2 size={14} color="var(--text-muted)" /> {m.job?.company?.name || "Company"}
                       </span>
                       <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                        <MapPin size={14} color="var(--text-muted)" /> {m.job.location}
+                        <MapPin size={14} color="var(--text-muted)" /> {m.job?.location || "Remote"}
                       </span>
-                      {m.job.salary_min && (
+                      {m.job?.salary_min && (
                         <span style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--accent-emerald)", fontWeight: 700 }}>
                           <DollarSign size={14} /> ${m.job.salary_min.toLocaleString()} - ${m.job.salary_max?.toLocaleString()}
                         </span>

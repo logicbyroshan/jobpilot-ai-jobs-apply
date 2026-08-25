@@ -4,6 +4,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: "brand" | "neutral" | "success" | "warning" | "cyan" | "purple" | "danger";
   size?: "sm" | "md";
   dot?: boolean;
+  icon?: React.ReactNode;
 }
 
 export function Badge({
@@ -11,6 +12,7 @@ export function Badge({
   variant = "neutral",
   size = "md",
   dot = false,
+  icon,
   className = "",
   style = {},
   ...props
@@ -95,6 +97,7 @@ export function Badge({
           }}
         />
       )}
+      {icon && <span style={{ display: "inline-flex", alignItems: "center" }}>{icon}</span>}
       {children}
     </span>
   );

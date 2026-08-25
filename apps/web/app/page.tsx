@@ -279,10 +279,10 @@ export default function OverviewPage() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            {matches.slice(0, 2).map((m) => (
+            {(matches || []).slice(0, 2).map((m) => (
               <Link
                 key={m.id}
-                href={`/opportunities/${m.job.id}`}
+                href={`/opportunities/${m.job?.id || m.id}`}
                 prefetch={true}
                 style={{
                   padding: "12px 14px",
@@ -298,22 +298,22 @@ export default function OverviewPage() {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "8px" }}>
                   <div>
-                    <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-main)" }}>{m.job.title}</div>
+                    <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-main)" }}>{m.job?.title || "Target Role"}</div>
                     <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>
-                      {m.job.company.name} • {m.job.location}
+                      {m.job?.company?.name || "Company"} • {m.job?.location || "Remote"}
                     </div>
                   </div>
-                  <Badge variant={m.overall_score >= 90 ? "success" : "cyan"} size="sm">
-                    {m.overall_score.toFixed(0)}% Match
+                  <Badge variant={(m.overall_score || 0) >= 90 ? "success" : "cyan"} size="sm">
+                    {(m.overall_score || 0).toFixed(0)}% Match
                   </Badge>
                 </div>
 
                 <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "4px" }}>
                   <span style={{ fontSize: "11.5px", color: "#38bdf8", background: "rgba(56, 189, 248, 0.08)", padding: "1px 6px", borderRadius: "3px" }}>
-                    ${((m.job.salary_min || 200000) / 1000).toFixed(0)}k - ${((m.job.salary_max || 300000) / 1000).toFixed(0)}k
+                    ${(((m.job?.salary_min || 200000)) / 1000).toFixed(0)}k - ${(((m.job?.salary_max || 300000)) / 1000).toFixed(0)}k
                   </span>
                   <span style={{ fontSize: "11.5px", color: "var(--text-sub)", background: "rgba(255, 255, 255, 0.04)", padding: "1px 6px", borderRadius: "3px" }}>
-                    {m.job.seniority || "Senior"}
+                    {m.job?.seniority || "Senior"}
                   </span>
                 </div>
               </Link>
@@ -328,16 +328,16 @@ export default function OverviewPage() {
               <Sparkles size={17} color="var(--accent-amber)" />
               <h3 style={{ fontSize: "15px", fontWeight: 700 }}>Active Skill Deficits</h3>
             </div>
-            <Link href="/gaps" prefetch={true} style={{ fontSize: "12.5px", color: "var(--text-sub)", textDecoration: "none", fontWeight: 600 }}>
+            <Link href="/improve" prefetch={true} style={{ fontSize: "12.5px", color: "var(--text-sub)", textDecoration: "none", fontWeight: 600 }}>
               Close Gaps ({gaps.length}) →
             </Link>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            {gaps.slice(0, 2).map((g) => (
+            {(gaps || []).slice(0, 2).map((g) => (
               <Link
                 key={g.id}
-                href="/gaps"
+                href="/improve"
                 prefetch={true}
                 style={{
                   padding: "12px 14px",
@@ -352,12 +352,12 @@ export default function OverviewPage() {
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-main)" }}>{g.title}</div>
-                  <Badge variant={g.priority === "CRITICAL" ? "brand" : "warning"} size="sm">{g.priority}</Badge>
+                  <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-main)" }}>{g.title || g.skill_name || "Skill Deficit"}</div>
+                  <Badge variant={g.priority === "CRITICAL" ? "brand" : "warning"} size="sm">{g.priority || "HIGH"}</Badge>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2px" }}>
                   <span style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>
-                    Lv {g.current_level} → Target {g.target_level}
+                    Lv {g.current_level || 3} → Target {g.target_level || 6}
                   </span>
                   <span style={{ fontSize: "12px", color: "var(--accent-emerald)", fontWeight: 600 }}>
                     {g.expected_impact || "+8.5% Fit Gain"}

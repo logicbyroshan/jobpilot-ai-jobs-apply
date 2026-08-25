@@ -113,23 +113,23 @@ export default function OpportunityDetailPage() {
                 flexShrink: 0,
               }}
             >
-              {job.company.name.slice(0, 2).toUpperCase()}
+              {(job.company?.name || "CO").slice(0, 2).toUpperCase()}
             </div>
 
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
                 <h1 style={{ fontSize: "20px", fontWeight: 700 }}>{job.title}</h1>
-                <Badge variant={match.overall_score >= 90 ? "success" : "cyan"} size="sm">
-                  {match.overall_score.toFixed(0)}% Overall Fit
+                <Badge variant={(match.overall_score || 0) >= 90 ? "success" : "cyan"} size="sm">
+                  {(match.overall_score || 0).toFixed(0)}% Overall Fit
                 </Badge>
               </div>
 
               <div style={{ display: "flex", gap: "14px", fontSize: "12.5px", color: "var(--text-dim)", marginTop: "4px", flexWrap: "wrap" }}>
                 <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <Building2 size={13} /> {job.company.name}
+                  <Building2 size={13} /> {job.company?.name || "Company"}
                 </span>
                 <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <MapPin size={13} /> {job.location}
+                  <MapPin size={13} /> {job.location || "Remote"}
                 </span>
                 {job.salary_min && (
                   <span style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--accent-emerald)" }}>
@@ -158,19 +158,19 @@ export default function OpportunityDetailPage() {
           <div style={{ textAlign: "center" }}>
             <div style={{ fontSize: "11px", color: "var(--text-dim)", textTransform: "uppercase" }}>Technical Fit</div>
             <div style={{ fontSize: "16px", fontWeight: 700, color: "var(--accent-cyan)", marginTop: "2px" }}>
-              {match.technical_fit.toFixed(0)}%
+              {(match.technical_fit || 0).toFixed(0)}%
             </div>
           </div>
           <div style={{ textAlign: "center", borderLeft: "1px solid var(--border-subtle)" }}>
             <div style={{ fontSize: "11px", color: "var(--text-dim)", textTransform: "uppercase" }}>Experience Fit</div>
             <div style={{ fontSize: "16px", fontWeight: 700, color: "var(--accent-emerald)", marginTop: "2px" }}>
-              {match.experience_fit.toFixed(0)}%
+              {(match.experience_fit || 0).toFixed(0)}%
             </div>
           </div>
           <div style={{ textAlign: "center", borderLeft: "1px solid var(--border-subtle)" }}>
             <div style={{ fontSize: "11px", color: "var(--text-dim)", textTransform: "uppercase" }}>Preference Fit</div>
             <div style={{ fontSize: "16px", fontWeight: 700, color: "var(--accent-primary)", marginTop: "2px" }}>
-              {match.preference_fit.toFixed(0)}%
+              {(match.preference_fit || 0).toFixed(0)}%
             </div>
           </div>
           <div style={{ textAlign: "center", borderLeft: "1px solid var(--border-subtle)" }}>
@@ -196,7 +196,7 @@ export default function OpportunityDetailPage() {
           </p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            {match.matched_skills_json?.map((sk) => (
+            {(match.matched_skills_json || []).map((sk) => (
               <div
                 key={sk}
                 style={{
@@ -246,9 +246,9 @@ export default function OpportunityDetailPage() {
                     <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-main)" }}>{sk}</div>
                     <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Required by team • Level 3.0 → Target 6.5</div>
                   </div>
-                  <Link href="/gaps" style={{ textDecoration: "none" }}>
+                  <Link href="/improve" style={{ textDecoration: "none" }}>
                     <Button variant="secondary" size="sm">
-                      Close Gap →
+                      Close Gap in Improve →
                     </Button>
                   </Link>
                 </div>
@@ -267,7 +267,10 @@ export default function OpportunityDetailPage() {
         <h3 style={{ fontSize: "15px", fontWeight: 700, marginBottom: "12px" }}>Requirements vs Your Evidence Matrix</h3>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          {job.responsibilities_json?.map((resp, i) => (
+          {(job.responsibilities_json || [
+            "Architect and lead scalable distributed systems with low latency SLAs.",
+            "Collaborate with infrastructure and engineering teams on high-throughput services."
+          ]).map((resp, i) => (
             <div
               key={i}
               style={{

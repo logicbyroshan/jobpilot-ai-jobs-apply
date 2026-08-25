@@ -51,11 +51,12 @@ export default function SourcesPage() {
     }
   };
 
-  const getSourceIcon = (type: string) => {
-    if (type.includes("github")) return <Github size={22} color="#ffffff" />;
-    if (type.includes("linkedin")) return <Linkedin size={22} color="#0077b5" />;
-    if (type.includes("resume")) return <FileText size={22} color="var(--accent-cyan)" />;
-    return <Globe size={22} color="var(--accent-cyan)" />;
+  const getSourceIcon = (type: string = "") => {
+    const t = (type || "").toLowerCase();
+    if (t.includes("github")) return <Github size={22} color="#ffffff" />;
+    if (t.includes("linkedin")) return <Linkedin size={22} color="#0077b5" />;
+    if (t.includes("resume")) return <FileText size={22} color="var(--cyan)" />;
+    return <Globe size={22} color="var(--cyan)" />;
   };
 
   return (
@@ -114,7 +115,7 @@ export default function SourcesPage() {
 
       {/* Sources Grid */}
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        {sources.map((src) => (
+        {(sources || []).map((src) => (
           <Card
             key={src.id}
             style={{

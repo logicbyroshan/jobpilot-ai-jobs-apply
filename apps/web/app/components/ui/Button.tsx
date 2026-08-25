@@ -6,6 +6,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";
   loading?: boolean;
+  fullWidth?: boolean;
 }
 
 export function Button({
@@ -15,6 +16,7 @@ export function Button({
   icon,
   iconPosition = "left",
   loading = false,
+  fullWidth = false,
   className = "",
   style = {},
   disabled,
@@ -80,6 +82,7 @@ export function Button({
         fontFamily: "inherit",
         whiteSpace: "nowrap",
         boxSizing: "border-box",
+        width: fullWidth ? "100%" : undefined,
         ...sizeStyles[size],
         ...variantStyles[variant],
         ...style,

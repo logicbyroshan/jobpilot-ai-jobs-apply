@@ -15,179 +15,406 @@ import {
   Shield,
   Layers,
   Sparkles,
+  Play,
+  Pause,
+  AlertTriangle,
+  RotateCcw,
+  Check,
+  Zap,
+  Lock,
+  ExternalLink,
 } from "lucide-react";
 import { api } from "@/lib/api";
-import { ApplicationItem, ApplicationPolicyType } from "@/lib/types";
+import {
+  ApplicationItem,
+  ApplicationPolicyType,
+  ResumeVersion,
+  AutoApplyExecutionResponse,
+  AutoApplyPreviewResponse,
+} from "@/lib/types";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
 import { Card } from "../components/ui/Card";
 
-export default function ApplicationsPage() {
+export default function ApplicationsControlCenterPage() {
   const [applications, setApplications] = useState<ApplicationItem[]>([]);
   const [policy, setPolicy] = useState<ApplicationPolicyType | null>(null);
-  const [activeTab, setActiveTab] = useState<string>("ALL");
+  const [resumes, setResumes] = useState<ResumeVersion[]>([]);
+  const [queue, setQueue] = useState<AutoApplyExecutionResponse | null>(null);
+  const [preview, setPreview] = useState<AutoApplyPreviewResponse | null>(null);
+  const [activeTab, setActiveTab] = useState<"pipeline" | "resumes" | "queue" | "policy">("pipeline");
+  const [selectedResume, setSelectedResume] = useState<ResumeVersion | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadAppData() {
+    async function loadData() {
       try {
-        const [appData, polData] = await Promise.all([
+        const [appData, polData, resData, qData, prevData] = await Promise.all([
           api.getApplications(),
           api.getApplicationPolicy(),
+          api.getResumes(),
+          api.getAutomationQueue(),
+          api.getAutoApplyPreview(),
         ]);
         setApplications(appData);
         setPolicy(polData);
+        setResumes(resData);
+        setQueue(qData);
+        setPreview(prevData);
+        if (resData.length > 0) {
+          setSelectedResume(resData[0]);
+        }
       } catch (err) {
-        console.error("Failed to load applications:", err);
+        console.error("Failed to load applications data:", err);
+      } finally {
+        setLoading(false);
       }
     }
-    loadAppData();
+    loadData();
   }, []);
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "OFFER":
-        return <Badge variant="success">Offer Received</Badge>;
-      case "INTERVIEW":
-        return <Badge variant="cyan">Interviewing</Badge>;
-      case "APPLIED":
-        return <Badge variant="brand">Applied</Badge>;
-      case "DRAFT":
-        return <Badge variant="warning">Draft Ready</Badge>;
-      default:
-        return <Badge variant="neutral">{status}</Badge>;
+  const handlePolicyToggle = async (mode: string) => {
+    if (!policy) return;
+    try {
+      const updated = await api.updateApplicationPolicy({ mode });
+      setPolicy(updated);
+    } catch (err) {
+      console.error("Failed to update policy mode:", err);
     }
   };
 
-  const filteredApps = applications.filter((app) => {
-    if (activeTab === "INTERVIEWS") return app.status === "INTERVIEW";
-    if (activeTab === "OFFERS") return app.status === "OFFER";
-    if (activeTab === "APPLIED") return app.status === "APPLIED";
-    if (activeTab === "DRAFT") return app.status === "DRAFT";
-    return true;
-  });
+  if (loading) {
+    return (
+      <div style={{ padding: "40px 0", textAlign: "center", color: "var(--text-sub)" }}>
+        <p>Loading Applications Control Center...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "14px" }}>
+    <div className="page-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      {/* Top Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-            <Badge variant="brand">Stage 6</Badge>
+            <Badge variant="brand">Stage 5 • Execution & Resumes</Badge>
             <span style={{ fontSize: "13px", color: "var(--text-sub)" }}>Governed Pipeline Execution</span>
           </div>
-          <h1 style={{ fontSize: "24px", fontWeight: 800, letterSpacing: "-0.025em" }}>
-            Applications & Pipeline
+          <h1 style={{ fontSize: "28px", fontWeight: 800, letterSpacing: "-0.03em" }}>
+            Applications Control Center & Resume Studio
           </h1>
           <p style={{ color: "var(--text-sub)", fontSize: "14px", marginTop: "4px", lineHeight: 1.55 }}>
-            Evidence-backed submissions and interview tracking operating in Assisted mode.
+            Evidence-tailored resume generator, governed autonomous execution queue, and conversion tracking.
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "8px" }}>
-          <Link href="/settings/automation" prefetch={true} style={{ textDecoration: "none" }}>
-            <Button variant="secondary" size="sm" icon={<Sliders size={14} />}>
-              Automation Policy ({policy?.mode || "ASSISTED"})
-            </Button>
-          </Link>
-          <Link href="/outcomes" style={{ textDecoration: "none" }}>
-            <Button variant="primary" size="sm">
-              View Conversion Funnel (Stage 7)
+        <div style={{ display: "flex", gap: "10px" }}>
+          <Link href="/outcomes" prefetch={true} style={{ textDecoration: "none" }}>
+            <Button variant="secondary" size="md">
+              View Conversion Funnel →
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* Mode & Policy Banner */}
-      <Card style={{ padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Shield size={18} color="var(--accent-cyan)" />
-          <div>
-            <div style={{ fontSize: "13px", fontWeight: 600 }}>
-              Execution Policy: <span style={{ color: "var(--accent-cyan)" }}>{policy?.mode || "ASSISTED"}</span>
+      {/* Safety Policy & Queue Banner */}
+      <Card
+        style={{
+          background: "linear-gradient(135deg, rgba(230,57,70,0.06) 0%, rgba(20,22,30,0.95) 100%)",
+          borderColor: "rgba(230,57,70,0.2)",
+          padding: "24px",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ width: "48px", height: "48px", borderRadius: "10px", background: "rgba(230,57,70,0.12)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand)" }}>
+              <Shield size={24} />
             </div>
-            <div style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
-              Min Match Threshold: <strong>{policy?.min_match_score || 85}%</strong> • Daily Limit: <strong>{policy?.daily_application_limit || 5}</strong> • Human Approval Required: <strong>Yes</strong>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <h2 style={{ fontSize: "18px", fontWeight: 800 }}>Governed Auto-Apply Policy: {policy?.mode || "ASSISTED"} Mode</h2>
+                <Badge variant={policy?.mode === "AUTONOMOUS" ? "brand" : "cyan"}>
+                  {policy?.mode === "AUTONOMOUS" ? "Autonomous Submissions Active" : "User Review Required"}
+                </Badge>
+              </div>
+              <p style={{ fontSize: "13px", color: "var(--text-sub)", marginTop: "3px" }}>
+                Daily limit: {policy?.daily_application_limit || 5}/day • Minimum match threshold: {policy?.min_match_score || 85}% • Truthfulness guarantee: 100% verified claims only.
+              </p>
             </div>
           </div>
-        </div>
 
-        <Link href="/settings/automation" style={{ textDecoration: "none" }}>
-          <Button variant="secondary" size="sm">Configure Guardrails</Button>
-        </Link>
+          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+            <button
+              onClick={() => handlePolicyToggle(policy?.mode === "AUTONOMOUS" ? "ASSISTED" : "AUTONOMOUS")}
+              style={{
+                padding: "8px 16px",
+                borderRadius: "8px",
+                border: "1px solid var(--border-subtle)",
+                background: "var(--bg-elevated)",
+                color: "var(--text-main)",
+                fontSize: "13px",
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <Sliders size={14} /> Toggle Mode ({policy?.mode === "AUTONOMOUS" ? "Switch to Assisted" : "Enable Autonomous"})
+            </button>
+          </div>
+        </div>
       </Card>
 
-      {/* Filter Tabs */}
-      <div style={{ display: "flex", gap: "6px", borderBottom: "1px solid var(--border-subtle)", paddingBottom: "8px" }}>
-        <Button variant={activeTab === "ALL" ? "primary" : "secondary"} size="sm" onClick={() => setActiveTab("ALL")}>
-          All ({applications.length})
-        </Button>
-        <Button variant={activeTab === "APPLIED" ? "primary" : "secondary"} size="sm" onClick={() => setActiveTab("APPLIED")}>
-          Applied (2)
-        </Button>
-        <Button variant={activeTab === "INTERVIEWS" ? "primary" : "secondary"} size="sm" onClick={() => setActiveTab("INTERVIEWS")}>
-          Interviews (1)
-        </Button>
-        <Button variant={activeTab === "OFFERS" ? "primary" : "secondary"} size="sm" onClick={() => setActiveTab("OFFERS")}>
-          Offers (1)
-        </Button>
-        <Button variant={activeTab === "DRAFT" ? "primary" : "secondary"} size="sm" onClick={() => setActiveTab("DRAFT")}>
-          Drafts
-        </Button>
-      </div>
-
-      {/* Applications List */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        {filteredApps.map((app) => (
-          <Card key={app.id} style={{ padding: "18px 20px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "10px" }}>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "2px" }}>
-                  <h3 style={{ fontSize: "16px", fontWeight: 700 }}>{app.job.title}</h3>
-                  {getStatusBadge(app.status)}
-                </div>
-                <div style={{ fontSize: "12.5px", color: "var(--accent-cyan)", fontWeight: 600 }}>
-                  {app.job.company.name} • {app.job.location} • Match Score: {app.match_score_at_application}%
-                </div>
-              </div>
-
-              <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>
-                  Applied on {new Date(app.created_at).toLocaleDateString()}
-                </div>
-              </div>
-            </div>
-
-            {/* Next Action & Readiness Checklist */}
-            <div style={{ padding: "10px 12px", background: "var(--bg-elevated)", borderRadius: "4px", border: "1px solid var(--border-subtle)", marginBottom: "12px" }}>
-              <div style={{ fontSize: "12px", color: "var(--text-main)", marginBottom: "4px" }}>
-                <strong>Next Recommended Step:</strong> {app.next_action || "Prepare for distributed systems architectural deep dive."}
-              </div>
-
-              <div style={{ display: "flex", gap: "14px", fontSize: "11.5px", color: "var(--text-dim)", flexWrap: "wrap", marginTop: "6px" }}>
-                <span style={{ color: "var(--accent-emerald)" }}>✓ Resume Tailored</span>
-                <span style={{ color: "var(--accent-emerald)" }}>✓ Evidence Verified</span>
-                <span style={{ color: "var(--accent-emerald)" }}>✓ Salary Floor Satisfied</span>
-              </div>
-            </div>
-
-            {/* Artifacts Attached */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-              <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                <FileText size={13} color="var(--text-dim)" />
-                <span style={{ fontSize: "11.5px", color: "var(--text-dim)" }}>
-                  {app.artifacts.length} Tailored Artifacts attached (Cover Letter & Provenance Resume)
-                </span>
-              </div>
-
-              <Link href="/outcomes" style={{ textDecoration: "none" }}>
-                <Button variant="secondary" size="sm">
-                  View Timeline & Logs →
-                </Button>
-              </Link>
-            </div>
-          </Card>
+      {/* Tabs */}
+      <div style={{ display: "flex", gap: "8px", borderBottom: "1px solid var(--border-subtle)", paddingBottom: "12px" }}>
+        {[
+          { key: "pipeline", label: `Application Pipeline (${applications.length})` },
+          { key: "resumes", label: `Resume Center (${resumes.length} Versions)` },
+          { key: "queue", label: `Execution Queue (${queue?.executions?.length || 0})` },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key as any)}
+            style={{
+              padding: "8px 16px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              fontWeight: 600,
+              cursor: "pointer",
+              border: "none",
+              background: activeTab === tab.key ? "var(--bg-elevated)" : "transparent",
+              color: activeTab === tab.key ? "var(--text-main)" : "var(--text-sub)",
+              boxShadow: activeTab === tab.key ? "0 2px 8px rgba(0,0,0,0.2)" : "none",
+            }}
+          >
+            {tab.label}
+          </button>
         ))}
       </div>
+
+      {/* TAB 1: PIPELINE */}
+      {activeTab === "pipeline" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {applications.map((app) => (
+            <Card key={app.id} style={{ padding: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <h3 style={{ fontSize: "17px", fontWeight: 800 }}>{app.tailored_role_title || app.job?.title || "Target Application"}</h3>
+                  <Badge variant="neutral">@ {app.job?.company?.name || "Company"}</Badge>
+                  <Badge variant={app.status === "OFFER" ? "success" : app.status === "INTERVIEW" ? "cyan" : "brand"}>
+                    {app.status}
+                  </Badge>
+                </div>
+                <div style={{ display: "flex", gap: "16px", marginTop: "6px", fontSize: "13px", color: "var(--text-muted)" }}>
+                  <span>📍 {app.job?.location || "Remote"}</span>
+                  <span>•</span>
+                  <span>⚡ Match Score: <strong style={{ color: "var(--brand)" }}>{app.match_score_at_application || 85}%</strong></span>
+                  <span>•</span>
+                  <span>Applied {app.created_at ? new Date(app.created_at).toLocaleDateString() : "Recently"}</span>
+                </div>
+                {app.notes && (
+                  <p style={{ fontSize: "13px", color: "var(--text-sub)", marginTop: "6px", fontStyle: "italic" }}>
+                    Note: {app.notes}
+                  </p>
+                )}
+              </div>
+
+              <div style={{ display: "flex", gap: "10px" }}>
+                {app.job?.id && (
+                  <Link href={`/opportunities/${app.job.id}`} prefetch={true} style={{ textDecoration: "none" }}>
+                    <Button variant="secondary" size="sm">
+                      View Match Analysis
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* TAB 2: RESUME CENTER & TAILORING WITH TRUTHFULNESS GUARANTEE */}
+      {activeTab === "resumes" && (
+        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1.8fr", gap: "24px", alignItems: "flex-start" }}>
+          {/* Resume Version Selector */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-sub)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              Resume Versions
+            </div>
+            {resumes.map((res) => {
+              const isSelected = selectedResume?.id === res.id;
+              return (
+                <Card
+                  key={res.id}
+                  onClick={() => setSelectedResume(res)}
+                  style={{
+                    padding: "18px",
+                    cursor: "pointer",
+                    borderColor: isSelected ? "var(--brand)" : "var(--border-subtle)",
+                    background: isSelected ? "rgba(230,57,70,0.04)" : "var(--bg-surface)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <h4 style={{ fontSize: "15px", fontWeight: 700 }}>{res.name}</h4>
+                    <Badge variant={res.version_type === "MASTER" ? "brand" : "cyan"} size="sm">
+                      {res.version_type}
+                    </Badge>
+                  </div>
+                  <p style={{ fontSize: "13px", color: "var(--text-sub)", lineHeight: 1.5, margin: 0 }}>
+                    {res.summary}
+                  </p>
+                  <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
+                    Updated {res.updated_at}
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Detailed Resume View & Diff Rationale */}
+          {selectedResume && (
+            <Card style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div>
+                  <Badge variant="brand">{selectedResume.version_type}</Badge>
+                  <h3 style={{ fontSize: "20px", fontWeight: 800, marginTop: "8px" }}>{selectedResume.name}</h3>
+                  <div style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "2px" }}>Target Role: {selectedResume.target_role}</div>
+                </div>
+                <Badge variant="success" icon={<CheckCircle2 size={13} />}>
+                  100% Truthfulness Verified
+                </Badge>
+              </div>
+
+              {/* Truthfulness Guarantee Notice */}
+              <div style={{ padding: "14px", background: "rgba(16,185,129,0.06)", borderRadius: "8px", border: "1px solid rgba(16,185,129,0.25)", fontSize: "13px", color: "var(--text-main)", lineHeight: 1.6 }}>
+                <div style={{ fontWeight: 700, color: "#10b981", marginBottom: "2px" }}>AI Integrity Policy</div>
+                JobPilot never hallucinates experience. Every claim, latency metric, and project in this resume is strictly derived from verified GitHub commits, patents, and confirmed employment history.
+              </div>
+
+              {/* Change Rationale (Diff explanation) */}
+              <div>
+                <h4 style={{ fontSize: "13px", fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)", letterSpacing: "0.05em", marginBottom: "6px" }}>
+                  Why This Resume Was Tailored
+                </h4>
+                <p style={{ fontSize: "14px", color: "var(--text-sub)", lineHeight: 1.6 }}>
+                  {selectedResume.change_rationale}
+                </p>
+              </div>
+
+              {/* Skills Emphasized vs Reduced */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                <div style={{ padding: "14px", background: "rgba(255,255,255,0.02)", borderRadius: "8px", border: "1px solid var(--border-subtle)" }}>
+                  <div style={{ fontSize: "12px", fontWeight: 700, color: "#10b981", textTransform: "uppercase", marginBottom: "6px" }}>
+                    ✓ Emphasized Highlights
+                  </div>
+                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                    {(selectedResume.emphasized_skills || []).map((s, idx) => (
+                      <span key={idx} style={{ fontSize: "12px", padding: "2px 8px", borderRadius: "4px", background: "rgba(16,185,129,0.1)", color: "#10b981", border: "1px solid rgba(16,185,129,0.2)" }}>
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ padding: "14px", background: "rgba(255,255,255,0.02)", borderRadius: "8px", border: "1px solid var(--border-subtle)" }}>
+                  <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: "6px" }}>
+                    — De-emphasized General Topics
+                  </div>
+                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                    {(selectedResume.reduced_skills || []).length > 0 ? (
+                      (selectedResume.reduced_skills || []).map((s, idx) => (
+                        <span key={idx} style={{ fontSize: "12px", padding: "2px 8px", borderRadius: "4px", background: "rgba(255,255,255,0.04)", color: "var(--text-muted)" }}>
+                          {s}
+                        </span>
+                      ))
+                    ) : (
+                      <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>None (Master Baseline)</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", borderTop: "1px solid var(--border-subtle)", paddingTop: "16px" }}>
+                <Button variant="secondary" size="md">
+                  Download Canonical PDF
+                </Button>
+                <Button variant="primary" size="md">
+                  Use for Target Application
+                </Button>
+              </div>
+            </Card>
+          )}
+        </div>
+      )}
+
+      {/* TAB 3: EXECUTION QUEUE */}
+      {activeTab === "queue" && queue && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "12px" }}>
+            <Card style={{ padding: "14px", textAlign: "center" }}>
+              <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>QUEUED</div>
+              <div style={{ fontSize: "20px", fontWeight: 800, marginTop: "2px" }}>{queue.queued_count || 0}</div>
+            </Card>
+            <Card style={{ padding: "14px", textAlign: "center" }}>
+              <div style={{ fontSize: "12px", color: "var(--cyan)" }}>PROCESSING</div>
+              <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--cyan)", marginTop: "2px" }}>{queue.processing_count || 0}</div>
+            </Card>
+            <Card style={{ padding: "14px", textAlign: "center" }}>
+              <div style={{ fontSize: "12px", color: "#10b981" }}>SUBMITTED</div>
+              <div style={{ fontSize: "20px", fontWeight: 800, color: "#10b981", marginTop: "2px" }}>{queue.submitted_count || 0}</div>
+            </Card>
+            <Card style={{ padding: "14px", textAlign: "center" }}>
+              <div style={{ fontSize: "12px", color: "var(--brand)" }}>NEEDS REVIEW</div>
+              <div style={{ fontSize: "20px", fontWeight: 800, color: "var(--brand)", marginTop: "2px" }}>{queue.needs_review_count || 0}</div>
+            </Card>
+            <Card style={{ padding: "14px", textAlign: "center" }}>
+              <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>FAILED</div>
+              <div style={{ fontSize: "20px", fontWeight: 800, marginTop: "2px" }}>{queue.failed_count || 0}</div>
+            </Card>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            {(queue.executions || []).map((item) => (
+              <Card key={item.id} style={{ padding: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <h4 style={{ fontSize: "16px", fontWeight: 700 }}>{item.role_title}</h4>
+                    <Badge variant="neutral">@ {item.company_name}</Badge>
+                    <Badge variant={item.status === "SUBMITTED" ? "success" : item.status === "PROCESSING" ? "cyan" : item.status === "NEEDS_REVIEW" ? "brand" : "neutral"}>
+                      {item.status}
+                    </Badge>
+                  </div>
+                  <div style={{ display: "flex", gap: "16px", marginTop: "4px", fontSize: "13px", color: "var(--text-muted)" }}>
+                    <span>Match Score: <strong style={{ color: "var(--brand)" }}>{item.match_score}%</strong></span>
+                    <span>•</span>
+                    <span>{item.timestamp}</span>
+                  </div>
+                  {item.failure_reason && (
+                    <div style={{ marginTop: "8px", fontSize: "13px", color: "var(--brand)", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <AlertTriangle size={14} /> {item.failure_reason}
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ display: "flex", gap: "8px" }}>
+                  {item.can_fix && (
+                    <Button variant="primary" size="sm">
+                      Provide Answer & Submit
+                    </Button>
+                  )}
+                  {item.status === "SUBMITTED" && (
+                    <Badge variant="success">Submitted via API</Badge>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

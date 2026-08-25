@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.core.security import CurrentUser, get_current_user
 from app.domains.identity.schemas import (
+    LivingPortfolioResponse,
     ProfessionalIdentityResponse,
     ProfessionalIdentityUpdate,
     UserResponse,
@@ -11,6 +12,16 @@ from app.domains.identity.schemas import (
 from app.domains.identity.services import IdentityService
 
 router = APIRouter(tags=["Identity & Profile"])
+
+
+@router.get("/profile/portfolio", response_model=LivingPortfolioResponse)
+@router.get("/identity/portfolio", response_model=LivingPortfolioResponse)
+async def get_my_living_portfolio(
+    db: AsyncSession = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_user),
+):
+    """Retrieve the user's Living Professional Portfolio."""
+    return await IdentityService.get_living_portfolio(db, current_user.id)
 
 
 @router.get("/profile", response_model=ProfessionalIdentityResponse)

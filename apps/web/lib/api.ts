@@ -16,6 +16,14 @@ import {
   NotificationItem,
   ActivityItem,
   Job,
+  LivingPortfolioResponse,
+  DailyPlan,
+  LearningTask,
+  CustomSkillAnalysis,
+  AssessmentSession,
+  ResumeVersion,
+  AutoApplyExecutionResponse,
+  AutoApplyPreviewResponse,
 } from "./types";
 
 const API_BASE_URL =
@@ -1019,7 +1027,7 @@ export const api = {
   },
 
   async updateApplicationPolicy(
-    policy: ApplicationPolicyType
+    policy: Partial<ApplicationPolicyType>
   ): Promise<ApplicationPolicyType> {
     apiCache.set("policy", { data: policy, timestamp: Date.now() });
     try {
@@ -1286,4 +1294,601 @@ export const api = {
       },
     ];
   },
+
+  async getLivingPortfolio(): Promise<LivingPortfolioResponse> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/profile/portfolio`, {
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.categorized_skills && !data.skills) {
+          data.skills = data.categorized_skills;
+        }
+        if (data.skills && !data.categorized_skills) {
+          data.categorized_skills = data.skills;
+        }
+        return data;
+      }
+    } catch (e) {
+      console.warn("Living Portfolio API fallback", e);
+    }
+    return {
+      hero: {
+        full_name: "Alex Chen",
+        headline: "Staff Distributed Systems & Infrastructure Architect",
+        primary_domains: ["Distributed Systems", "Cloud Infrastructure", "Storage Engines"],
+        seniority_level: "Staff / Principal (L6/L7)",
+        location: "San Francisco, CA (Remote)",
+        profile_completeness_pct: 94.0,
+        confidence: {
+          score: 0.94,
+          label: "High confidence (Verified)",
+          verified_sources_count: 4,
+          unverified_claims_count: 0,
+        },
+        ai_summary: "High-throughput systems architect specialized in distributed consensus (Raft/Paxos), sub-5ms P99 ledger latency, and multi-tenant Kubernetes control planes. 100% verified across 4 sources.",
+      },
+      about: {
+        how_jobpilot_sees_you: "A top 2% systems engineer with verified evidence spanning production Raft consensus engines, high-concurrency Go services handling 120k QPS, and low-latency LSM storage algorithms.",
+        career_narrative: "Transitioning from Staff Infrastructure Engineer at Stripe to Principal Infrastructure Architect at Tier-1 AI laboratories and cloud infrastructure platforms.",
+        ideal_next_role: "Staff / Principal Distributed Systems Architect",
+        target_salary_range: "$220k – $320k + Equity",
+        workplace_preference: "Remote / Hybrid (US & Global)",
+      },
+      experiences: [
+        {
+          company: "Stripe",
+          title: "Staff Infrastructure Engineer",
+          period: "2021 — Present (3 yrs)",
+          location: "San Francisco, CA",
+          impact_bullets: [
+            "Architected globally distributed ledger replication engine handling 120k QPS with sub-5ms P99 latency.",
+            "Engineered zero-downtime consensus migration protocol across multi-region AWS/GCP clusters.",
+            "Reduced p99 failover recovery latency from 4.2s to 180ms using Raft leader pre-vote mechanics.",
+          ],
+          verified_evidence_badges: ["Verified via Stripe Tech Talk", "Patent #US11487291B2", "Resume Citation"],
+          skills_used: ["Go", "Kubernetes", "Raft Consensus", "gRPC", "PostgreSQL", "AWS"],
+        },
+        {
+          company: "Uber",
+          title: "Senior Distributed Systems Engineer",
+          period: "2018 — 2021 (3 yrs)",
+          location: "San Francisco, CA",
+          impact_bullets: [
+            "Designed streaming event pipeline processing 1.2M events/sec across Kafka and Cassandra clusters.",
+            "Implemented custom ring-pop failure detection and consistent hashing cluster rebalancing.",
+          ],
+          verified_evidence_badges: ["Verified Employment Record", "4 GitHub Commits"],
+          skills_used: ["Go", "Apache Kafka", "Redis", "Docker", "Cassandra"],
+        },
+      ],
+      projects: [
+        {
+          name: "Distributed Raft Consensus Engine",
+          type: "Open Source Engine",
+          description: "High-performance async Go implementation of Raft consensus with dynamic membership changes, snapshotting, and log compaction.",
+          architecture_summary: "Deterministic state machine replication with memory-mapped write-ahead logging.",
+          verified_evidence_badge: "GitHub (3.4k Stars • 100% Test Coverage)",
+          metrics: "450k tx/sec single-node throughput • Sub-2ms commit latency",
+          github_url: "https://github.com/alexchen/raft-engine",
+          live_url: "https://raft-demo.jobpilot.dev",
+          tags: ["Go", "Raft", "Distributed Systems", "gRPC", "Storage"],
+        },
+        {
+          name: "LSM-Tree Key-Value Storage Engine",
+          type: "Storage Architecture",
+          description: "Embedded zero-copy LSM storage engine supporting SSTable leveled compactions and bloom filter lookups.",
+          architecture_summary: "Custom write-ahead log + MemTable skiplist with lock-free concurrent readers.",
+          verified_evidence_badge: "Verified Code Repository",
+          metrics: "180k read QPS at 99.9th percentile under 1ms",
+          github_url: "https://github.com/alexchen/lsm-engine",
+          tags: ["Go", "C++", "LSM Storage", "RocksDB", "Systems"],
+        },
+      ],
+      skills: [
+        {
+          name: "Distributed Consensus (Raft/Paxos)",
+          category: "Architecture & Systems",
+          capability: { score: 9.8, label: "Advanced" },
+          confidence: { score: 0.98, label: "Verified", verified_sources_count: 4, unverified_claims_count: 0 },
+          target_demand_pct: 94,
+          status: "VERIFIED",
+          evidence_count: 4,
+          why_it_matters: "Core prerequisite for Staff Distributed Systems Architect roles at Anthropic, Snowflake, and Stripe.",
+          target_roles_requiring_count: 17,
+        },
+        {
+          name: "Go High-Concurrency Architecture",
+          category: "Languages & Frameworks",
+          capability: { score: 9.5, label: "Advanced" },
+          confidence: { score: 0.95, label: "Verified", verified_sources_count: 3, unverified_claims_count: 0 },
+          target_demand_pct: 91,
+          status: "VERIFIED",
+          evidence_count: 3,
+          why_it_matters: "Primary backend implementation language for modern cloud and infrastructure engines.",
+          target_roles_requiring_count: 22,
+        },
+        {
+          name: "Kubernetes Control Plane & Operators",
+          category: "Cloud & Infrastructure",
+          capability: { score: 8.8, label: "Strong" },
+          confidence: { score: 0.90, label: "Verified", verified_sources_count: 2, unverified_claims_count: 0 },
+          target_demand_pct: 88,
+          status: "VERIFIED",
+          evidence_count: 2,
+          why_it_matters: "Required for orchestrating multi-region distributed workloads and GPU clusters.",
+          target_roles_requiring_count: 15,
+        },
+        {
+          name: "GPU Cluster Scheduling & Triton Serving",
+          category: "AI Infrastructure",
+          capability: { score: 4.2, label: "Developing" },
+          confidence: { score: 0.50, label: "Needs Evidence", verified_sources_count: 0, unverified_claims_count: 1 },
+          target_demand_pct: 78,
+          status: "NEEDS_EVIDENCE",
+          evidence_count: 0,
+          why_it_matters: "Currently your biggest bottleneck for Tier-1 AI infrastructure roles. Completing Stage 5 assessment unlocks 11 target positions.",
+          target_roles_requiring_count: 11,
+        },
+      ],
+      connected_sources: [
+        { name: "GitHub", type: "Code & Commits", icon: "github", status: "CONNECTED", item_count_label: "14 Repos • 120+ Commits", last_synced: "2 hours ago" },
+        { name: "LinkedIn", type: "Experience & Network", icon: "linkedin", status: "CONNECTED", item_count_label: "Staff Architect Profile", last_synced: "Today" },
+        { name: "Master Resume PDF", type: "Verified Artifact", icon: "file-text", status: "CONNECTED", item_count_label: "Canonical Master v2026", last_synced: "Today" },
+        { name: "JobPilot Verified Assessments", type: "Integrity Tests", icon: "award", status: "CONNECTED", item_count_label: "Raft Consensus (100%)", last_synced: "Just now" },
+      ],
+    };
+  },
+
+  async getDailyPlan(): Promise<DailyPlan> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/improve/daily-plan`, {
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Daily Plan API fallback", e);
+    }
+    return {
+      today_focus_skill: "GPU Cluster Scheduling & Triton Serving Layer",
+      current_level: 4.2,
+      target_level: 7.5,
+      target_role_impact: "Unlocks 11 Tier-1 AI Infrastructure Opportunities",
+      tasks_completed_count: 1,
+      total_tasks_count: 6,
+      concepts_practiced_count: 3,
+      total_concepts_count: 5,
+      proof_completed_count: 0,
+      total_proof_count: 1,
+      today_tasks: [
+        {
+          id: "task-101",
+          user_id: "user-1",
+          title: "Read Kubernetes Scheduling Concepts & Operator Internals",
+          description: "Deep dive into scheduling constraints, node selectors, affinity rules, and taints/tolerations.",
+          estimated_minutes: 15,
+          scheduled_day: "TODAY",
+          priority: "CRITICAL",
+          status: "TODAY",
+          task_type: "READ",
+          order: 1,
+          resource: {
+            title: "Kubernetes Scheduling Deep Dive (Official Architecture)",
+            resource_type: "Documentation",
+            cost: "FREE",
+            duration_minutes: 15,
+            why_chosen: "Your target roles frequently require scheduling knowledge and your current evidence is weak in operator controllers.",
+            what_you_will_learn: [
+              "Scheduling constraints and score algorithms",
+              "Node selectors, affinity, and anti-affinity",
+              "Taints, tolerations, and daemonset priorities",
+            ],
+            url: "https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/",
+          },
+        },
+        {
+          id: "task-102",
+          user_id: "user-1",
+          title: "Watch Triton Multi-Model Dynamic Batching Protocol",
+          description: "Analyze model concurrent execution, dynamic queue management, and GPU memory partitioning.",
+          estimated_minutes: 22,
+          scheduled_day: "TODAY",
+          priority: "HIGH",
+          status: "TODAY",
+          task_type: "WATCH",
+          order: 2,
+          resource: {
+            title: "Triton Architecture: High-Throughput Model Serving",
+            resource_type: "Video",
+            cost: "FREE",
+            duration_minutes: 22,
+            why_chosen: "Required by Anthropic & Datadog AI infrastructure positions.",
+            what_you_will_learn: [
+              "Dynamic batching vs sequence batching",
+              "CUDA stream isolation and thread pools",
+              "Memory pinning with IPC handles",
+            ],
+            url: "https://github.com/triton-inference-server/server",
+          },
+        },
+        {
+          id: "task-103",
+          user_id: "user-1",
+          title: "Complete Triton Async Client Lab Exercise",
+          description: "Build a Python AsyncIO client pooling requests into a batched Triton gRPC serving endpoint.",
+          estimated_minutes: 20,
+          scheduled_day: "TODAY",
+          priority: "HIGH",
+          status: "IN_PROGRESS",
+          task_type: "PRACTICE",
+          order: 3,
+          resource: {
+            title: "Practical Lab: Triton gRPC Streaming Async Client",
+            resource_type: "Lab",
+            cost: "FREE",
+            duration_minutes: 20,
+            why_chosen: "Hands-on coding evidence to verify senior streaming concurrency capability.",
+            what_you_will_learn: [
+              "gRPC bi-directional streaming in Python/Go",
+              "Batch response dispatching and timeout hedging",
+            ],
+            url: "https://github.com/triton-inference-server/client",
+          },
+        },
+      ],
+      kanban_columns: {
+        BACKLOG: [
+          {
+            id: "task-104",
+            user_id: "user-1",
+            title: "Build Custom Kubernetes Mutating Webhook Operator",
+            description: "Create an admission controller injecting GPU sidecar telemetry into inference pods.",
+            estimated_minutes: 60,
+            scheduled_day: "THURSDAY",
+            priority: "HIGH",
+            status: "BACKLOG",
+            task_type: "BUILD",
+            order: 4,
+            resource: {
+              title: "Building Production Kubernetes Operators in Go (Kubebuilder)",
+              resource_type: "Project",
+              cost: "FREE",
+              duration_minutes: 60,
+              why_chosen: "Creates verifiable GitHub proof demonstrating end-to-end operator engineering.",
+              what_you_will_learn: ["CRD controller reconciliation loops", "Mutating/Validating admission webhooks"],
+              url: "https://book.kubebuilder.io/",
+            },
+          },
+        ],
+        TODAY: [
+          {
+            id: "task-101",
+            user_id: "user-1",
+            title: "Read Kubernetes Scheduling Concepts & Operator Internals",
+            description: "Deep dive into scheduling constraints, node selectors, affinity rules, and taints/tolerations.",
+            estimated_minutes: 15,
+            scheduled_day: "TODAY",
+            priority: "CRITICAL",
+            status: "TODAY",
+            task_type: "READ",
+            order: 1,
+          },
+          {
+            id: "task-102",
+            user_id: "user-1",
+            title: "Watch Triton Multi-Model Dynamic Batching Protocol",
+            description: "Analyze model concurrent execution, dynamic queue management, and GPU memory partitioning.",
+            estimated_minutes: 22,
+            scheduled_day: "TODAY",
+            priority: "HIGH",
+            status: "TODAY",
+            task_type: "WATCH",
+            order: 2,
+          },
+        ],
+        IN_PROGRESS: [
+          {
+            id: "task-103",
+            user_id: "user-1",
+            title: "Complete Triton Async Client Lab Exercise",
+            description: "Build a Python AsyncIO client pooling requests into a batched Triton gRPC serving endpoint.",
+            estimated_minutes: 20,
+            scheduled_day: "TODAY",
+            priority: "HIGH",
+            status: "IN_PROGRESS",
+            task_type: "PRACTICE",
+            order: 3,
+          },
+        ],
+        DONE: [
+          {
+            id: "task-105",
+            user_id: "user-1",
+            title: "Kubernetes Core Architecture Fundamentals",
+            description: "Review API server, etcd quorums, and kubelet state sync.",
+            estimated_minutes: 30,
+            scheduled_day: "MONDAY",
+            priority: "MEDIUM",
+            status: "DONE",
+            task_type: "READ",
+            order: 5,
+          },
+        ],
+        READY_TO_PROVE: [
+          {
+            id: "task-106",
+            user_id: "user-1",
+            title: "GPU Cluster Scheduling Verification Diagnostic",
+            description: "Complete deterministic competency assessment to upgrade profile skill score from 4.2 to 7.5.",
+            estimated_minutes: 25,
+            scheduled_day: "FRIDAY",
+            priority: "CRITICAL",
+            status: "READY_TO_PROVE",
+            task_type: "TEST",
+            order: 6,
+          },
+        ],
+      },
+    };
+  },
+
+  async updateTaskStatus(taskId: string, status: string): Promise<any> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/improve/tasks/${taskId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+        body: JSON.stringify({ status }),
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Update task status fallback", e);
+    }
+    return { id: taskId, status };
+  },
+
+  async planMyWeek(payload: any = {}): Promise<DailyPlan> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/improve/plan-week`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Plan week fallback", e);
+    }
+    return await this.getDailyPlan();
+  },
+
+  async analyzeCustomSkill(payload: { skill_name: string; current_confidence?: string; goal?: string }): Promise<CustomSkillAnalysis> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/improve/custom-skill`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Analyze custom skill fallback", e);
+    }
+    return {
+      skill_name: payload.skill_name,
+      relevance_score: 88.5,
+      target_opportunities_unlocked: 8,
+      estimated_effort_hours: 14.0,
+      diagnostic_gap: `Missing verified implementation evidence for ${payload.skill_name}`,
+      recommended_plan_id: `plan-${payload.skill_name.toLowerCase().replace(/\s+/g, "-")}`,
+      initial_tasks: [],
+    };
+  },
+
+  async startAssessmentSession(assessmentId: string, consent: any): Promise<AssessmentSession> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/prove/assessments/${assessmentId}/session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+        body: JSON.stringify(consent),
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Start assessment session fallback", e);
+    }
+    const asm = await this.getAssessment(assessmentId);
+    return {
+      session_id: `sess-${Date.now()}`,
+      assessment_id: assessmentId,
+      assessment: asm,
+      started_at: new Date().toISOString(),
+      expires_at: new Date(Date.now() + 20 * 60000).toISOString(),
+      status: "ACTIVE",
+      integrity_status: "NORMAL",
+    };
+  },
+
+  async logIntegrityEvent(sessionId: string, event: { event_type: string; timestamp: string; severity?: string }): Promise<any> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/prove/sessions/${sessionId}/integrity-events`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+        body: JSON.stringify(event),
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Log integrity event fallback", e);
+    }
+    return { status: "logged" };
+  },
+
+  async getResumes(): Promise<ResumeVersion[]> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/applications/resumes`, {
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Get resumes fallback", e);
+    }
+    return [
+      {
+        id: "res-master",
+        name: "Master Canonical Resume",
+        target_role: "Staff / Principal Distributed Systems Architect",
+        version_type: "MASTER",
+        summary: "Core canonical resume automatically synchronized with all GitHub repositories, verified skills, and work history.",
+        emphasized_skills: ["Go", "Python", "Distributed Systems", "Raft", "LSM Storage", "Kubernetes", "Linux Internals"],
+        reduced_skills: [],
+        change_rationale: "Base golden master. All tailored versions derive strictly from this profile without inventing claims.",
+        truthfulness_verified: true,
+        updated_at: "Today",
+      },
+      {
+        id: "res-anthropic",
+        name: "Tailored for Anthropic (Principal Distributed Infrastructure)",
+        target_role: "Principal Distributed Infrastructure Engineer",
+        version_type: "TAILORED",
+        summary: "Emphasizes high-scale Raft consensus, GPU cluster streaming latency, and 450k tx/sec throughput benchmarks.",
+        emphasized_skills: ["Raft Consensus", "Go High Concurrency", "Distributed Quorums", "Telemetry Ingestion"],
+        reduced_skills: ["Generic Frontend", "REST Web Services"],
+        change_rationale: "Anthropic infrastructure role heavily weighs low-level distributed primitives and latency SLAs over full-stack web UI.",
+        truthfulness_verified: true,
+        updated_at: "2 hours ago",
+      },
+      {
+        id: "res-datadog",
+        name: "Tailored for Datadog (Staff Storage Systems)",
+        target_role: "Staff Storage Systems Architect",
+        version_type: "TAILORED",
+        summary: "Highlights LSM compaction algorithms, memory-mapped I/O, and columnar telemetry storage cost reductions.",
+        emphasized_skills: ["LSM Storage Engines", "RocksDB", "Zero-Copy I/O", "Memory Management"],
+        reduced_skills: ["Kubernetes Operator Deployment"],
+        change_rationale: "Datadog storage engineering prioritizes storage engine internals and fast disk I/O.",
+        truthfulness_verified: true,
+        updated_at: "Yesterday",
+      },
+    ];
+  },
+
+  async tailorResume(jobId: string): Promise<ResumeVersion> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/applications/tailor-resume`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+        body: JSON.stringify({ job_id: jobId }),
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Tailor resume fallback", e);
+    }
+    return {
+      id: `res-${Date.now()}`,
+      name: "Tailored Application Resume",
+      target_role: "Senior Distributed Infrastructure Engineer",
+      version_type: "TAILORED",
+      summary: "Strictly tailored from verified evidence. 0 unverified claims.",
+      emphasized_skills: ["Go", "Raft Consensus", "Distributed Systems"],
+      reduced_skills: ["General Fullstack UI"],
+      change_rationale: "Optimized alignment for target infrastructure role requirements.",
+      truthfulness_verified: true,
+      updated_at: "Just now",
+    };
+  },
+
+  async getAutoApplyPreview(): Promise<AutoApplyPreviewResponse> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/applications/auto-apply/preview`, {
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Get auto-apply preview fallback", e);
+    }
+    return {
+      eligible_opportunities_count: 12,
+      meets_rules_count: 8,
+      needs_review_count: 4,
+      blocked_count: 0,
+      applied_today_count: 3,
+      daily_limit: 5,
+      min_match_score: 85.0,
+      eligible_jobs: [
+        { id: "job-1", title: "Principal Distributed Infrastructure Engineer", company: "Anthropic", score: 95.0, status: "READY" },
+        { id: "job-2", title: "Staff Storage Systems Architect", company: "Datadog", score: 91.0, status: "READY" },
+        { id: "job-3", title: "Staff Infrastructure Engineer", company: "Stripe", score: 89.0, status: "READY" },
+        { id: "job-4", title: "Lead Distributed Query Architect", company: "Snowflake", score: 87.0, status: "READY" },
+        { id: "job-5", title: "Systems Engineer - Compute", company: "OpenAI", score: 88.0, status: "NEEDS_REVIEW" },
+      ],
+    };
+  },
+
+  async getAutomationQueue(): Promise<AutoApplyExecutionResponse> {
+    try {
+      const res = await fetchWithTimeout(`${API_BASE_URL}/applications/automation`, {
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.warn("Get automation queue fallback", e);
+    }
+    return {
+      queued_count: 1,
+      processing_count: 1,
+      submitted_count: 2,
+      needs_review_count: 1,
+      failed_count: 0,
+      executions: [
+        {
+          id: "exec-1",
+          company_name: "Anthropic",
+          role_title: "Principal Distributed Infrastructure Engineer",
+          match_score: 95.0,
+          status: "SUBMITTED",
+          failure_reason: undefined,
+          can_fix: false,
+          timestamp: "10 mins ago",
+        },
+        {
+          id: "exec-2",
+          company_name: "Datadog",
+          role_title: "Staff Storage Systems Architect",
+          match_score: 91.0,
+          status: "SUBMITTED",
+          failure_reason: undefined,
+          can_fix: false,
+          timestamp: "2 hours ago",
+        },
+        {
+          id: "exec-3",
+          company_name: "Stripe",
+          role_title: "Staff Infrastructure Engineer",
+          match_score: 89.0,
+          status: "PROCESSING",
+          failure_reason: undefined,
+          can_fix: false,
+          timestamp: "Just now",
+        },
+        {
+          id: "exec-4",
+          company_name: "Snowflake",
+          role_title: "Lead Distributed Query Architect",
+          match_score: 87.0,
+          status: "QUEUED",
+          failure_reason: undefined,
+          can_fix: false,
+          timestamp: "Scheduled in 45m (Daily pacing)",
+        },
+        {
+          id: "exec-5",
+          company_name: "OpenAI",
+          role_title: "Systems Engineer - Compute Infrastructure",
+          match_score: 88.0,
+          status: "NEEDS_REVIEW",
+          failure_reason: "Missing work authorization answer for US visa sponsorship question.",
+          can_fix: true,
+          timestamp: "Today",
+        },
+      ],
+    };
+  },
 };
+

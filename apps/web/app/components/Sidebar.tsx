@@ -51,13 +51,6 @@ const lifecycleItems: NavItem[] = [
     badgeVariant: "cyan",
   },
   {
-    name: "Gaps",
-    href: "/gaps",
-    icon: Sparkles,
-    tag: "1 Blocker",
-    badgeVariant: "warning",
-  },
-  {
     name: "Improve",
     href: "/improve",
     icon: BookOpen,

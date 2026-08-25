@@ -1,5 +1,4 @@
 from typing import List, Optional
-
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,7 +9,10 @@ from app.domains.applications.schemas import (
     ApplicationPolicyResponse,
     ApplicationPolicyUpdate,
     ApplicationResponse,
-    ApplicationStatusUpdate,
+    AutoApplyExecutionResponse,
+    AutoApplyPreviewResponse,
+    ResumeVersionResponse,
+    TailorResumeRequest,
 )
 from app.domains.applications.services import ApplicationService
 
@@ -19,12 +21,35 @@ router = APIRouter(prefix="/applications", tags=["Applications & Execution"])
 
 @router.get("", response_model=List[ApplicationResponse])
 async def list_applications(
-    status: Optional[str] = Query(None, description="Filter by status (DRAFT, SUBMITTED, INTERVIEW, etc.)"),
+    status: Optional[str] = Query(None, description="Filter by status (DRAFT, APPLIED, INTERVIEW, OFFER, REJECTED)"),
     db: AsyncSession = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_user),
 ):
-    """Retrieve all job applications in the user's pipeline."""
-    return await ApplicationService.list_user_applications(db, current_user.id, status=status)
+    """List tracked applications across the governing pipeline."""
+    return await ApplicationService.list_applications(db, current_user.id, status)
+
+
+@router.post("", response_model=ApplicationResponse)
+async def create_application(
+    app_data: ApplicationCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_user),
+):
+    """Create and submit an evidence-backed application package."""
+    return await ApplicationService.create_application(db, current_user.id, app_data)
+
+
+@router.patch("/{application_id}/status", response_model=ApplicationResponse)
+async def update_application_status(
+    application_id: str,
+    status_data: dict,
+    db: AsyncSession = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_user),
+):
+    """Update pipeline status of an application."""
+    return await ApplicationService.update_application_status(
+        db, current_user.id, application_id, status_data.get("status", "DRAFT"), status_data.get("notes")
+    )
 
 
 @router.get("/policy", response_model=ApplicationPolicyResponse)
@@ -32,46 +57,52 @@ async def get_application_policy(
     db: AsyncSession = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_user),
 ):
-    """Retrieve the user's automation policy controls (Manual / Assisted / Auto-Apply)."""
+    """Retrieve automation and safety policies for application execution."""
     return await ApplicationService.get_policy(db, current_user.id)
 
 
 @router.patch("/policy", response_model=ApplicationPolicyResponse)
 async def update_application_policy(
-    data: ApplicationPolicyUpdate,
+    policy_data: ApplicationPolicyUpdate,
     db: AsyncSession = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_user),
 ):
-    """Update automation controls and safeguards."""
-    return await ApplicationService.update_policy(db, current_user.id, data)
+    """Update automation mode, daily limits, and approval requirements."""
+    return await ApplicationService.update_policy(db, current_user.id, policy_data)
 
 
-@router.get("/{app_id}", response_model=ApplicationResponse)
-async def get_application_detail(
-    app_id: str,
+@router.get("/resumes", response_model=List[ResumeVersionResponse])
+async def get_resumes(
     db: AsyncSession = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_user),
 ):
-    """Retrieve application details, tailored artifacts, and current stage."""
-    return await ApplicationService.get_application_by_id(db, current_user.id, app_id)
+    """Retrieve Master Resume and tailored job-specific versions."""
+    return await ApplicationService.get_resumes(db, current_user.id)
 
 
-@router.post("", response_model=ApplicationResponse)
-async def create_application(
-    data: ApplicationCreate,
+@router.post("/tailor-resume", response_model=ResumeVersionResponse)
+async def tailor_resume(
+    req: TailorResumeRequest,
     db: AsyncSession = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_user),
 ):
-    """Create a new draft application and generate its initial tailored artifact kit."""
-    return await ApplicationService.create_application(db, current_user.id, data)
+    """Generate an evidence-backed tailored resume version without false claims."""
+    return await ApplicationService.tailor_resume(db, current_user.id, req)
 
 
-@router.patch("/{app_id}/status", response_model=ApplicationResponse)
-async def update_application_status(
-    app_id: str,
-    data: ApplicationStatusUpdate,
+@router.get("/auto-apply/preview", response_model=AutoApplyPreviewResponse)
+async def get_auto_apply_preview(
     db: AsyncSession = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_user),
 ):
-    """Update application stage (e.g. SUBMITTED, INTERVIEW, OFFER, REJECTED) and log outcome event."""
-    return await ApplicationService.update_status(db, current_user.id, app_id, data)
+    """Preview eligible opportunities matching safety rules prior to auto-apply execution."""
+    return await ApplicationService.get_auto_apply_preview(db, current_user.id)
+
+
+@router.get("/automation", response_model=AutoApplyExecutionResponse)
+async def get_automation_queue(
+    db: AsyncSession = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_user),
+):
+    """Retrieve real-time auto-apply execution queue status."""
+    return await ApplicationService.get_executions(db, current_user.id)
